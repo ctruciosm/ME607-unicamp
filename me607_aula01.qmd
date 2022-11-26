@@ -1,0 +1,14 @@
+---
+title: "ME607-Séries Temporais"
+subtitle: "Aula 01"
+author: "Prof. Carlos Trucíos"
+institute: "**Instituto de Matemática, Estatística e Computação Científica. \\ Universidade Estadual de Campinas.**"
+format: 
+  revealjs:
+    logo: imagens/unicamp.png
+    chalkboard: true
+    footer: "Prof. Carlos Trucíos (IMECC/UNICAMP) | ctruciosm.github.io  | ME607-Séries Temporais"
+    theme: solarized  # solarized moon dark night
+editor: visual
+---
+
