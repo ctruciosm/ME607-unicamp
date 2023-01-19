@@ -1,14 +1,306 @@
 ---
-title: "ME607-Séries Temporais"
-subtitle: "Aula 01"
-author: "Prof. Carlos Trucíos"
-institute: "**Instituto de Matemática, Estatística e Computação Científica. \\ Universidade Estadual de Campinas.**"
-format: 
-  revealjs:
-    logo: imagens/unicamp.png
-    chalkboard: true
-    footer: "Prof. Carlos Trucíos (IMECC/UNICAMP) | ctruciosm.github.io  | ME607-Séries Temporais"
-    theme: solarized  # solarized moon dark night
+title: "Introdução e conceitos básicos"
+subtitle: "ME607 - Séries Temporais"
+author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
+institute: "Instituto de Matemática, Estatística e Computação Científica (IMECC), </br> Universidade Estadual de Campinas (UNICAMP)."
+knitr:
+    opts_chunk: 
+      fig.align: 'center'
+execute:
+    message: false
+    warning: false
+format:
+    revealjs:
+        slide-number: true
+        toc: true
+        toc-depth: 1
+        toc-title: Agenda
+        show-slide-number: print
+        self-contained: false
+        chalkboard: true
+        width: 1600
+        height: 900
+        theme: [default, styles.scss]
+        incremental: true
+        code-fold: true
+        logo: "imagens/imecc.png"
+        footer: "Carlos Trucíos (IMECC/UNICAMP)  |  ME607 - Séries Temporais  |  [ctruciosm.github.io](https://ctruciosm.github.io/)"
+        highlight-style: "a11y"
+        title-slide-attributes:
+            data-background-image: "imagens/unicamp.png"
+            data-background-size: 20%
+            data-background-position: 99% 5%
+            data-background-opacity: "1"
 editor: visual
 ---
 
+# Introdução
+
+## Introdução
+
+> Se pudéssemos saber primeiro onde estamos e para onde vamos, poderíamos julgar melhor o que fazer e como fazê-lo. *Abraham Lincoln*
+
+. . .
+
+O interesse em fazer previsão existe em muitas situações: prever a demanda de um produto, prever a quantidade de megas que serão utilizados nos próximos dias, prever o preço/volatilidade das ações, prever a velocidade do vento, etc.
+
+. . .
+
+A previsibilidade de um evento depende de vários fatores, entre eles:
+
+-   Quantos dados estão disponíveis.
+-   Que tanto conhecemos os fatores que contribuen para fazer a previsão.
+-   Que tão semelhante é o futuro do passado.
+-   Se a previsão afeta o que estamos tentanto prever.
+
+. . .
+
+**Poderia dar algum exemplo em que todos/alguns desses fatores são satisfeitos?**
+
+## Introdução
+
+> Previsão pode ser feita utilizando métodos ingênuos (como repetir a última observação ou apenas utilizar a média histórica) ou métodos mais complexos (como métodos estatísticos avançados, aprendizado de máquina e redes neurais).
+
+. . .
+
+Previsão ajuda às organizações a tomarem melhores decisões e fornece uma guia para o planejamento de médio e longo prazo. **É por isso que saber lidar com séries temporais é de vital importância**.
+
+. . .
+
+**Observação:**
+
+$$\text{Previsão} \neq \text{Metas} \neq \text{Planejamento}$$
+
+## Introdução
+
+$$\text{Previsão} \neq \text{Metas} \neq \text{Planejamento}$$
+
+-   **Previsão:** dadas todas as informações disponíveis (historico, outras variáveis, conhecimento sobre eventos futuro que possam afetar a previsão), queremos prever o futuro com a maior acurácia possível.
+-   **Metas:** aquilo que gostariamos que aconteça (mas não necessáriamente acontece)
+-   **Planejamento:** ações necessárias para que as previsões alcancem às metas.
+
+. . .
+
+Estamos interessados em previsões a curto, médio e longo prazo.
+
+. . .
+
+> Embora existam métodos qualitativos para fazer previsão quando não temos historico de dados, focaremos no caso em que possuimos um conjunto de dados históricos e é razoável pensar que algums padrões aprendidos do passado continurão acontecendo.
+
+## Introdução
+
+Em qualquer projeto envolvendo previsão precisamos determinar qual é nosso interesse:
+
+-   Estamos interessados nas vendas de uma loja ou de todas as lojas de uma região?
+-   Estamos interessados em dados diários, semanais, mensais, anuais?
+-   Estamos interessados na demanda de um produto ou um grupo de produtos?
+-   Qual é o horizonte de previsão?
+-   Com que frequência precisaremos fazer a previsão?
+
+. . .
+
+> Responder corretamente a essas perguntas nos ajudara na escolha da abordagem a ser utilizada.
+
+# Séries temporais: *Overview*
+
+## Séries temporais: *Overview*
+
+**Séries temporal:** a grosso modo, todo processo que é observado sequencialmente ao longo do tempo é uma série temporal.
+
+. . .
+
+::: columns
+::: {.column width="50%"}
+#### Exemplos
+
+-   Produto interno bruto (anual) do Brasil.
+-   Preço diário do Bitcoin.
+-   Vendas semanais de um produto.
+-   Temperatura diária em Campinas.
+-   Consumo mensal de energia/agua.
+-   Gasto mensal familiar com *futilidades*.
+-   etc
+:::
+
+::: {.column width="50%"}
+```{r echo=FALSE, fig.height=4, fig.width=8}
+library(ggplot2)
+url <- "https://raw.githubusercontent.com/ctruciosm/ctruciosm.github.io/master/datasets/BTCUSDT.csv"
+btc <- read.csv(url)
+btc$timestamp <- as.Date(btc$timestamp)
+p1 <- ggplot(data = btc) + 
+  geom_line(mapping = aes(x = timestamp, y = close), color = "green4") + ggtitle("Preços diários (USDT) do Bitcoin: 2017/08/17 -- 2021/07/20")
+p1
+```
+:::
+:::
+
+## Séries temporais: *Overview*
+
+> Quando falamos em previsão, o objetivo é estimar como a sequência de observações (observadas cronologicamente) continuará no futuro.
+
+. . .
+
+```{r echo=FALSE, fig.height=2.5, fig.width=10, warning=FALSE, message=FALSE}
+library(fpp2)
+aelec <- window(elec, start = 1980) %>% forecast(h = 12)
+autoplot(aelec, xlab = "Ano", ylab = "Gigawatts por hora")
+```
+
+. . .
+
+$$y_t = f(X_{1}, \cdots,  X_{k}, u)$$
+
+. . .
+
+$$y_t = f(y_{t-1}, \cdots,  y_{t-r}, u)$$
+
+. . .
+
+$$y_t = f(y_{t-1}, \cdots,  y_{t-r}, X_1, \cdots, X_k, u)$$
+
+## Séries temporais: *Overview*
+
+Após da definição do problema (que não é algo trivial), o processo de modelagem de séries temporais apresenta o seguinte fluxo.
+
+```{r echo=FALSE, out.width = '35%', fig.cap="Fonte: Livro 'Forecasting: Principles and Practice' "}
+knitr::include_graphics("imagens/ts_workflow.png")
+```
+
+1.  **Tidy:** Precisamos coletar e preparar os dados para podermos utilizar os diversos modelos implementados.
+2.  **Visualise:** Fazer o gráfico da série temporal é muito importante e da os primeiros *insights* do que deve ser feito.
+3.  Especificar, estimar e avaliar o modelo. (**Modelagem**)
+4.  Fazer previsões.
+
+# Conceitos básicos
+
+## Conceitos básicos
+
+. . .
+
+::: columns
+::: {.column width="50%"}
+<center>
+
+#### Processo Estocástico
+
+Uma coleção de variáveis aleatórias $\{ Y_t \}$ indexada pelo tempo $t$ é chamado de **processo estocástico**.
+
+</center>
+:::
+
+::: {.column width="50%"}
+<center>
+
+#### Série Temporal
+
+Uma realização ($\{y_t\}$) de um processo estocástico é chamado de **série temporal**.
+
+</center>
+:::
+:::
+
+. . .
+
+> Na prática nunca observamos o processo estocástico, mas apenas uma realização do processo.
+
+. . .
+
+> É muito comum chamar de série temporal tanto ao processo estocástico quando à realização do processo.
+
+. . .
+
+#### Ruido branco
+
+Coleção de variáveis aleatórias com médias zero, variância constante e que além disso são não correlacionadas.
+
+## Conceitos básicos
+
+Na Figura @fig-example01 temos um exemplo da realização de um processo estocástico. **Consegue identificar/explicar o conceito de processo estocástico na mesma figura?**
+
+```{r}
+#| label: fig-example01
+#| fig-cap: Exemplo de série temporal e processo estocástico.
+#| echo: false
+#| fig-height: 6
+#| fig-width: 16
+library(ggplot2)
+set.seed(123)
+figura_dados <- data.frame(t = 1:20, y = rnorm(20, 10,2))
+ggplot(figura_dados) + 
+  geom_vline(xintercept = c(1,10, 19), linetype = "dashed", color = "red4") + geom_line(aes(x = t, y), color = "green4") +
+  geom_point(aes(x = t, y)) + xlab("Tempo") 
+```
+
+## Conceitos básicos:
+
+-   **Função de médias:** para cada instante $t$, $\mu_t = \mathbb{E}(Y_t).$
+-   **Função de variâncias:** para cada instante $t$, $\sigma_t^2 = \mathbb{V}(Y_t).$
+-   **Função de autocovariância e autocorrelação:** para dois instantes quaquer ($t$ e $t+h$), as funções de autocovariância e autocorrelação são dadas por: $$\gamma(t,t+h) = \mathbb{Cov}(Y_t, Y_{t+h}) = \mathbb{E}[(Y_t  - \mu_t)(Y_{t+h}-\mu_{t+h})] \quad \text{e}$$ $$\rho(t,t+h) = \mathbb{Cor}(Y_t, Y_{t+h}) = \dfrac{\mathbb{Cov}(Y_t, Y_{t+h})}{\sigma_t \sigma_{t+h}}$$
+
+. . .
+
+> Obs: como o processo estocástico é uma coleção de variáveis aleatórias $\{Y_t \}$ indexadas pelo tempo $t$, para cada $t$ temos que $Y_t$ tem sua própria distribuição (e então faz sentido pensar na esperança, variância, ...).
+
+## Conceitos básicos
+
+#### Processo estritamente estacionário
+
+Um processo estocástico $\{Y_t\}_{t = -\infty}^{\infty}$ é dito estritamente estacionário se todas as distribuições finito dimensionais permanecem as mesmas sob translações do tempo, ou seja, $$F_{y_{t_1}, \cdots, y_{t_k}}(x_1, \cdots, x_k) = F_{y_{t_1 + h}, \cdots, y_{t_k + h}}(x_1, \cdots, x_k), \quad \forall h$$
+
+. . .
+
+#### Processo (fracamente) estacionário
+
+Um proceso estocástico $\{Y_t\}_{t = -\infty}^{\infty}$ com é dito fracamente estacionário (estacionário de segunda ordem ou simplesmente estacionário) se:
+
+-   $\mathbb{E}(Y_t^2) < \infty, \quad \forall t$
+-   $\mathbb{E}(Y_t) = \mu_t = \mu, \quad \forall t$
+-   $\mathbb{Cov}(Y_t, Y_{t+h})$ depende somente de $h$ e não de $t$.
+
+## Conceitos básicos
+
+-   Note que a primeira condição dos processos estacionários afirma que o segundo momento deve ser finito (mesmo que diferente em diferentes períodos do tempo).
+-   A segunda condição afirma que a média é igual para todo o período.
+-   A terceira condição estabelece que variância é constante para todo o período e que a autocovariância depende apenas de $h$ e não do tempo ($t$).
+
+. . .
+
+Se a série satisfaz essas condições é dita de **estacionária**, caso contrário é dita de **não estacionária**.
+
+. . .
+
+> Visualmente, observa-se estacionaridade se uma série flutua em torno de uma média fixa e se a variância da série é constante ao longo do tempo. Contudo, são necessários testes de hipóteses para verificar ou não a estacionaridade da série.
+
+## Conceitos básicos
+
+**Qual das seguintes séries parece ser estacionária?**
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(patchwork)
+library(dplyr)
+p1 <- ggplot(data = btc[-c(1:500), ]) + geom_line(mapping = aes(x = timestamp, y = close), color = "green4") + ylab("y") + xlab("Tempo")
+serie2 <- data.frame(t = 1:1000, y = rnorm(1000))
+p2 <- ggplot(serie2) + geom_line(aes(x = t, y = y), color = "blue") + ylab("y") + xlab("Tempo")
+btc2 <- btc[1:935, ] |> mutate(ret = log(close/lag(close))*100) |> select(timestamp, ret)
+p3 <- ggplot(data = btc2) + geom_line(mapping = aes(x = timestamp, y = ret), color = "red") + ylab("y") + xlab("Tempo")
+p1 / p2 / p3
+```
+
+## Conceitos básicos
+
+**Gráfico sequêncial:** graficar todos os pontos (em ordem cronológica) unidos por segmentos de reta.
+
+-   É o primeiro gráfico a ser feito quando trabalhamos com séries temporais.
+-   Faz parte da análise exploratória de dados (próxima aula).
+-   Permite identificar diversar características da série temporal.
+
+. . .
+
+## Referências
+
+-   [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 1.
+-   Bueno, R.D.L.S (2011). Econometria de Séries Temporais, 2ed, CENGAGE. São Paulo, Brasil. Capítulo 2.

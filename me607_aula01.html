@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="me607_aula01_files/libs/clipboard/clipboard.min.js"></script>
-<script src="me607_aula01_files/libs/quarto-html/tabby.min.js"></script>
-<script src="me607_aula01_files/libs/quarto-html/popper.min.js"></script>
-<script src="me607_aula01_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="me607_aula01_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="me607_aula01_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="me607_aula01_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="ME607_Aula01_files/libs/clipboard/clipboard.min.js"></script>
+<script src="ME607_Aula01_files/libs/quarto-html/tabby.min.js"></script>
+<script src="ME607_Aula01_files/libs/quarto-html/popper.min.js"></script>
+<script src="ME607_Aula01_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="ME607_Aula01_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="ME607_Aula01_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="ME607_Aula01_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.2.269">
 
-  <meta name="author" content="Prof.&nbsp;Carlos Trucíos">
-  <title>ME607-Séries Temporais</title>
+  <meta name="author" content="Prof.&nbsp;Carlos Trucíos  ctrucios@unicamp.br">
+  <title>Introdução e conceitos básicos</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="me607_aula01_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="me607_aula01_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="ME607_Aula01_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="ME607_Aula01_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -29,13 +29,13 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="me607_aula01_files/libs/revealjs/dist/theme/quarto.css" id="theme">
-  <link href="me607_aula01_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="me607_aula01_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="me607_aula01_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="me607_aula01_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-  <link href="me607_aula01_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
-  <link href="me607_aula01_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="ME607_Aula01_files/libs/revealjs/dist/theme/quarto.css" id="theme">
+  <link href="ME607_Aula01_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="ME607_Aula01_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="ME607_Aula01_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="ME607_Aula01_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="ME607_Aula01_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="ME607_Aula01_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -325,47 +325,301 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">ME607-Séries Temporais</h1>
-  <p class="subtitle">Aula 01</p>
+<section id="title-slide" data-background-image="imagens/unicamp.png" data-background-opacity="1" data-background-position="99% 5%" data-background-size="20%" class="quarto-title-block center">
+  <h1 class="title">Introdução e conceitos básicos</h1>
+  <p class="subtitle">ME607 - Séries Temporais</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Prof.&nbsp;Carlos Trucíos 
+Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br 
 </div>
         <p class="quarto-title-affiliation">
-            <strong>Instituto de Matemática, Estatística e Computação Científica. &nbsp;Universidade Estadual de Campinas.</strong>
+            Instituto de Matemática, Estatística e Computação Científica (IMECC), <br> Universidade Estadual de Campinas (UNICAMP).
           </p>
     </div>
 </div>
 
+</section><section id="TOC">
+<nav role="doc-toc"> 
+<h2 id="toc-title">Agenda</h2>
+<ul>
+<li class="fragment"><a href="#/introdução" id="/toc-introdução">Introdução</a></li>
+<li class="fragment"><a href="#/séries-temporais-overview" id="/toc-séries-temporais-overview">Séries temporais: <em>Overview</em></a></li>
+<li class="fragment"><a href="#/conceitos-básicos" id="/toc-conceitos-básicos">Conceitos básicos</a></li>
+</ul>
+</nav>
 </section>
-<section class="slide level2">
+<section>
+<section id="introdução" class="title-slide slide level1 center">
+<h1>Introdução</h1>
 
-
-<img src="imagens/unicamp.png" class="slide-logo r-stretch"><div class="footer footer-default">
-<p>Prof.&nbsp;Carlos Trucíos (IMECC/UNICAMP) | ctruciosm.github.io | ME607-Séries Temporais</p>
+</section>
+<section id="introdução-1" class="slide level2">
+<h2>Introdução</h2>
+<blockquote>
+<p>Se pudéssemos saber primeiro onde estamos e para onde vamos, poderíamos julgar melhor o que fazer e como fazê-lo. <em>Abraham Lincoln</em></p>
+</blockquote>
+<div class="fragment">
+<p>O interesse em fazer previsão existe em muitas situações: prever a demanda de um produto, prever a quantidade de megas que serão utilizados nos próximos dias, prever o preço/volatilidade das ações, prever a velocidade do vento, etc.</p>
+</div>
+<div class="fragment">
+<p>A previsibilidade de um evento depende de vários fatores, entre eles:</p>
+<ul>
+<li class="fragment">Quantos dados estão disponíveis.</li>
+<li class="fragment">Que tanto conhecemos os fatores que contribuen para fazer a previsão.</li>
+<li class="fragment">Que tão semelhante é o futuro do passado.</li>
+<li class="fragment">Se a previsão afeta o que estamos tentanto prever.</li>
+</ul>
+</div>
+<div class="fragment">
+<p><strong>Poderia dar algum exemplo em que todos/alguns desses fatores são satisfeitos?</strong></p>
 </div>
 </section>
+<section id="introdução-2" class="slide level2">
+<h2>Introdução</h2>
+<blockquote>
+<p>Previsão pode ser feita utilizando métodos ingênuos (como repetir a última observação ou apenas utilizar a média histórica) ou métodos mais complexos (como métodos estatísticos avançados, aprendizado de máquina e redes neurais).</p>
+</blockquote>
+<div class="fragment">
+<p>Previsão ajuda às organizações a tomarem melhores decisões e fornece uma guia para o planejamento de médio e longo prazo. <strong>É por isso que saber lidar com séries temporais é de vital importância</strong>.</p>
+</div>
+<div class="fragment">
+<p><strong>Observação:</strong></p>
+<p><span class="math display">\[\text{Previsão} \neq \text{Metas} \neq \text{Planejamento}\]</span></p>
+</div>
+</section>
+<section id="introdução-3" class="slide level2">
+<h2>Introdução</h2>
+<p><span class="math display">\[\text{Previsão} \neq \text{Metas} \neq \text{Planejamento}\]</span></p>
+<ul>
+<li class="fragment"><strong>Previsão:</strong> dadas todas as informações disponíveis (historico, outras variáveis, conhecimento sobre eventos futuro que possam afetar a previsão), queremos prever o futuro com a maior acurácia possível.</li>
+<li class="fragment"><strong>Metas:</strong> aquilo que gostariamos que aconteça (mas não necessáriamente acontece)</li>
+<li class="fragment"><strong>Planejamento:</strong> ações necessárias para que as previsões alcancem às metas.</li>
+</ul>
+<div class="fragment">
+<p>Estamos interessados em previsões a curto, médio e longo prazo.</p>
+</div>
+<div class="fragment">
+<blockquote>
+<p>Embora existam métodos qualitativos para fazer previsão quando não temos historico de dados, focaremos no caso em que possuimos um conjunto de dados históricos e é razoável pensar que algums padrões aprendidos do passado continurão acontecendo.</p>
+</blockquote>
+</div>
+</section>
+<section id="introdução-4" class="slide level2">
+<h2>Introdução</h2>
+<p>Em qualquer projeto envolvendo previsão precisamos determinar qual é nosso interesse:</p>
+<ul>
+<li class="fragment">Estamos interessados nas vendas de uma loja ou de todas as lojas de uma região?</li>
+<li class="fragment">Estamos interessados em dados diários, semanais, mensais, anuais?</li>
+<li class="fragment">Estamos interessados na demanda de um produto ou um grupo de produtos?</li>
+<li class="fragment">Qual é o horizonte de previsão?</li>
+<li class="fragment">Com que frequência precisaremos fazer a previsão?</li>
+</ul>
+<div class="fragment">
+<blockquote>
+<p>Responder corretamente a essas perguntas nos ajudara na escolha da abordagem a ser utilizada.</p>
+</blockquote>
+</div>
+</section></section>
+<section>
+<section id="séries-temporais-overview" class="title-slide slide level1 center">
+<h1>Séries temporais: <em>Overview</em></h1>
+
+</section>
+<section id="séries-temporais-overview-1" class="slide level2">
+<h2>Séries temporais: <em>Overview</em></h2>
+<p><strong>Séries temporal:</strong> a grosso modo, todo processo que é observado sequencialmente ao longo do tempo é uma série temporal.</p>
+<div class="fragment">
+<div class="columns">
+<div class="column" style="width:50%;">
+<h4 id="exemplos">Exemplos</h4>
+<ul>
+<li class="fragment">Produto interno bruto (anual) do Brasil.</li>
+<li class="fragment">Preço diário do Bitcoin.</li>
+<li class="fragment">Vendas semanais de um produto.</li>
+<li class="fragment">Temperatura diária em Campinas.</li>
+<li class="fragment">Consumo mensal de energia/agua.</li>
+<li class="fragment">Gasto mensal familiar com <em>futilidades</em>.</li>
+<li class="fragment">etc</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="ME607_Aula01_files/figure-revealjs/unnamed-chunk-1-1.png" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="séries-temporais-overview-2" class="slide level2">
+<h2>Séries temporais: <em>Overview</em></h2>
+<blockquote>
+<p>Quando falamos em previsão, o objetivo é estimar como a sequência de observações (observadas cronologicamente) continuará no futuro.</p>
+</blockquote>
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="ME607_Aula01_files/figure-revealjs/unnamed-chunk-2-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><span class="math display">\[y_t = f(X_{1}, \cdots,  X_{k}, u)\]</span></p>
+</div>
+<div class="fragment">
+<p><span class="math display">\[y_t = f(y_{t-1}, \cdots,  y_{t-r}, u)\]</span></p>
+</div>
+<div class="fragment">
+<p><span class="math display">\[y_t = f(y_{t-1}, \cdots,  y_{t-r}, X_1, \cdots, X_k, u)\]</span></p>
+</div>
+</section>
+<section id="séries-temporais-overview-3" class="slide level2">
+<h2>Séries temporais: <em>Overview</em></h2>
+<p>Após da definição do problema (que não é algo trivial), o processo de modelagem de séries temporais apresenta o seguinte fluxo.</p>
+
+<img data-src="imagens/ts_workflow.png" style="width:35.0%" class="r-stretch quarto-figure-center"><p class="caption">Fonte: Livro ‘Forecasting: Principles and Practice’</p><ol type="1">
+<li class="fragment"><strong>Tidy:</strong> Precisamos coletar e preparar os dados para podermos utilizar os diversos modelos implementados.</li>
+<li class="fragment"><strong>Visualise:</strong> Fazer o gráfico da série temporal é muito importante e da os primeiros <em>insights</em> do que deve ser feito.</li>
+<li class="fragment">Especificar, estimar e avaliar o modelo. (<strong>Modelagem</strong>)</li>
+<li class="fragment">Fazer previsões.</li>
+</ol>
+</section></section>
+<section>
+<section id="conceitos-básicos" class="title-slide slide level1 center">
+<h1>Conceitos básicos</h1>
+
+</section>
+<section id="conceitos-básicos-1" class="slide level2">
+<h2>Conceitos básicos</h2>
+<div class="fragment">
+<div class="columns">
+<div class="column" style="width:50%;">
+<center>
+<h4 id="processo-estocástico">Processo Estocástico</h4>
+<p>Uma coleção de variáveis aleatórias <span class="math inline">\(\{ Y_t \}\)</span> indexada pelo tempo <span class="math inline">\(t\)</span> é chamado de <strong>processo estocástico</strong>.</p>
+</center>
+</div><div class="column" style="width:50%;">
+<center>
+<h4 id="série-temporal">Série Temporal</h4>
+<p>Uma realização (<span class="math inline">\(\{y_t\}\)</span>) de um processo estocástico é chamado de <strong>série temporal</strong>.</p>
+</center>
+</div>
+</div>
+</div>
+<div class="fragment">
+<blockquote>
+<p>Na prática nunca observamos o processo estocástico, mas apenas uma realização do processo.</p>
+</blockquote>
+</div>
+<div class="fragment">
+<blockquote>
+<p>É muito comum chamar de série temporal tanto ao processo estocástico quando à realização do processo.</p>
+</blockquote>
+</div>
+<div class="fragment">
+<h4 id="ruido-branco">Ruido branco</h4>
+<p>Coleção de variáveis aleatórias com médias zero, variância constante e que além disso são não correlacionadas.</p>
+</div>
+</section>
+<section id="conceitos-básicos-2" class="slide level2">
+<h2>Conceitos básicos</h2>
+<p>Na Figura <a href="#/fig-example01">Figure&nbsp;1</a> temos um exemplo da realização de um processo estocástico. <strong>Consegue identificar/explicar o conceito de processo estocástico na mesma figura?</strong></p>
+
+<img data-src="ME607_Aula01_files/figure-revealjs/fig-example01-1.png" width="1536" class="r-stretch quarto-figure-center"><p class="caption">Figure&nbsp;1: Exemplo de série temporal e processo estocástico.</p></section>
+<section id="conceitos-básicos-3" class="slide level2">
+<h2>Conceitos básicos:</h2>
+<ul>
+<li class="fragment"><strong>Função de médias:</strong> para cada instante <span class="math inline">\(t\)</span>, <span class="math inline">\(\mu_t = \mathbb{E}(Y_t).\)</span></li>
+<li class="fragment"><strong>Função de variâncias:</strong> para cada instante <span class="math inline">\(t\)</span>, <span class="math inline">\(\sigma_t^2 = \mathbb{V}(Y_t).\)</span></li>
+<li class="fragment"><strong>Função de autocovariância e autocorrelação:</strong> para dois instantes quaquer (<span class="math inline">\(t\)</span> e <span class="math inline">\(t+h\)</span>), as funções de autocovariância e autocorrelação são dadas por: <span class="math display">\[\gamma(t,t+h) = \mathbb{Cov}(Y_t, Y_{t+h}) = \mathbb{E}[(Y_t  - \mu_t)(Y_{t+h}-\mu_{t+h})] \quad \text{e}\]</span> <span class="math display">\[\rho(t,t+h) = \mathbb{Cor}(Y_t, Y_{t+h}) = \dfrac{\mathbb{Cov}(Y_t, Y_{t+h})}{\sigma_t \sigma_{t+h}}\]</span></li>
+</ul>
+<div class="fragment">
+<blockquote>
+<p>Obs: como o processo estocástico é uma coleção de variáveis aleatórias <span class="math inline">\(\{Y_t \}\)</span> indexadas pelo tempo <span class="math inline">\(t\)</span>, para cada <span class="math inline">\(t\)</span> temos que <span class="math inline">\(Y_t\)</span> tem sua própria distribuição (e então faz sentido pensar na esperança, variância, …).</p>
+</blockquote>
+</div>
+</section>
+<section id="conceitos-básicos-4" class="slide level2">
+<h2>Conceitos básicos</h2>
+<h4 id="processo-estritamente-estacionário">Processo estritamente estacionário</h4>
+<p>Um processo estocástico <span class="math inline">\(\{Y_t\}_{t = -\infty}^{\infty}\)</span> é dito estritamente estacionário se todas as distribuições finito dimensionais permanecem as mesmas sob translações do tempo, ou seja, <span class="math display">\[F_{y_{t_1}, \cdots, y_{t_k}}(x_1, \cdots, x_k) = F_{y_{t_1 + h}, \cdots, y_{t_k + h}}(x_1, \cdots, x_k), \quad \forall h\]</span></p>
+<h4 id="processo-fracamente-estacionário">Processo (fracamente) estacionário</h4>
+<p>Um proceso estocástico <span class="math inline">\(\{Y_t\}_{t = -\infty}^{\infty}\)</span> com é dito fracamente estacionário (estacionário de segunda ordem ou simplesmente estacionário) se:</p>
+<ul>
+<li class="fragment"><span class="math inline">\(\mathbb{E}(Y_t^2) &lt; \infty, \quad \forall t\)</span></li>
+<li class="fragment"><span class="math inline">\(\mathbb{E}(Y_t) = \mu_t = \mu, \quad \forall t\)</span></li>
+<li class="fragment"><span class="math inline">\(\mathbb{Cov}(Y_t, Y_{t+h})\)</span> depende somente de <span class="math inline">\(h\)</span> e não de <span class="math inline">\(t\)</span>.</li>
+</ul>
+</section>
+<section id="conceitos-básicos-5" class="slide level2">
+<h2>Conceitos básicos</h2>
+<ul>
+<li class="fragment">Note que a primeira condição dos processos estacionários afirma que o segundo momento deve ser finito (mesmo que diferente em diferentes períodos do tempo).</li>
+<li class="fragment">A segunda condição afirma que a média é igual para todo o período.</li>
+<li class="fragment">A terceira condição estabelece que variância é constante para todo o período e que a autocovariância depende apenas de <span class="math inline">\(h\)</span> e não do tempo (<span class="math inline">\(t\)</span>).</li>
+</ul>
+<div class="fragment">
+<p>Se a série satisfaz essas condições é dita de <strong>estacionária</strong>, caso contrário é dita de <strong>não estacionária</strong>.</p>
+</div>
+<div class="fragment">
+<blockquote>
+<p>Visualmente, observa-se estacionaridade se uma série flutua em torno de uma média fixa e se a variância da série é constante ao longo do tempo. Contudo, são necessários testes de hipóteses para verificar ou não a estacionaridade da série.</p>
+</blockquote>
+</div>
+</section>
+<section id="conceitos-básicos-6" class="slide level2">
+<h2>Conceitos básicos</h2>
+<p><strong>Qual das seguintes séries parece ser estacionária?</strong></p>
+
+<img data-src="ME607_Aula01_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="conceitos-básicos-7" class="slide level2">
+<h2>Conceitos básicos</h2>
+<p><strong>Gráfico sequêncial:</strong> graficar todos os pontos (em ordem cronológica) unidos por segmentos de reta.</p>
+<ul>
+<li class="fragment">É o primeiro gráfico a ser feito quando trabalhamos com séries temporais.</li>
+<li class="fragment">Faz parte da análise exploratória de dados (próxima aula).</li>
+<li class="fragment">Permite identificar diversar características da série temporal.</li>
+</ul>
+</section>
+<section id="referências" class="slide level2">
+<h2>Referências</h2>
+<ul>
+<li class="fragment"><a href="https://otexts.com/fpp3/">Hyndman, R.J., &amp; Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.</a>. Chapter 1.</li>
+<li class="fragment">Bueno, R.D.L.S (2011). Econometria de Séries Temporais, 2ed, CENGAGE. São Paulo, Brasil. Capítulo 2.</li>
+</ul>
+
+<img src="imagens/imecc.png" class="slide-logo r-stretch"><div class="footer footer-default">
+<p>Carlos Trucíos (IMECC/UNICAMP) | ME607 - Séries Temporais | <a href="https://ctruciosm.github.io/">ctruciosm.github.io</a></p>
+</div>
+</section></section>
     </div>
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="me607_aula01_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="ME607_Aula01_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="me607_aula01_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="me607_aula01_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="me607_aula01_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="me607_aula01_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="me607_aula01_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
-  <script src="me607_aula01_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="ME607_Aula01_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="ME607_Aula01_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="ME607_Aula01_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="ME607_Aula01_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="ME607_Aula01_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="ME607_Aula01_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="me607_aula01_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="me607_aula01_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="me607_aula01_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="me607_aula01_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="ME607_Aula01_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="ME607_Aula01_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="ME607_Aula01_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="ME607_Aula01_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>
@@ -402,10 +656,10 @@ Prof.&nbsp;Carlos Trucíos
         progress: true,
 
         // Display the page number of the current slide
-        slideNumber: false,
+        slideNumber: 'c/t',
 
         // 'all', 'print', or 'speaker'
-        showSlideNumber: 'all',
+        showSlideNumber: 'print',
 
         // Add the current slide number to the URL hash so that reloading the
         // page/copying the URL will return you to the same slide
@@ -527,9 +781,9 @@ Prof.&nbsp;Carlos Trucíos
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
-        width: 1050,
+        width: 1600,
 
-        height: 700,
+        height: 900,
 
         // Factor of the display size that should remain empty around the content
         margin: 0.1,
@@ -561,6 +815,44 @@ Prof.&nbsp;Carlos Trucíos
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {
