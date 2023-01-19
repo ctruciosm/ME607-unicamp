@@ -39,12 +39,20 @@ editor: visual
 
 ## Introdução
 
-
 # Gráficos
+
 ## Gráficos
 
+### Gráfico sequêncial
+
+**Gráfico sequêncial:** graficar todos os pontos (em ordem cronológica) unidos por segmentos de reta.
+
+-   É o primeiro gráfico a ser feito quando trabalhamos com séries temporais.
+-   Faz parte da análise exploratória de dados (próxima aula).
+-   Permite identificar diversar características da série temporal.
+
+. . .
 
 # Estatísticas
+
 # Estatísticas
-
-

@@ -15,7 +15,6 @@ format:
         toc: true
         toc-depth: 1
         toc-title: Agenda
-        show-slide-number: print
         self-contained: false
         chalkboard: true
         width: 1600
@@ -290,15 +289,6 @@ p3 <- ggplot(data = btc2) + geom_line(mapping = aes(x = timestamp, y = ret), col
 p1 / p2 / p3
 ```
 
-## Conceitos básicos
-
-**Gráfico sequêncial:** graficar todos os pontos (em ordem cronológica) unidos por segmentos de reta.
-
--   É o primeiro gráfico a ser feito quando trabalhamos com séries temporais.
--   Faz parte da análise exploratória de dados (próxima aula).
--   Permite identificar diversar características da série temporal.
-
-. . .
 
 ## Referências
 
