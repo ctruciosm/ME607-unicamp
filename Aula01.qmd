@@ -30,7 +30,7 @@ format:
             data-background-size: 20%
             data-background-position: 99% 5%
             data-background-opacity: "1"
-editor: visual
+editor: source
 ---
 
 # Introdução
@@ -288,7 +288,6 @@ btc2 <- btc[1:935, ] |> mutate(ret = log(close/lag(close))*100) |> select(timest
 p3 <- ggplot(data = btc2) + geom_line(mapping = aes(x = timestamp, y = ret), color = "red") + ylab("y") + xlab("Tempo")
 p1 / p2 / p3
 ```
-
 
 ## Referências
 
