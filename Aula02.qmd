@@ -478,6 +478,30 @@ Um processo estacionário é ergódico para o segundo momento se $$\hat{\gamma}(
 
 > Ergodicidade permite que, utilizando uma única realização do processo, possamos estimar os parâmetros do processo estocástico todo.
 
+# Ruido branco
+
+## Ruido branco
+
+#### Ruido branco
+
+Coleção de variáveis aleatórias com médias zero, variância constante e que além disso são não correlacionadas.
+
+
+. . . 
+
+#### Ruido branco
+
+Um processo $\{ \epsilon_t \}$ é chamado de ruido branco se é uma sequência de variáveis aleatório da distribuição fixa com $\mathbb{E}(\epsilon_t) = \mu$ (usualmente 0), $\mathbb{V}(\epsilon_t) = \sigma^2$ e $\gamma(k) = 0 \quad \forall k$.
+
+. . . 
+
+**Como verificar se estamos ante um ruido branco?**
+
+. . . 
+
+Pode-se provar que se o processo for ruido branco, então $$\rho(k) \rightarrow^D N\big(0, \dfrac{1}{n}\big) \quad e \quad \phi_{kk} \rightarrow^D N\big(0, \dfrac{1}{n}\big)$$
+
+
 ## Referências
 
 -   [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 2.
