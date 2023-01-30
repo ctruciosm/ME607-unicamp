@@ -1,0 +1,665 @@
+---
+title: "Decomposição de séries temporais"
+subtitle: "ME607 - Séries Temporais"
+author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
+Email: "ctrucios@unicamp.br"
+institute: "Instituto de Matemática, Estatística e Computação Científica (IMECC), </br> Universidade Estadual de Campinas (UNICAMP)."
+knitr:
+    opts_chunk: 
+      fig.align: 'center'
+execute:
+    message: false
+    warning: false
+format:
+    revealjs:
+        slide-number: true
+        toc: true
+        toc-depth: 1
+        toc-title: Agenda
+        self-contained: false
+        chalkboard: true
+        width: 1600
+        height: 900
+        theme: [default, styles.scss]
+        incremental: true
+        code-fold: true
+        logo: "imagens/imecc.png"
+        footer: "Carlos Trucíos (IMECC/UNICAMP)  |  ME607 - Séries Temporais  |  [ctruciosm.github.io](https://ctruciosm.github.io/)"
+        highlight-style: "a11y"
+        title-slide-attributes:
+            data-background-image: "imagens/unicamp.png"
+            data-background-size: 20%
+            data-background-position: 99% 5%
+            data-background-opacity: "1"
+editor: source
+---
+
+# Introdução
+
+## Introdução 
+
+- Aprenderemos métodos para extrair essas componentes da séries observada. Isto é feito com fins descritivos (entender a série) mas também para melhorar a acurácia das previsões.
+
+
+- **Tendência:** Componente a longo prazo e indica um aumento/diminuição.
+
+- **Sazonalidade:** Oscilações que se produzem e repetem em curtos períodos de tempo (semanal, mensal, trimestral,...)
+
+- **Aleatoriedade:** A parte que não é explicada pelas componentes anteriores.
+
+
+
+# Transformações
+
+## Transformações e ajustes
+
+- Quando formos decompor a série, é conveniente primeiro transformar/ajustar a série antes de fazer a decomposição.
+- Estes tipo de transformações podem ser to tipo **(a)** ajustes calendârio, **(b)** ajustes populacionais, **(c)** ajustes pela inflação e **(d)** transformações matemáticas.
+- O objetivo destas transformações é remover fontes conhecidas de variação e/ou fazer os padrões mais consistentes ao longo da série toda.
+
+
+
+
+## Transformações e ajustes
+
+#### Ajustes calendário
+
+Quando trabalhamos com dados sazonais, primeiro removemos o _efeito calendário_. Ex: quando trabalhamos com dados mensais é importante levar em consideração o número de dias úteis (ou dias calendário) dentro de cada mês. Isto pode ser feito utilizando a média diária em lugar do total mensal.
+
+
+#### Ajustes populacionais
+
+Qualquer série temporal que esteja afetada população pode ser transformada em séries _per capita_ (ou por milhões de habitantes).
+
+#### Ajustes de inflação
+
+Dados que são afetados pelo valor do dinheiro devem ser ajustados pela inflação antes de serem analisados.
+
+
+## Transformações e ajustes
+
+#### Transformações matemáticas
+
+- Se os dados apresentam variações que aumentam ou diminuem com o nível da série, transformações matemáticas podem ser utilizadas.
+- **Transformação logaritmica:** $\log(\cdot)$ são interessantes pois são interpretáveis. Mudanças nos valores em log são mudanças (em porcentagem) na escala original.
+- **Transformação potência:** $y_t^p$, valores de $p$ usuais são 1/2 ou 1/3.
+- **Transformação Box-Cox:** $$\begin{equation}
+w_t=
+    \begin{cases}
+        \dfrac{sign(y_t)|y_t|^{\lambda}-1}{\lambda} & \text{se } \lambda \neq 0, \\
+        \log(y_t) & \text{se } \lambda = 0.
+    \end{cases}
+\end{equation}$$
+- Um "bom" valor de $\lambda$ é aquele que faz com que o tamanho da variação sazonal seja a mesma ao longo de toda a série. 
+
+# Decomposição
+
+## Decomposição
+
+Após o gráfico de sequência, talvez identifiquemos que a série pode ser escrita como:
+
+
+$$\underbrace{y_t = T_t + S_t + R_t}_{Decomposição \quad aditiva} \quad ou \quad \underbrace{y_t = T_t \times S_t \times R_t}_{Decomposição \quad multiplicativa}$$
+
+. . . 
+
+
+::: {.nonincremental}
+- $T_t:$ componente de tendência (ou tendência-ciclo).
+- $S_t:$ componente sazonal.
+- $R_t:$ componente aleatoria.
+:::
+
+
+. . . 
+
+> Se a magnitude das variações sazonais não varia com o nível, então utilizamos uma decomposição aditiva. Caso contrário, uma decomposição multiplicativa.
+
+
+
+## Decomposição
+
+<center>
+Aditivo ou Multiplicativo
+</center>
+
+```{r echo=FALSE, fig.height=4, fig.width=15, message=FALSE, warning=FALSE}
+library(tsibble)  
+library(dplyr)
+library(patchwork)
+library(ggplot2)
+url <- "https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv"
+passageiros <- read.csv(url) %>% mutate(Month = yearmonth(Month)) %>% as_tsibble(index = Month)
+p1 <- ggplot(passageiros) + geom_line(aes(x = Month, y = log(Passengers))) + xlab("Ano") + ylab(" ") + ggtitle("Série Temporal A")
+p2 <- ggplot(passageiros) + geom_line(aes(x = Month, y = Passengers)) + xlab("Ano") + ylab(" ") + ggtitle("Série Temporal B")
+p1 + p2
+```
+
+
+. . . 
+
+> Se a magnitude das variações sazonais não varia com o nível, então utilizamos uma decomposição aditiva. Caso contrário, uma decomposição multiplicativa.
+
+. . .
+
+**Obs:** $$y_t = T_t \times S_t \times R_t \quad \rightarrow \quad  \log(y_t) = \log(T_t) + \log(S_t) + \log(R_t)$$
+
+
+## Decomposição
+
+Suponha que temos a seguinte série temporal
+```{r}
+#| echo: false
+library(fpp3)
+us_retail_employment <- us_employment %>%
+  filter(year(Month) >= 1990, Title == "Retail Trade") %>%
+  select(-Series_ID)
+autoplot(us_retail_employment, Employed) +
+  labs(y = "Número de pessoas (em milhares)",
+       x = "Ano - Mês",
+       title = "Número total de pessoas empregadas no varejo (USA).")
+```
+
+
+
+## Decomposição
+
+O objetivo é decompor a série na suas componentes. 
+```{r}
+#| echo: false
+dcmp <- us_retail_employment |> model(stl = STL(Employed)) 
+dcmp |> components() |> autoplot() + labs(x = "Tempo", title = "Decomposição")
+```
+
+
+## Decomposição 
+
+#### Série sazonalmente ajustada
+
+Se a componente sazonal é removida da série, dizemos que a serié é sazonalmente ajustada. Esta série sazonalmente ajustada é dada (dependendo se utilizarmos uma decomposição aditiva ou multiplicativa) por $$y_t - S_t \quad ou \quad y_t/S_t$$
+
+```{r}
+#| echo: false
+dcmp |> components() |> as_tsibble() |> autoplot() +
+  geom_line(aes(y = season_adjust), color = "red") +
+  labs(y = "Número de pessoas (em milhares)",
+       x = "Ano - Mês",
+       title = "Número total de pessoas empregadas no varejo (USA).")
+```
+
+
+# Decomposição clássica
+
+## Decomposição clássica
+
+Antes de entrarmos em detalhes a respeito de como é feita a decomposição, veremos alguns métodos clássicos para estimar $T_t$.
+
+. . . 
+
+
+#### Médias Móveis (1920s)
+
+É um dos métodos mais clássicos para estimar $T_t$. Estimamos $T_t$ por
+
+$$\hat{T}_t = \dfrac{1}{m}\displaystyle \sum_{i=-k}^k y_{t+i},$$em que $m = 2k+1$ e a média movel é dita de ordem $m$ (ou $m$-MM)
+
+. . . 
+
+- A MM `suaviza` a série original e captura os principais movimentos da série 
+- O valor de $m$ determina quão suavizada será a série.
+
+
+## Decomposição clássica
+
+
+::: {.panel-tabset}
+
+
+### 5-MM
+
+```{r}
+#| echo: true
+global_economy |> 
+  filter(Country == "Brazil") |> 
+  mutate(`5-MM` = slider::slide_dbl(Exports, mean, .before = 2, .after = 2, .complete = TRUE)) |> 
+  autoplot(Exports) + geom_line(aes(y = `5-MM`), colour = "red") +
+  labs(y = "% do PIB", title = "Brasil: exportação", x = "Ano")
+```
+
+
+
+### 9-MM
+
+```{r}
+#| echo: true
+global_economy |> 
+  filter(Country == "Brazil") |> 
+  mutate(`9-MM` = slider::slide_dbl(Exports, mean, .before = 4, .after = 4, .complete = TRUE)) |> 
+  autoplot(Exports) + geom_line(aes(y = `9-MM`), colour = "red") +
+  labs(y = "% do PIB", title = "Brasil: exportação", x = "Ano")
+```
+
+
+### 15-MM
+
+```{r}
+#| echo: true
+global_economy |> 
+  filter(Country == "Brazil") |> 
+  mutate(`15-MM` = slider::slide_dbl(Exports, mean, .before = 7, .after = 7, .complete = TRUE)) |> 
+  autoplot(Exports) + geom_line(aes(y = `15-MM`), colour = "red") +
+  labs(y = "% do PIB", title = "Brasil: exportação", x = "Ano")
+```
+
+:::
+
+## Decomposição clássica
+
+- A definição de MM utilizada permite que, para $m$ ímpar, existe uma simetria.
+- O que fazer se quisermos manter a simetria mas utilizar $m$ par?
+
+. . . 
+
+#### Médias Móveis das Médias Móveis
+
+
+```{r}
+#| echo: true
+beer <- aus_production |> 
+  filter(year(Quarter) >= 1992) |> 
+  select(Quarter, Beer)
+beer_ma <- beer |> 
+  mutate( `4-MM` = slider::slide_dbl(Beer, mean,.before = 1, .after = 2, .complete = TRUE),
+          `2x4-MM` = slider::slide_dbl(`4-MM`, mean,  .before = 1, .after = 0, .complete = TRUE))
+beer_ma
+```
+
+
+. . . 
+
+**Mas o que estamos fazendo de fato?**
+
+
+## Decomposição clássica
+
+Um conceito ainda mais geral que envolve ambos os casos desscritos anteriormente é o de médias móveis ponderadas.
+
+
+. . . 
+
+#### Médias Móveis Ponderadas
+
+$$\hat{T}_t = \displaystyle \sum_{j = -k}^k a_k y_{t+j},$$ em que $\displaystyle \sum_{j = -k}^k a_k = 1$ e $a_j = a_j$.
+
+. . . 
+
+- Note que para $m = 2k + 1$ e $a_{-k} = \cdots = a_{k} = \dfrac{1}{m}$, temos $m$-MM.
+- $2 \times m - MM$ é obtido fazendo $a_{-k+1} = \cdots = a_{k-1} = 1/m$ e $a_{-k} = a_k = 1/2m$ ($a_i = 1/m$ exceto nos extremos, em que $a_i = 1/2m$).
+
+
+
+## Decomposição clássica
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+#### Modelo Aditivo
+
+$$y_t = T_t + S_t + R_t$$
+
+- **Passo 1:** Estimar $T_t$ através e um $m$-MM ou $2-m-MM$.
+- **Passo 2:** Remover tendência: $y_t - \hat{T}_t$.
+- **Passo 3:** Estimar $S_t$ através da média das $y_t - \hat{T}_t$ para esse ponto sazonal. (Ex: se trabalharmos com dados mensais, calcular a média de todas as observações em Janeiro, depois Fevereiro, ....).
+- **Passo 4:** Calcular $\hat{R}_t = y_t - \hat{T}_t - \hat{S}_t$.
+
+
+:::
+
+::: {.column width="50%"}
+
+#### Modelo Multiplicativo
+
+$$y_t = T_t \times S_t \times R_t$$
+
+- **Passo 1:** Estimar $T_t$ através e um $m$-MM ou $2-m-MM$.
+- **Passo 2:** Remover tendência:  $y_t/\hat{T}_t$.
+- **Passo 3:** Estimar $S_t$ através da média das $y_t/\hat{T}_t$ para esse ponto sazonal. (Ex: se trabalharmos com dados mensais, calcular a média de todas as observações em Janeiro, depois Fevereiro, ....).
+- **Passo 4:** Calcular $\hat{R}_t = y_t/(\hat{T}_t \times \hat{S}_t)$.
+
+:::
+
+::::
+
+
+
+## Decomposição clássica
+
+
+::: {.panel-tabset}
+
+### Importar dados
+
+```{r}
+#| echo: true
+library(tsibble)     
+library(dplyr) 
+url <- "https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv"
+passageiros <- read.csv(url) 
+glimpse(passageiros) # R ainda não sabe que nossos dados são de séries temporais
+passageiros <- passageiros %>% mutate(Month = yearmonth(Month)) %>% as_tsibble(index = Month)
+glimpse(passageiros) # Agora R sabe sim!
+```
+
+
+
+
+### Gráfico
+
+```{r}
+#| echo: true
+ggplot(passageiros) + geom_line(aes(x = Month, y = Passengers))
+```
+
+
+### Decomposição
+
+```{r}
+#| echo: true
+dcmp <- passageiros %>%   # passageiros é do tipo tsibble
+  model(decomposition = classical_decomposition(Passengers,
+                                                type = "mult")) %>% 
+  components() 
+dcmp
+```
+
+
+
+### Decomposição Gráfico
+
+```{r}
+#| echo: true
+passageiros %>%   # passageiros é do tipo tsibble
+  model(classical_decomposition(Passengers, type = "multiplicative")) %>% 
+  components() %>%  # extraimos as componentes T_t, S_t e R_t
+  autoplot()
+```
+
+
+### Obs
+
+- Além da função `yearmonth()` do pacote `tsibble`, outras funções úteis são `yearquarter()`, `yearweek()`, `as_date()`, `ymd()`, `ymd_hms()`.
+- O argumento `type` dentro de `classical_decomposition()` pode ser "multiplicative" ou "aditive", dependendo do tipo de decomposição a ser utilizada.
+
+:::
+
+
+## Decomposição clássica
+
+
+
+::: {.panel-tabset}
+
+### Utils 1
+
+```{r}
+#| echo: true
+media_movel_par <- function(x, m) {
+  k <- m/2
+  n <- length(x)
+  Tt <- rep(NA, n)
+  pesos <- rep(1/m, m + 1)
+  pesos[1] <- 1/(2*m)
+  pesos[m + 1] <- 1/(2*m)
+  for (i in (k + 1):(n - k)) {
+    Tt[i] <- sum(pesos * x[(i - k):(i + k)])
+  }
+  return(Tt)
+}
+```
+
+
+
+### Tt
+
+```{r}
+#| echo: true
+library(stringi)
+library(stringr)
+url <- "https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv"
+passageiros_hand <- read.csv(url) 
+passageiros_hand <- passageiros_hand |> 
+  mutate(Tt = media_movel_par(Passengers, 12)) |> 
+  mutate(At = Passengers/Tt)  # Removemos a tendência
+cbind(passageiros_hand$Tt, dcmp$trend)
+```
+
+
+### St
+
+
+```{r}
+#| echo: true
+# Calculamos a componente Sazonal
+passageiros_st = passageiros_hand |> 
+  mutate(Month = month(yearmonth(Month))) |> 
+  group_by(Month) |> 
+  summarise(St = mean(At, na.rm = TRUE)) |> 
+  ungroup()
+cbind(passageiros_st$St, dcmp$seasonal[1:12])
+```
+
+
+### St*
+
+
+```{r}
+#| echo: true
+# Calculamos a componente Sazonal
+mu = mean(passageiros_st$St)
+mu
+passageiros_st$St/mu
+dcmp$seasonal[1:12]
+```
+
+
+### Obs.
+
+- Estimamos $S_t$ através da média das $y_t - \hat{T}_t$ (ou $y_t/\hat{T}_t$ se a decomposição for multiplicativa).
+- Na decomposição aditiva, é comum preferir estimar $S_t$ por $$\hat{S_t}^{\ast} = \hat{S}_t - \dfrac{1}{m} \displaystyle \sum_{i = 1}^m \hat{S}_i$$
+- Na decomposição multiplicativa, é comum preferir estimar  $S_t$ por $$\hat{S_t}^{\ast} = \hat{S}_t / \dfrac{1}{m} \displaystyle \sum_{i = 1}^m \hat{S}_i$$
+
+
+
+
+:::
+
+
+
+
+
+# Outros métodos de decomposição
+
+## Outros métodos de decomposição
+
+
+O **método clássico de decomposição** possui algumas limitações que fazem dele um método pouco recomendado nos dias de hoje:
+
+- Como utilizamos médias móveis, a componente de tendência não possui valores nas primeiras nem últimas observações.
+- A componente sazonal $S_t$ é obtida assumindo que é constante.
+- Não é possível obter valores de $\hat{R}_t$ para as primeiras ou últimas observações.
+- Não é robusto a observações atípicas.
+
+. . . 
+
+> Outros métodos de decomposição como **X-11**, **SEATS** (Seasonal Extraction in ARIMA Time Series) e **STL** (Seasonal and Trend decomposition using Loess), resolvem alguns dos pontos mencionados anteriormente.
+
+
+
+## Outros métodos de decomposição: X11
+
+
+::: {.panel-tabset}
+
+### X11
+
+- Desenvolvido pelo US Census Bureau.
+- Baseado no modelo clássico, mas inclui outras etapas para superar as limitações do método original (a componente de tendência está disponível para todas as observações, a componente sazonal pode variar suavemente, etc).
+- Existem versões tanto para o modelo aditivo quanto para o multiplicativo.
+- É robusto a outliers.
+- Mais detalhes desta metodologia podem ser encontrados em Dagum & Bianconcini (2016)
+- Desenhando para dados mensais e quatrimestrais.
+- No **R** o _default_ é uma decomposição multiplicativa.
+
+### Código
+
+```{r}
+#| echo: true
+#| eval: false
+library(seasonal)
+library(tsibble)
+library(fpp3)
+passageiros %>%
+  model(X_13ARIMA_SEATS(Passengers ~ x11())) %>% 
+  components() %>%
+  autoplot()
+```
+
+
+### Gráfico
+
+
+```{r}
+#| echo: false
+library(seasonal)
+library(tsibble)
+library(fpp3)
+passageiros %>%
+  model(X_13ARIMA_SEATS(Passengers ~ x11())) %>% 
+  components() %>%
+  autoplot()
+```
+
+
+
+:::
+
+
+
+## Outros métodos de decomposição: SEATS
+
+
+
+::: {.panel-tabset}
+
+### SEATS
+
+SEATS (Seasonal Extraction in ARIMA Time Series).
+
+- Desenvolvido pelo banco de Espanha.
+- Muito utilizado por agências governamentais no mundo todo.
+- Desenhando para dados mensais e quatrimestrais.
+- Mais detalhes desta metodologia podem ser encontrados em Dagum & Bianconcini (2016)
+
+
+### Código
+
+```{r}
+#| echo: true
+#| eval: false
+passageiros %>%
+  model(X_13ARIMA_SEATS(Passengers ~ seats())) %>% #<<
+  components() %>%
+  autoplot()
+```
+
+
+### Gráfico
+
+
+```{r}
+#| echo: false
+passageiros %>%
+  model(X_13ARIMA_SEATS(Passengers ~ seats())) %>% #<<
+  components() %>%
+  autoplot()
+```
+
+:::
+
+
+
+
+
+## Outros métodos de decomposição: STL
+
+
+
+::: {.panel-tabset}
+
+### STL
+
+STL (Seasonal and Trend decomposition using Loess) ^[Loess é um método para estimar relações não lineares.]
+
+- Desenvolvido por Cleveland (1990)
+- Funciona com qualquer tipo de sazonalidade (não apenas mensal ou quatrimestral)
+- A componente sazonal pode mudar ao longo do tempo.
+- Pode ser robusto a observações atípicas (se especificarmos uma decomposição robusta). 
+- Útil para modelos **aditivos**
+- Se quisermos aplicar o método em modelos multiplicativos, podemos aplicar um $\log(\cdot)$.
+
+
+### Código
+
+```{r}
+#| echo: true
+#| eval: false
+passageiros %>%
+  model(STL(log(Passengers) ~ trend() + season(window = "periodic"), robust = TRUE)) %>% 
+  components() %>%
+  autoplot()
+```
+
+
+### Gráfico
+
+
+```{r}
+#| echo: false
+passageiros %>%
+  model(STL(log(Passengers) ~ trend() + season(), robust = TRUE)) %>% 
+  components() %>%
+  autoplot()
+```
+
+
+
+:::
+
+
+
+## Previsão e decomposição
+
+> Métodos de decomposição são geralmente utilizados para entender a dinâmica da série mas também podem ser utilizados para fazer previsão.
+
+Dependendo se o modelo for aditivo ou multiplicativo, podemos escrever a série temporal como.
+
+$$y_t = \hat{S}_t + \underbrace{\hat{T}_t + \hat{R_t}}_{\hat{A}_t}\quad \text{ou} \quad y_t = \hat{S}_t \times \underbrace{\hat{T}_t \times \hat{R_t}}_{\hat{A}_t},$$ em que $\hat{A}_t$ é a série ajustada pela sazonalidade.
+
+Para fazer previsão da série original, fazemos previsão da componente sazonal $\hat{S}_t$ e da série ajustada pela sazonalidade $\hat{A}_t$ de forma independente e depois combinamos ambas previsões para obter a previsão da série original.
+
+
+## Previsão e decomposição
+
+- Comumente, um método ingênuo (naive) é utilizado para prever $\hat{S}_t$ (utilizamos os valores de $\hat{S}_t$ no último ano).
+- Para prever $\hat{A}_t$ utilizamos métodos para dados não sazonais (que veremos nas próximas aulas) como o método de Holt, ARIMA, etc.
+
+
+
+## Referências
+
+-   [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 3.
+- [Brockwell, P.J & Davis, R.A. (2016). Introduction to Time Series and Forecasting, 3rd editions, Springer](https://link.springer.com/book/10.1007/978-3-319-29854-2). Section 1.5
+- Cleveland, R. B., Cleveland, W. S., McRae, J. E., & Terpenning, I. J. (1990). STL: A seasonal-trend decomposition procedure based on loess. Journal of Official Statistics, 6(1), 3–33. http://bit.ly/stl1990
+- Dagum, E. B., & Bianconcini, S. (2016). Seasonal adjustment methods and real time trend-cycle estimation. Berlin/Heidelberg, Germany: Springer International Publishing.
+
