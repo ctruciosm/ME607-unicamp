@@ -1,5 +1,5 @@
 ---
-title: "Análise exploratória de dados I"
+title: "Análise exploratória de dados - EDA"
 subtitle: "ME607 - Séries Temporais"
 author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
 Email: "ctrucios@unicamp.br"
@@ -491,7 +491,7 @@ Coleção de variáveis aleatórias com médias zero, variância constante e que
 
 #### Ruido branco
 
-Um processo $\{ \epsilon_t \}$ é chamado de ruido branco se é uma sequência de variáveis aleatório da distribuição fixa com $\mathbb{E}(\epsilon_t) = \mu$ (usualmente 0), $\mathbb{V}(\epsilon_t) = \sigma^2$ e $\gamma(k) = 0 \quad \forall k$.
+Um processo $\{ \epsilon_t \}$ é chamado de ruido branco se é uma sequência de variáveis aleatórias da distribuição fixa com $\mathbb{E}(\epsilon_t) = 0$, $\mathbb{V}(\epsilon_t) = \sigma^2$ e $\gamma(k) = 0 \quad \forall k$.
 
 . . . 
 
