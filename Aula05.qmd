@@ -1,0 +1,506 @@
+---
+title: "Modelos de regressão em dados de séries temporais"
+subtitle: "ME607 - Séries Temporais"
+author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
+Email: "ctrucios@unicamp.br"
+institute: "Instituto de Matemática, Estatística e Computação Científica (IMECC), </br> Universidade Estadual de Campinas (UNICAMP)."
+knitr:
+    opts_chunk: 
+      fig.align: 'center'
+execute:
+    message: false
+    warning: false
+format:
+    revealjs:
+        slide-number: true
+        toc: true
+        toc-depth: 1
+        toc-title: Agenda
+        self-contained: false
+        chalkboard: true
+        width: 1600
+        height: 900
+        theme: [default, styles.scss]
+        incremental: true
+        code-fold: true
+        logo: "imagens/imecc.png"
+        footer: "Carlos Trucíos (IMECC/UNICAMP)  |  ME607 - Séries Temporais  |  [ctruciosm.github.io](https://ctruciosm.github.io/)"
+        highlight-style: "a11y"
+        title-slide-attributes:
+            data-background-image: "imagens/unicamp.png"
+            data-background-size: 20%
+            data-background-position: 99% 5%
+            data-background-opacity: "1"
+editor: source
+---
+
+
+
+# Introdução
+
+## Introdução
+
+- Em ME613 estudaram modelos de regressão em um contexto de dados de corte transversal.
+- Sob algumas suposições, $\hat{\beta}$ é o melhor estimador linear não viesado.
+- Dados de séries temporais se diferenciam dos dados de corte transversal em que eles tem uma ordem cronológica
+  * Temperatura
+  * PBI
+  * Indice da bolsa de valores de SP
+  * etc
+- Estudaremos MRL em um contexto de **séries temporais**, estabeleceremos novas hipóteses e propriedades dos estimadores
+
+
+## Introdução
+
+O _dataset_ `us_change` do pacote `fpp3` contém dados trimestrais sobre a variação percentual nas despesas de consumo, variação percentual na renda, variação percentual na produção industrial, variação percentual na poupança e a mudança na taxa de desemprego nos Estados Unidos desde 1970 até 2019.
+
+
+```{r, message=FALSE, warning=FALSE}
+library(tsibble)
+library(fpp3)
+glimpse(us_change)
+```
+
+
+. . . 
+
+Queremos criar um modelo da forma
+
+$$\text{Consumption} = \beta_0 + \beta_1 \text{Income } + \beta_2 \text{Production }  + \beta_3 \text{Savings }  + \beta_4 \text{Unemployment }  + e$$
+
+
+
+## Introdução
+
+
+```{r}
+#| echo: true
+us_change |> 
+  model(TSLM(Consumption ~ Income + Production + Savings + Unemployment)) |> 
+  report()  
+```
+
+. . . 
+
+Aparentemente, usamos o modelo como sempre. **O que mudou?**
+
+. . . 
+
+> No processo de estimação, nada!. Já nas hipóteses, na interpretação dos resultados e nas conclusões, muita coisa!
+
+
+
+# Modelo de regressão em dados de séries temporais
+
+## Modelo de regressão em dados de séries temporais
+
+
+#### Hipóteses no modelo de regressão clássico
+
+::: {.nonincremental}
+- **HRLM1**: O modelo populacional é linear nos parâmetros, $y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k + e$
+- **HRLM2**: $(y_1, x_{1,1}, \ldots, x_{1,k}), \cdots, (y_n, x_{n,1}, \ldots, x_{n,k})$ constituem uma a.a. de tamanho $n$ do modelo populacional
+- **HRLM3**: Não existe colinearidade perfeita entre as variáveis independentes e nenhuma das variáveis independentes é constante.
+- **HRLM4**: $E(u|X) = 0$
+- **HRLM5**: Os erros tem variância constante (homocedasticidade)
+- **HRLM6**: O erro populacional $e$ é independente das variaveis explicativas ($X$) e $e \sim N(0, \sigma^2)$
+:::
+
+
+
+## Modelo de regressão em dados de séries temporais
+
+
+#### Hipóteses no modelo de regressão com dados de séries temporais
+
+- **HST1**: $y_t = \beta_0 + \beta_1 x_{t1} + \cdots + \beta_k x_{tk} + e_t$, $t = 1, \ldots, n$
+- **HST2**: Não existe colinearidade perfeita entre as variáveis independêntes e nenhuma das variáveis independentes é constante.
+- **HST3**: $E(e_t|X) = 0$, $t = 1, \ldots, n$ (implica que $e_t$ é não correlacionado com as v. explicativas em todos os períodos de tempo)
+- **HST4**: Homocedasticidade, $V(e_t|X) = V(e_t) = \sigma^2$, $t=1, \ldots, n$
+- **HST5**: $Corr(e_t, e_s | X) = 0$, $\forall  t\neq s$ (sem correlação serial)
+- **HST6**: Os erros $e_t$ são independentes de $X$ e $e_t \sim N(0, \sigma^2)$ 
+
+## Modelo de regressão em dados de séries temporais
+
+#### Hipóteses no modelo de regressão com dados de séries temporais
+
+- Sob HST1--HST3, $E(\hat{\beta}) = \beta$
+- Sob HST1--HST5, $\hat{\beta}$ é BLUE (melhor estimador linear não viesado)
+- HST6, nos permite fazer inferência.
+
+. . . 
+
+
+**Demostração:**
+
+
+## Modelo de regressão em dados de séries temporais
+
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![](./imagens/meme_nazare.jpg)
+
+:::
+
+
+::: {.column width="50%"}
+
+- Verificadas as novas suposições, é só aplicar regressão como sempre?
+- Sim, mas deve verificar as suposições!. É muito comúm encontrarmos **falsos achados** quando trabalhamos com modelos de regressão em dados de séries temporais.
+
+:::
+
+::::
+
+
+## Modelo de regressão em dados de séries temporais
+
+
+::: {.panel-tabset}
+
+### Modelo
+
+```{r}
+#| echo: true
+modelo <- us_change |> 
+  model(TSLM(Consumption ~ Income + Production + Savings + Unemployment))
+report(modelo)
+```
+
+### Gráfico
+
+
+```{r}
+#| echo: true
+library(ggplot2)
+augment(modelo) |> select(Quarter, Consumption, .fitted) |> 
+  pivot_longer(cols = c("Consumption", ".fitted"), values_to = "values", names_to = "serie") |>  ggplot() + 
+  geom_line(aes(x = Quarter, y = values, color = serie)) + 
+  ggtitle("Variação percentual nas despesas de consumo USA. Período 1970.Q1 -- 2019.Q2")
+```
+
+
+
+
+### Diagnóstico I
+
+```{r}
+#| echo: true
+modelo |> gg_tsresiduals()
+```
+
+
+
+### Diagnóstico II
+
+```{r}
+#| echo: true
+# Quantos parâmetros foram estimados?
+tidy(modelo)
+```
+
+
+### Diagnóstico III
+
+```{r}
+#| echo: true
+augment(modelo) |> features(.innov, box_pierce, lag = 8, dof = 5)
+augment(modelo) |> features(.innov, ljung_box, lag = 8, dof = 5)
+```
+
+
+. . . 
+
+Por quê 8 e 5?
+
+:::
+
+
+
+# Regressões espúrias
+
+## Regressões espúrias
+
+Quando trabalhamos com séries temporais, na maioria das vezes, as séries são não estacionárias, ou seja os valores da série não flutuam ao redor de uma média constante e/ou variância constante.
+
+. . . 
+
+#### Processo estacionário
+
+Um proceso estocástico $\{Y_t\}_{t \geq 1}$ com $\mathbb{E}(Y_t^2) < \infty$ é dito **estacionário** (ou estacionário de segunda ordem) se 
+
+::: {.nonincremental}
+
+- $\mathbb{E}(Y_t) = \mu, \quad \forall t$
+- $\mathbb{V}(Y_t) = \sigma^2, \quad \forall t$
+- $\mathbb{Cov}(Y_t, Y_{t+h})$ depende somente de $h$ e não de $t$.
+
+:::
+
+. . . 
+
+
+Na maioria das vezes, ao ajustar um modelo de regressão em série não estacionárias encontraremos $R^2$ alto e $\beta$s significativos (parecendo termos encontrado um "bom" modelo). Contudo, esta descoberta é espúria (falsa).
+
+
+## Regressões espúrias
+
+Os _datasets_ `aus_airpassengers` a `guinea_rice` do pacote `fpp3`, contém informações do número total de passageiros (em milhões) na Austrália e da produção anual de arroz (em milhões de toneladas) na Guiné, respectivamente.
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+#| echo: true
+library(fpp3)
+aus_airpassengers %>% 
+  ggplot() + 
+  geom_line(aes(x = Year, y = Passengers)) + ggtitle("Passageiros")
+```
+
+
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: true
+guinea_rice %>% 
+  ggplot() + 
+  geom_line(aes(x = Year, y = Production)) + ggtitle("Produção de arroz")
+```
+
+:::
+
+::::
+
+. . . 
+
+As séries não tem nenhuma relação, a não ser que ambas são não estacionárias.
+
+
+## Regressões espúrias
+
+$$Passageiros= \beta_0 + \beta_1 \text{Produção de Arroz} + e$$
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+#| echo: true
+rice_passengers <- guinea_rice |> left_join(aus_airpassengers, by = "Year")
+modelo <- rice_passengers |> model(tslm = TSLM(Passengers ~ Production)) 
+report(modelo)
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+#| echo: true
+modelo |> gg_tsresiduals()
+```
+
+:::
+
+::::
+
+
+. . . 
+
+Aparentemente, temos um achado!! a cada unidade de aumento na produção de arroz na Guiné, o número de passageiros na Austrália aumenta em 40 unidades `r emo::ji("lol")`
+
+
+## Regressões espúrias
+
+A falsa descoberta (espúria) encontrada anteriormente é devido à não estacionariedade das séries. Informalmente falando, essa não estacionariedade faz com que encontremos relações onde não há (elas são confundidas pelas tendências de ambas as séries).
+
+. . . 
+
+> **Cuidado!** Muitos dos grandes **achados** encontrados _por aí_ são, na verdade, relações espúrias. Analise tudo!
+
+
+. . . 
+
+
+**Fiz uma regressão em um contexo de séries temporais, como sei se ela é espúria?**
+
+- Utilizou séries não estacionárias?
+- Obteve um $R^2$ bem alto?
+- Os resíduos são autocorrelacionádos?
+
+. . . 
+
+> Se a resposta for SIM, regressão espúria detetada!
+
+
+## Regressões espúrias
+
+**Mas, como sei se a série que estou utilizando é não estacionária?**
+
+- Lembre-se da definição da estacionariedade!.
+- **Graficamente,** ee a série tiver tendência e/ou a variabilidade aumentar (ou diminuir) ao longo do tempo, a série é não estacionária.
+
+
+. . . 
+
+```{r  echo=FALSE, fig.height=4, fig.width=14}
+library(patchwork)
+set.seed(123)
+y1 = rnorm(1000)
+x = 1:1000
+y2 = cumsum(y1)
+dados = data.frame(x, y1, y2)
+p1 <- ggplot(dados) + geom_line(aes(x, y1)) + xlab("Tempo") + ylab("Y") + ggtitle("Série estacionária")
+p2 <- ggplot(dados) + geom_line(aes(x, y2)) + xlab("Tempo") + ylab("Y") + ggtitle("Série não estacionária")
+p1 + p2
+```
+
+
+## Regressões espúrias
+
+Às vezes, olhando para o gráfico da série temporal, não é facil de verificar se a série é não estacionária.
+
+```{r echo=FALSE, fig.height=4, fig.width=14}
+set.seed(653)
+x = 1:1000
+y = cumsum(rnorm(1000))
+dados2 = data.frame(x, y)
+ggplot(dados2) + geom_line(aes(x, y)) + xlab("Tempo") + ylab("Y") + ggtitle("Série não estacionária")
+```
+
+
+. . . 
+
+**Gráfico alternativo: função de autocorrelação (correlograma):** Se as autocorrelações forem significativas e cairem devagar `r emo::ji("slow")` , a série é não estacionária.
+
+
+## Regressões espúrias
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+acf(y2, 50, main = "Série não estacionária")
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+acf(y, 50, main = "Série não estacionária")
+```
+
+:::
+
+::::
+
+> Se as autocorrelações forem **significativas** e cairem **devagar**, a série é não estacionária.
+
+
+## Regressões espúrias
+
+
+<center>
+**As séries que estou analisando são não estacionárias, e agora?** 
+</center>
+
+. . .
+
+<center>
+![](https://media3.giphy.com/media/oMHBBmFZ8kQ2Q/giphy.gif){width=50%}
+</center>
+
+
+. . . 
+
+Em alguns casos, existem alternativas simples para continuar utilizando modelos de regressão no contexto de séries temporais e não cair na regressão espúria.
+
+# Séries com tendência e modelos de regressão
+
+## Séries com tendência e modelos de regressão
+
+### Alternativa 1:
+
+Quando as séries têm alguma tendência (linear, quadrática, cúbica, exponencial, etc), podemos incluir algumas variaveis explicativas no modelo que nos ajudarão a capturar o comportamento da tendência e fugir das regressões espúrias.
+
+
+- Tendência Linear: $y_t = \alpha_0 + \alpha_1t + e_t$
+- Tendência Quadrática: $y_t = \alpha_0 + \alpha_1t + \alpha_2 t^2 +e_t$
+- Tendência Cúbica: $y_t = \alpha_0 + \alpha_1t + \alpha_2 t^2 + \alpha_3 t^3+e_t$
+- Tendência Exponencial: $\log(y_t) = \alpha_0 + \alpha_1t + e_t$  ( $y_t > 0$)
+
+. . . 
+
+> Incluir $t$, $t^2$, $t^3$, ... no modelo, atuará como um **removedor de tendência**
+
+
+
+## Séries com tendência e modelos de regressão
+
+<center>
+O que será que acontece com o exemplo da regressão do número de passageiros na Austrália e a produção de arroz da Giné?
+</center>
+
+- Incluiremos uma tendência quadrática no modelo.
+- Para isso, utilizaremos a função `trend()` que funciona como um $t$ na equação de regressão.
+
+. . .
+
+```{r}
+#| echo: true
+modelo <- rice_passengers |> 
+  model(tslm = TSLM(Passengers ~ Production + trend() + I(trend()^2))) 
+report(modelo)
+```
+
+
+
+## Séries com tendência e modelos de regressão
+
+
+- Ao remover o efeito da tendência, `Production` não é mais estatísticamente significativa, o que faz muito mais sentido `r emo::ji("surfing")` `r emo::ji("surfing")`.
+- Mesmo com a variável `Production` não sendo estatísticamente significativa, o $R^2$ do modelo deu $\approx$ 0.98!. Será que o modelo capturou mesmo a dinâmica dos dados? 
+
+. . . 
+
+```{r}
+modelo %>% gg_tsresiduals()
+```
+
+
+
+## Séries com tendência e modelos de regressão
+
+> **Cuidado**, quando trabalharmos com séries temporais não estacionárias, não devemos olhar para o $R^2$.
+
+. . . 
+
+
+Se quisermos utilizar o $R^2$ precisamos fazer alguns ajustes. Ver o artigo do [Wooldridge (1991)](https://www.sciencedirect.com/science/article/pii/016517659190054O) para mais detalhes
+
+. . . 
+
+#### Como saber se incluir uma tendência temporal no modelo?
+
+- Se alguma variavel (dependênte ou independênte) apresentar tendência, então incluir t (ou $t^2$ ou $t^3$) é uma boa ideia.
+- Se ao incluir a tendência temporal, o termo de tendência for estatísticamente significativo e os resultados mudarem de forma susbtancial, o modelo deve incluir a tendência temporal **mesmo**.
+- Se o tendência temporal não for incluida, então nao ocorrera remoção da tendência e poderemos encontrar relaciones espúrias (**grandes achados** que na verdade são espúrios).
+
+
+
+
+## Referências
+
+-   [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 7.
+- Wooldridge, Jeffrey M. (2016). *Introdução à Econometria: Uma abordagem moderna*. Cengage Learning. -- **Cap 10**
+- Wooldridge, J. M. (1991). A note on computing r-squared and adjusted r-squared for trending and seasonal data. Economics Letters, 36(1), 49-54.
