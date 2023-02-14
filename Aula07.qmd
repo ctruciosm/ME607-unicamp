@@ -1,0 +1,421 @@
+---
+title: "Suavização Exponencial"
+subtitle: "ME607 - Séries Temporais"
+author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
+Email: "ctrucios@unicamp.br"
+institute: "Instituto de Matemática, Estatística e Computação Científica (IMECC), </br> Universidade Estadual de Campinas (UNICAMP)."
+knitr:
+    opts_chunk: 
+      fig.align: 'center'
+execute:
+    message: false
+    warning: false
+format:
+    revealjs:
+        slide-number: true
+        toc: true
+        toc-depth: 1
+        toc-title: Agenda
+        self-contained: false
+        chalkboard: true
+        width: 1600
+        height: 900
+        theme: [default, styles.scss]
+        incremental: true
+        code-fold: true
+        logo: "imagens/imecc.png"
+        footer: "Carlos Trucíos (IMECC/UNICAMP)  |  ME607 - Séries Temporais  |  [ctruciosm.github.io](https://ctruciosm.github.io/)"
+        highlight-style: "a11y"
+        title-slide-attributes:
+            data-background-image: "imagens/unicamp.png"
+            data-background-size: 20%
+            data-background-position: 99% 5%
+            data-background-opacity: "1"
+editor: source
+---
+
+
+# Introdução
+## Introdução
+
+
+
+# Suavização Exponencial Simples
+## Suavização Exponencial Simples
+
+Utilizado quando a série temporal não tem um padrão claro de tendência e/ou sazonalidade. Por exemplo:
+
+```{r}
+library(fpp3)
+algeria_economy <- global_economy %>%
+  filter(Country == "Algeria")
+algeria_economy %>%
+  autoplot(Exports) +
+  labs(y = "% of GDP", title = "Exports: Algeria")
+```
+
+. . . 
+
+
+Com este método, a previsão um passo à frente é obtida através de:
+
+$$\hat{y}_{T+1|T} = \alpha y_{T} + \alpha (1-\alpha) y_{T-1} + \alpha (1-\alpha)^2 y_{T-2} + \ldots,$$ em que $0 \leq \alpha \leq 1$ é o parâmetro de suavização.
+
+
+## Suavização Exponencial Simples
+
+
+$$\hat{y}_{T+1|T} = \alpha y_{T} + \alpha (1-\alpha) y_{T-1} + \alpha (1-\alpha)^2 y_{T-2} + \ldots,$$
+
+
+- Se $\alpha \approx 0$, as observações mais atigas recebem um peso maior.
+- Se $\alpha \approx 1$, as observações mais recentes recebem um peso maior.
+- Se $\alpha = 1$, o método se reduz ao método NAIVE, $\hat{y}_{T+1|T} = y_T$.
+
+
+. . . 
+
+De forma alternativa, podemos utilizar uma forma recursiva e escrever:
+
+
+::: {.nonincremental}
+- $\hat{y}_{T+1|T} = \alpha y_T + (1-\alpha) \hat{y}_{T|T-1},$
+- $\hat{y}_{T|T-1} = \alpha y_{T-1} + (1-\alpha) \hat{y}_{T-1|T-2},$
+- $\vdots$
+- $\hat{y}_{3|2} = \alpha y_2 + (1-\alpha) \hat{y}_{2|1},$
+- $\hat{y}_{2|1} = \alpha y_1 + (1-\alpha) l_0,$
+:::
+
+> $l_0$ e $\alpha$ precisam ser estimados.
+
+## Suavização Exponencial Simples
+
+
+Assim como nos modelos de regressão, precisamos estimar alguns parâmetros (neste caso precisamos estimar $\alpha$ e $l_0$). 
+
+. . . 
+
+
+Para obter os valores estimados $\hat{\alpha}$ e $\hat{l}_0$, vamos a minimizar a soma de quadrados dos resíduos, ou seja:
+
+$$SQE = \displaystyle \sum_{t=1}^T (\underbrace{y_t - \hat{y}_{t|t-1}}_{e_t})^2 = \sum_{t=1}^T e_t^2$$
+
+
+. . . 
+
+> A diferença de regressão por MQO, desta vez a solução não tem forma fechada e precisaremos de métodos numéricos para encontrá-la. Na pratica, isto não será problema, utilizaremos a função `ETS()` do **R** para ajustar o modelo.
+
+
+## Suavização Exponencial Simples
+
+
+::: {.panel-tabset}
+
+### Dados
+
+```{r}
+#| echo: true
+library(fpp3)
+algeria_economy <- global_economy |> 
+  filter(Country == "Algeria") 
+glimpse(algeria_economy)
+```
+
+
+### Gráfico
+
+```{r}
+#| echo: true
+algeria_economy %>% autoplot(Exports)
+```
+
+Sem tendência nem sazonalidade claras, canditato perfeito para usar suavização exponencial.
+
+
+### Modelo
+
+```{r}
+#| echo: true
+modelo <- algeria_economy %>%
+  model(ETS(Exports ~ error("A") )) # "A" para aditivo e "M" para multiplativo
+report(modelo)
+```
+
+
+### Previsão
+
+```{r}
+#| echo: true
+fore_algeria <- modelo %>% forecast(h = 6)
+fore_algeria
+```
+
+
+### Gráfico II
+
+```{r}
+#| echo: true
+fore_algeria %>% autoplot(algeria_economy) +
+  geom_line(aes(y = .fitted), color = "red",  data = augment(modelo))
+```
+
+
+:::
+
+## Suavização Exponencial Simples
+
+
+Suavização Exponencial Simples tem previsão "flat", i.e. $$\hat{y}_{T+h|T} = \hat{y}_{T+1|T} = \alpha y_T + (1 - \alpha) \hat{y}_{T|T-1}$$
+
+
+# Método de Holt
+
+## Método de Holt
+
+- Utilizado quando a série apresenta tendência.
+- A previsão envolve duas equações de suavização: uma para o nível e outra para a tendência:
+  * $\text{Previsão:} \quad \hat{y}_{t+h|t} = l_t + h b_t,$
+  * $\text{Equação do Nível:} \quad l_t = \alpha y_t + (1 - \alpha) (l_{t-1} + b_{t-1}),$
+  * $\text{Equação de Tendência:} \quad  b_t = \beta (l_t - l_{t-1})  + (1-\beta) b_{t-1}.$
+
+. . . 
+
+Em que $0 \leq \alpha \leq 1$ e $0 \leq \beta \leq 1$. Note que, no instante $t=1$ precisaremos de $l_0$ e $b_0$
+
+. . . 
+
+>  Para estimar os parâmetros, minimizamos a soma de quadrados dos resíduos.
+
+
+## Método de Holt
+
+
+::: {.panel-tabset}
+
+### Dados
+
+```{r}
+#| echo: true
+australia_economy <- global_economy |> 
+  filter(Country == "Australia") |> 
+  mutate(Pop = Population / 1e6) # População em milhoes 1e6 = 10^6
+glimpse(australia_economy)
+```
+
+
+### Gráfico
+
+```{r}
+#| echo: true
+australia_economy %>% autoplot(Pop)
+```
+
+Tendência clara.
+
+
+### Modelo
+
+```{r}
+#| echo: true
+modelo <- australia_economy %>%
+  model(ETS(Pop ~ error("A") + trend("A")))
+report(modelo)
+```
+
+
+### Previsão
+
+```{r}
+#| echo: true
+fore_aus <- modelo %>% forecast(h = 6)
+fore_aus
+```
+
+
+### Gráfico II
+
+```{r}
+#| echo: true
+fore_aus %>% autoplot(australia_economy) +
+  geom_line(aes(y = .fitted), color = "red",  data = augment(modelo)) 
+```
+
+
+:::
+
+
+## Método de Holt com tendência não constante
+
+- O método de Holt (1957) assume que a tendência é constante ao longo do tempo.
+- Em 1985, é proposto um método que amortece a tendência. Com este método as equações são definidas como:
+  * $\hat{y}_{t+h|t} = l_t + (\phi  + \phi^2 + \cdots + \phi^h) b_t,$
+  * $l_t = \alpha y_t + (1-\alpha) (l_{t-1} + \phi b_{t-1}),$
+  * $b_t = \beta ( l_t  - l_{t-1}) + (1 - \beta) \phi b_{t-1}.$
+  
+. . . 
+
+> Note que se $\phi = 1$ temos o método de Holt.
+
+
+## Método de Holt com tendência não constante
+
+
+::: {.panel-tabset}
+
+
+
+### Modelo
+
+```{r}
+#| echo: true
+modelo <- australia_economy |> 
+  model(holt = ETS(Pop ~ error("A") + trend("A")),
+        amortecimento = ETS(Pop ~ error("A") + trend("Ad")))
+modelo |> select(amortecimento) |> report()
+```
+
+
+### Previsão
+
+```{r}
+#| echo: true
+fore_aus <- modelo %>% forecast(h = 6)
+fore_aus
+```
+
+
+### Gráfico II
+
+```{r}
+#| echo: true
+fore_aus |> autoplot(australia_economy, level = NULL) +
+  geom_line(aes(y = .fitted, color = .model),  data = augment(modelo)) 
+```
+
+
+:::
+
+  
+## Método de Holt com tendência não constante
+
+
+Note que, quando $h \rightarrow \infty$, $$y_{T+h|T} =  l_t + (\phi  + \phi^2 + \cdots + \phi^h) b_t \rightarrow l_t + \dfrac{\phi}{1-\phi} b_t$$
+
+
+# Método de Holt-Winters
+
+## Método de Holt-Winters
+
+Muitas vezes, a série temporal além de possuir tendência, possui também sazonalidade. Para lidar com estas características, temos o modelo de Holt-Winters, que é uma extensão do método de Holt. Seja $m$ o período sazonal, então:
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+#### Holt-Winters Aditivo
+
+$$\hat{y}_{t+h|t} = l_t + hb_t + s_{t+h-m(k+1)},$$
+
+$$l_t = \alpha (y_t - s_{t-m}) + (1-\alpha) (l_{t-1}+  b_{t-1}),$$
+
+$$b_t = \beta (l_t - l_{t-1}) + (1-\beta) b_{t-1},$$
+
+$$s_t = \gamma (y_t - l_{t-1} - b_{t-1}) + (1-\gamma) s_{t-m}.$$
+Em que $k$ é a parte inteira de $(h-1)/m$.
+
+
+:::
+
+::: {.column width="50%"}
+#### Holt-Winters Multiplicativo
+
+
+$$\hat{y}_{t+h|t} = (l_t + hb_t)s_{t+h-m(k+1)},$$
+
+$$l_t = \alpha \dfrac{y_t}{s_{t-m}} + (1-\alpha) (l_{t-1} + b_{t-1}),$$
+
+$$b_t = \beta (l_t - l_{t-1}) + (1-\beta) b_{t-1},$$
+
+$$s_t = \gamma \dfrac{y_t}{l_{t-1} + b_{t-1}} + (1-\gamma) s_{t-m}$$
+
+
+:::
+
+::::
+
+
+
+## Método de Holt-Winters
+
+Se a variação sazonal é constante utilizamos o modelo aditivo, caso contrário o multiplicativo.
+
+. . . 
+
+```{r, eval = FALSE}
+error("A") + trend("A") + season("A")  # Quando Aditivo
+error("M") + trend("A") + season("M")  # Quando Multiplicativo
+```
+
+
+::: {.panel-tabset}
+
+### Dados
+
+```{r}
+#| echo: true
+aus_holidays <- tourism %>% 
+  filter(Purpose == "Holiday") %>%
+  summarise(Trips = sum(Trips)/1000) # Agrupamos por Quarter e os valores unidades de mil. 
+glimpse(aus_holidays)
+```
+
+
+### Gráfico
+
+```{r}
+#| echo: true
+aus_holidays %>% autoplot(Trips)
+```
+
+
+### Modelo
+
+```{r}
+#| echo: true
+modelo <- aus_holidays |> 
+  model(HWA = ETS(Trips ~ error("A") + trend("A") + season("A")),
+        HWM = ETS(Trips ~ error("M") + trend("A") + season("M")))
+report(modelo)
+```
+
+
+### Previsão
+
+```{r}
+#| echo: true
+fore_holidays <- modelo %>% forecast(h = 6)
+fore_holidays
+```
+
+
+### Gráfico II
+
+```{r}
+#| echo: true
+fore_holidays |> autoplot(aus_holidays) +
+  geom_line(aes(y = .fitted, color = .model), data = augment(modelo)) 
+```
+
+:::
+
+
+## Método de Holt-Winters
+
+Se quisermos incluir o amorcetimento na componente de tendência, basta trocar `trend("A")` por `trend("Ad")` nos códigos do slide anterior.
+
+
+
+## Referências
+
+-   [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 8.
+
