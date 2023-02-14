@@ -84,7 +84,7 @@ Estamos interessados em previsões a curto, médio e longo prazo.
 
 . . .
 
-> Embora existam métodos qualitativos para fazer previsão quando não temos historico de dados, focaremos no caso em que possuimos um conjunto de dados históricos e é razoável pensar que algums padrões aprendidos do passado continurão acontecendo.
+> Embora existam métodos qualitativos para fazer previsão quando não temos historico de dados, focaremos no caso em que possuimos um conjunto de dados históricos e é razoável pensar que algums padrões aprendidos do passado continurão acontecendo. Interessados ver Cap 6 de Hyndman e Athanasopoulos (2021).
 
 ## Introdução
 

@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.2.269">
 
   <meta name="author" content="Prof.&nbsp;Carlos Trucíos  ctrucios@unicamp.br">
-  <title>Modelos básicos</title>
+  <title>Modelos básicos + Avaliação de modelos</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -390,7 +390,7 @@
     <div class="slides">
 
 <section id="title-slide" data-background-image="imagens/unicamp.png" data-background-opacity="1" data-background-position="99% 5%" data-background-size="20%" class="quarto-title-block center">
-  <h1 class="title">Modelos básicos</h1>
+  <h1 class="title">Modelos básicos + Avaliação de modelos</h1>
   <p class="subtitle">ME607 - Séries Temporais</p>
 
 <div class="quarto-title-authors">
@@ -684,7 +684,7 @@ $ GDP_pc &lt;dbl&gt; 210.0275, 204.9293, 260.2253, 291.9506, 261.3311, 260.9647,
 <div class="fragment">
 <p>Em geral, queremos os resíduos de innovação sejam um ruido branco com média zero.</p>
 <h4 id="ruido-branco">Ruido branco</h4>
-<p>Um processo <span class="math inline">\(\{ \epsilon_t \}\)</span> é chamado de ruido branco se é uma sequência de variáveis aleatórias de distribuição fixa com <span class="math inline">\(\mathbb{E}(\epsilon_t) = \mu\)</span> (usualmente 0), <span class="math inline">\(\mathbb{V}(\epsilon_t) = \sigma^2\)</span> e <span class="math inline">\(\gamma(k) = 0 \quad \forall k\)</span>.</p>
+<p>Um processo <span class="math inline">\(\{ \epsilon_t \}\)</span> é chamado de ruido branco se é uma sequência de variáveis aleatórias de distribuição fixa com <span class="math inline">\(\mathbb{E}(\epsilon_t) = 0\)</span>, <span class="math inline">\(\mathbb{V}(\epsilon_t) = \sigma^2\)</span> e <span class="math inline">\(\gamma(k) = 0 \quad \forall k\)</span>.</p>
 </div>
 </section>
 <section id="diagnóstico-do-modelo-3" class="slide level2">
@@ -1233,9 +1233,8 @@ $ .id        &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 <h2>Avaliação do desempenho fora da amostra</h2>
 <h4 id="observações">Observações:</h4>
 <ul>
-<li class="fragment"><code>stretch_tsibble()</code> faz <em>expanding window</em>.</li>
-<li class="fragment"><code>stretch_tsibble()</code> consome bastante memoria, sendo não recomendável para séries grandes.</li>
-<li class="fragment">Se quisermos <em>expanding window</em>, podemos utilizar a função <code>tile_tsibble()</code>.</li>
+<li class="fragment"><code>stretch_tsibble()</code> faz <em>expanding window</em> e consome bastante memoria, sendo não recomendável para séries grandes.</li>
+<li class="fragment">Se quisermos <em>rolling window</em>, podemos utilizar a função <code>tile_tsibble()</code>.</li>
 <li class="fragment">Uma forma alternativa de se fazer isto é através de um <code>for()</code>, o que permite controlar se quisermos <em>expanding</em> ou <em>rolling</em> window (e traz maior flexibilidade caso queiramos utilizar outros pacotes do <strong>R</strong>).</li>
 </ul>
 <div class="fragment">
@@ -1260,7 +1259,7 @@ $ .id        &lt;int&gt; 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7
 <section id="referências" class="slide level2">
 <h2>Referências</h2>
 <ul>
-<li class="fragment"><a href="https://otexts.com/fpp3/">Hyndman, R.J., &amp; Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.</a>. Chapter 7.</li>
+<li class="fragment"><a href="https://otexts.com/fpp3/">Hyndman, R.J., &amp; Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.</a>. Chapter 5.</li>
 <li class="fragment"><a href="https://link.springer.com/book/10.1007/978-3-319-29854-2">Brockwell, P.J &amp; Davis, R.A. (2016). Introduction to Time Series and Forecasting, 3rd editions, Springer</a>. Section 1.5</li>
 </ul>
 

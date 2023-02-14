@@ -1,0 +1,676 @@
+---
+title: "Modelos de regressão em dados de séries temporais II"
+subtitle: "ME607 - Séries Temporais"
+author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
+Email: "ctrucios@unicamp.br"
+institute: "Instituto de Matemática, Estatística e Computação Científica (IMECC), </br> Universidade Estadual de Campinas (UNICAMP)."
+knitr:
+    opts_chunk: 
+      fig.align: 'center'
+execute:
+    message: false
+    warning: false
+format:
+    revealjs:
+        slide-number: true
+        toc: true
+        toc-depth: 1
+        toc-title: Agenda
+        self-contained: false
+        chalkboard: true
+        width: 1600
+        height: 900
+        theme: [default, styles.scss]
+        incremental: true
+        code-fold: true
+        logo: "imagens/imecc.png"
+        footer: "Carlos Trucíos (IMECC/UNICAMP)  |  ME607 - Séries Temporais  |  [ctruciosm.github.io](https://ctruciosm.github.io/)"
+        highlight-style: "a11y"
+        title-slide-attributes:
+            data-background-image: "imagens/unicamp.png"
+            data-background-size: 20%
+            data-background-position: 99% 5%
+            data-background-opacity: "1"
+editor: source
+---
+
+
+
+# Introdução
+## Introdução
+
+
+- Na aula anterior vimos como incluir termos de tendência:
+    * Tendência Linear: $y_t = \alpha_0 + \alpha_1 t + e_t$,
+    * Tendência Quadrática: $y_t = \alpha_0 + \alpha_1 t + \alpha_2 t^2 + e_t$,
+    * Tendência Cúbica: $y_t = \alpha_0 + \alpha_1 t + \alpha_2 t^2 +  \alpha_3 t^3 + e_t$.
+- Na aula de hoje aprenderemos a utilizar outros preditores úteis quando trabalhamos com modelos de regressão em um contexto de séries temporais.
+- Discutiremos como fazer previsão neste tipo de modelos.
+
+
+
+
+## Regressores úteis
+
+#### Variáveis Dummy
+
+- Utilizada para tomar conta das diferenças nos diversos períodos sazonais.
+- Utilizada para dividir períodos de tempo. Por exemplo:
+  * posicionamento politico na presidencia: direita ou esquerda,
+  * período covid: antes do covid e depois do covid (março 12, 2020),
+  * antes e depois do 11-09-2001,
+  * antes e depois de determinada politica na empresa (ou politica pública),
+  * feriados
+  * eventos raros: copa do mundo, jogos olimpicos, etc.
+
+
+## Regressores úteis
+
+#### Variáveis Dummy
+
+```{r, echo=FALSE}
+dias = c("Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo", "Segunda")
+D1 = c(1,0,0,0,0,0,0,1)
+D2 = c(0,1,0,0,0,0,0,0)
+D3 = c(0,0,1,0,0,0,0,0)
+D4 = c(0,0,0,1,0,0,0,0)
+D5 = c(0,0,0,0,1,0,0,0)
+D6 = c(0,0,0,0,0,1,0,0)
+dados = data.frame(dias, D1, D2, D3, D4, D5, D6)
+knitr::kable(dados)
+```
+
+
+  
+## Regressores úteis
+
+#### Variáveis Dummy
+
+
+```{r, echo=FALSE}
+Estacoes = c("Primaveira", "Verão", "Outono", "Inverno", "Primaveira", "Verão")
+D1 = c(1,0,0,0,1,0)
+D2 = c(0,1,0,0,0,1)
+D3 = c(0,0,1,0,0,0)
+dados = data.frame(Estacoes, D1, D2, D3)
+knitr::kable(dados)
+```
+
+
+
+## Regressores úteis
+
+#### Dias de negociação
+
+Dependo do que queremos prever, o numero de dias úteis (ou dias de negociação) pode influenciar em, por exemplo, o volume de vendas mensal. 
+
+- Incluir uma variável com o número de dias úteis no mês pode ser útil para nosso modelo.
+- Outra alternativa é incluir o número de cada dia da semana em que houve negociação. Por exemplo:
+
+. . . 
+
+<center>
+
+::: {.nonincremental}
+
+  * $x_1:$ número de segundas-feiras no mês.
+  * $x_2:$ número de terças-feiras no mês.
+  * $\vdots$ 
+  * $x_6:$ número de sábados no mês.
+  * $x_7:$ número de domingos no mês.
+  
+:::
+
+</center>
+
+
+## Regressores úteis
+
+#### Variáveis defasadas
+
+Podemos pensar que, por exemplo, o número de vendas depende dos gastos em publicidade. Contudo, às vezes os gastos em publicidade do mês anterior poderiam ter um efeito nas vendas do mês atual. Nesse sentido, incluir variáveis defasadas pode ajudar a melhorar o modelo.
+
+. . . 
+
+<center>
+
+::: {.nonincremental}
+
+- $x_1:$ gasto em publicidade no mês anterior.
+- $x_2:$ gasto em publicidade há dois meses.
+- $\vdots$ 
+- $x_m:$ gasto em publicidade há $m$ meses.
+
+:::
+
+</center>
+
+## Regressores úteis
+
+#### Páscoa
+
+A páscoa não acontece todo ano no mesmo periodo, páscoa pode afetar diferentes negócios (turismo, por exemplo). Incluir no modelo uma variável que tome conta desse fator pode ser interessante. Nestes casos podemos:
+
+- Incluir variáveis dummy nos dias da páscoa,
+- Se trabalharmos com dados mensais, incluir uma dummy no mês que a páscoa cair.
+
+
+## Regressores úteis
+
+
+#### Séries de Fourier
+
+- É uma alternativa ao uso de variáveis dummy em dados sazonais.
+- Para um período sazonal $m$ temos:
+
+
+. . . 
+
+<center>
+
+::: {.nonincremental}
+
+* $x_1 = \sin(\dfrac{2\pi t}{m}), \quad x_2 = \cos(\dfrac{2\pi t}{m}),$
+* $x_3 = \sin(\dfrac{4\pi t}{m}), \quad x_4 = \cos(\dfrac{4\pi t}{m}),$
+* $x_5 = \sin(\dfrac{6\pi t}{m}), \quad x_6 = \cos(\dfrac{6\pi t}{m}),$
+* $\vdots$
+:::
+
+</center>
+
+. . . 
+
+> Uma regressão que inclui termos de Fourier, é chamada "modelo de regressao harmônica".
+  
+
+# Tendência + Sazonalidade
+
+## Tendência + Sazonalidade
+
+```{r fig.height=4, fig.width=15}
+#| echo: true
+library(fpp3)
+library(dplyr)
+aus_production %>% filter(year(Quarter) >= 1992) %>% autoplot(Beer)
+```
+
+
+Contruiremos um modelo da forma $$Beer_t = \beta_0 + \beta_1 t + \beta_2 D_{2,t} + \beta_3 D_{3,t} + \beta_4 D_{4,t} + \epsilon_t,$$ em que $D_{i,t} = 1$ se $t \in$ Trimestre $i$ e 0, caso contrário.
+
+
+## Tendência + Sazonalidade
+
+::: {.panel-tabset}
+
+### Modelos
+
+```{r}
+#| echo: true
+modelo_dummy <- aus_production %>% filter(year(Quarter) >= 1992) %>%
+  model(TSLM(Beer ~ trend() + season())) 
+modelo_fourier <- aus_production %>% filter(year(Quarter) >= 1992) %>%
+  model(TSLM(Beer ~ trend() + fourier(K = 2))) 
+```
+
+### Resultado Modelo 1
+
+```{r}
+#| echo: true
+report(modelo_dummy)
+```
+
+
+### Resultado Modelo 2
+
+```{r}
+#| echo: true
+report(modelo_fourier)
+```
+
+:::
+
+
+## Tendência + Sazonalidade: Dummy
+
+
+```{r}
+#| echo: true
+augment(modelo_dummy) %>%
+  ggplot(aes(x = Quarter)) +
+  geom_line(aes(y = Beer, colour = "Data")) +
+  geom_line(aes(y = .fitted, colour = "Fitted")) +
+  scale_colour_manual(values = c(Data = "black", Fitted = "red")) + ylab("Megalitros") + xlab("Trimestre") + ggtitle("Produção trimestral de cerveja australiana") + 
+   guides(colour = guide_legend(title = "Séries"))
+```
+
+
+
+## Tendência + Sazonalidade: Fourier
+
+
+```{r}
+#| echo: true
+augment(modelo_fourier) %>%
+  ggplot(aes(x = Quarter)) +
+  geom_line(aes(y = Beer, colour = "Data")) +
+  geom_line(aes(y = .fitted, colour = "Fitted")) +
+  scale_colour_manual(values = c(Data = "black", Fitted = "blue")) + ylab("Megalitros") + xlab("Trimestre") + ggtitle("Produção trimestral de cerveja australiana") + 
+   guides(colour = guide_legend(title = "Séries"))
+```
+
+
+
+## Tendência + Sazonalidade: Diagnóstico
+
+
+::: {.panel-tabset}
+
+### Dummy I
+
+```{r fig.height=6, fig.width=15}
+#| echo: true
+modelo_dummy %>% gg_tsresiduals()
+```
+
+### Dummy II
+
+```{r}
+#| echo: true
+tidy(modelo_dummy)
+```
+
+### Dummy III
+
+```{r}
+#| echo: true
+augment(modelo_dummy) |> features(.innov, box_pierce, lag = 8, dof = 5)
+augment(modelo_dummy) |> features(.innov, ljung_box, lag = 8, dof = 5)
+```
+
+
+### Fourier I
+
+```{r fig.height=6, fig.width=15}
+#| echo: true
+modelo_fourier %>% gg_tsresiduals()
+```
+
+### Fourier II
+
+```{r}
+#| echo: true
+tidy(modelo_fourier)
+```
+
+### Fourier III
+
+```{r}
+#| echo: true
+augment(modelo_fourier) |> features(.innov, box_pierce, lag = 8, dof = 5)
+augment(modelo_fourier) |> features(.innov, ljung_box, lag = 8, dof = 5)
+```
+
+
+:::
+
+
+
+## Tendência + Sazonalidade: Diagnóstico
+
+
+O `K = m/2` em `fourier()` especifica quantos pares de $\sin()$ e $\cos()$ utilizaremos na regressão. Como utilizamos o máximo ($m = 4 \rightarrow K = 2$), teremos exatamente os mesmos $\hat{y}$
+
+```{r}
+#| echo: true
+head(cbind(augment(modelo_fourier)$.fitted, augment(modelo_dummy)$.fitted))
+```
+
+
+- Teste utilizando $K = 1$.
+- Quando $m$ for grande, utilizar variáveis de Fourier é mais utilizado.
+- Quando $m$ for pequeno, não há muitos ganhos em utilizar variáveis de Fourier.
+
+
+# Previsão
+## Previsão
+
+<center>
+![](imagens/forecast.jpg)
+</center>
+
+
+
+- Temos visto como usar modelos de regressão em um contexto de séries temporias, mas nada foi dito sobre como fazer previsão $h$ passos à frente.
+- Sabemos que, com os $\hat{\beta}s$, podemos obter os valores estimados $\hat{y}_t$ ( $t = 1, \ldots, T$) através da equação 
+$$\hat{y}_t = \hat{\beta}_0 + \hat{\beta}_1 x_{1,t} + \cdots + \hat{\beta}_k x_{k,t}.$$
+
+
+
+## Previsão
+
+
+**Mas, como fazer se estamos interessados em $\hat{y}_{T+1|T}, \cdots, \hat{y}_{T+h|T}$?**
+
+. . . 
+
+Em geral, quando trabalhamos com modelos da forma  $$y_t = \beta_0 + \beta_1 x_{1,t} + \cdots + \beta_k x_{k,t} + e_t$$ nunca conhecemos os valores de $x_1, x_2, ..., x_k$ no futuro, **exceto  quando $x_i$ é deterministico!.**
+
+. . . 
+
+Pense no modelo $$y_t = \beta_0 + \beta_1 x_{1,t} + \cdots + \beta_k x_{k,t} + e_t$$
+em que $x_1 = t$, $x_2 = t^2$, $x_3 = D_{Fevereiro}$, $x_4 = D_{Março}$, .... $x_k = D_{Dezembro}$. 
+
+. . . 
+
+
+Basta obter $\hat{\beta}$ (utilizando a informação disponível até o tempo $T$), utilizar  os valores futuros das variáveis explicativas ( $x_{1, T + h}, \ldots, x_{k, T + h}$ ) e fazer a previsão!.
+
+
+
+## Previsão
+
+
+Utilizando o _dataset_ `aus_production` do pacote `fpp3`, faremos a previsão $h = 12$ passos à frente da produção de cerveja (`Beer`) na Austrália.
+
+
+
+::: {.panel-tabset}
+
+### Dados
+
+```{r}
+#| echo: true
+library(fpp3)
+beer <- aus_production |> 
+  select(Quarter, Beer) |> 
+  filter(year(Quarter) > 1992)
+autoplot(beer)
+```
+
+### Modelo
+
+```{r}
+#| echo: true
+fit_beer <- beer %>% model(TSLM(Beer ~ trend() + season()))
+report(fit_beer)
+```
+
+### Previsão
+
+```{r}
+#| echo: true
+fore_beer <- fit_beer %>% forecast(h = 12)
+fore_beer
+```
+
+### Gráfico
+
+```{r}
+#| echo: true
+fore_beer %>% autoplot(beer) 
+```
+
+
+
+
+:::
+
+
+
+## Previsão
+
+
+No exemplo anterior, vimos que fazer previsão quando as variáveis explicativas são determinísticas resume-se a:
+
+- Obter $\hat{\beta}$,
+- Utilizar os valores das variáveis explicativas ($x_i$) no futuro (como as variáveis são determinísticas sempre temos esses valores!),
+- Utilizar o modelo e obter $\hat{y}_{T+h|T}$.
+
+  
+. . . 
+
+> Contudo, **muito raramente** o modelo terá **apenas** variáveis determinísticas!. Na prática, o modelo terá variaveis explicativas $x_{k+1}, \ldots, x_{k+p}$ cujos valores no tempo $T+h$ não são conhecidos no tempo $T$  `r emo::ji("scared")`.
+
+
+## Previsão
+
+
+O modelo que estou utilizando tem variáveis que não são determinísticas, e agora?
+
+<center>
+![](imagens/koala_medo.png)
+</center>
+
+. . . 
+
+- Utilizar previsões das variáveis preditoras utilizadas no modelo.
+- Trabalhar com cenários.
+
+
+## Previsão
+
+Assumimos diferentes cenários para as variáveis explicativas no modelo:
+
+- Se o IPCA aumetar, em média 0.8% nos próximos meses, o volume de vendas nas festas de final de ano será de...
+- Se até final do ano o PIB aumentar em x%, a previsão da taxa de desempregados no Brasil será de .....
+- Se o número de vacinados contra a COVID-19 no Brasil aumentar em x%, a receita com turismo interno no Brasil será de ....
+
+. . . 
+
+> Em todos os casos temos apenas cenários, não há garantia que isso acontecerá mas, se acotecer, temos um valor esperado de como irá se comportar o fenômeno de interesse ao longo do tempo.
+
+
+## Previsão
+
+```{r}
+#| echo: true
+modelo <- us_change %>% model(lm = TSLM(Consumption ~ Income + Savings + Unemployment))
+# Criando os cenários
+cenarios <- scenarios(
+  caso1 = new_data(us_change, 4) |>  # pega o dataset e cria 4 novas observacoes
+            mutate(Income = c(1, 1.1, 1.2, 1.3),           # Criando cenário para Income 
+                   Savings = c(0.5, 0.52, 0.54, 0.56),     # Criando cenário para Savings 
+                   Unemployment = c(0, 0.05, 0.10, 0.15)), # Criando cenário para Unemployment 
+  caso2 = new_data(us_change, 4) |>  # pega o dataset e cria 4 novas observacoes
+            mutate(Income = -c(1, 1.1, 1.2, 1.3),           # Criando cenário para Income 
+                   Savings = -c(0.5, 0.52, 0.54, 0.56),    # Criando cenário para Savings 
+                   Unemployment = -c(0, 0.05, 0.10, 0.15)))
+fc <- forecast(modelo, new_data = cenarios)
+fc
+```
+
+## Previsão
+
+
+```{r}
+#| echo: true
+us_change %>%
+  autoplot(Consumption) +
+  autolayer(fc) +
+  labs(title = "US consumption", y = "Variação percetual")
+```
+
+
+## Previsão
+
+O que foi feito?
+
+```{r}
+coef(modelo)
+```
+
+$$\widehat{\text{Consumption}}_{T+h} = 0.266 + 0.757 \text{Income}_{T+h} -0.0537 \text{Savings}_{T+h} -0.313 \text{Unemployment}_{T+h}$$
+
+
+Quando construimos cenários, estamos definindo valores hipotéticos para os diferentes valores de $\text{Income}_{T+h}$, $\text{Savings}_{T+h}$ e $\text{Unemployment}_{T+h}$. Assim, basta substituir esse valores na Equação e pronto!.
+
+
+
+# Não lineariedades
+## Não lineariedades
+
+
+Sabemos que existem várias formas de incluir não lineariedades nos modelos de regressão:
+
+- Aplicar $\log()$.
+- Incluir variáveis ao quadrado (ou cubo).
+- Efeitos de interação.
+
+. . . 
+
+> Todas essas técnicas continuam sendo válidas quando trabalhamos com modelos de regressão em um contexto de séries temporais. **Contudo, existem também outras formas de lidar com a não lineariedade.**
+
+
+## Não lineariedades
+
+
+Em geral, queremos modelos da forma $y = f(x) + e$
+
+. . . 
+
+Em lugar de termos $f(x) = \beta_0 + \beta_1 x$, podemos fazer $f()$ linear por partes. Ou seja, incluimos pontos (que chamaremos de **knots** ou **nós**) nos quais a pendente de $f()$ pode mudar. Isto pode ser feito fazendo
+
+<center>
+- $x_1 = x$,
+- $x_2 = (x - c)_{+} = \begin{cases} 
+          0 &  x < c \\
+          x - c & x \geq c
+       \end{cases}$
+
+</center>
+
+. . . 
+
+Em geral, podemos fazer:
+
+$$x_1 = x, \quad x_2 = (x - c_1)_{+}, \quad, \cdots, x_k = (x-c_k)_{+}.$$
+
+Um modelo de regressão dessa forma é chamado de regressão por _splines_.
+
+
+
+## Não lineariedades
+
+
+::: {.panel-tabset}
+
+### Dados
+
+O _dataset_ `boston_marathon` do pacote `fpp3` contém informações sobre o tempo (em segundos) dos ganhadores da maratona ao longo dos anos de 5 categorias diferentes.
+
+
+```{r}
+#| echo: true
+boston_men <- boston_marathon %>% 
+  filter(Event == "Men's open division") %>%
+  mutate(Minutos = as.numeric(Time)/60) %>% 
+  select(Year, Minutos)
+glimpse(boston_men)
+```
+
+### EDA
+
+```{r}
+#| echo: true
+ggplot(data = boston_men) + 
+  geom_line(aes(x = Year, y = Minutos)) + 
+  ylab("Minutos") + xlab("Ano")
+```
+
+
+
+
+### EDA2
+
+```{r}
+#| echo: true
+# Obs: O percurso da maratona foi modificado em 1924 (de 24.5 milhas para 26.2 milhas), consideraremos somente dados de 1924 em diante.
+boston_men <- boston_men %>% filter(Year >= 1924)
+ggplot(data = boston_men) + geom_line(aes(x = Year, y = Minutos)) + ylab("Minutos") + xlab("Ano")
+```
+
+### Modelagem
+
+```{r}
+#| echo: true
+modelos <- boston_men %>%
+  model(linear = TSLM(Minutos ~ trend()),
+        exponencial = TSLM(log(Minutos) ~ trend()),
+        spline = TSLM(Minutos ~ trend(knots = c(1950, 1980))))
+previsoes <- forecast(modelos, h = 12)
+previsoes
+```
+
+
+### Gráfico
+
+```{r}
+#| echo: true
+boston_men %>%
+  autoplot(Minutos) +
+  geom_line(data = fitted(modelos),
+            aes(y = .fitted, colour = .model)) +
+  autolayer(previsoes) +
+  labs(y = "Minutos", x = "Ano")
+```
+
+
+### Obs
+
+Quando trabalhamos com um modelo com splines, podemos passar no argumento `knots` tanto as posições exatas dos nós, quanto o número de nós. Nesse último caso, a posição do nó será calculada automaticamente.
+
+
+> Procedimentos automáticos ajudam, mas não estão isentos de erro. 
+
+
+
+:::
+
+
+
+
+
+
+# Comentários finais
+## Comentários finais
+
+- Quando temos muitos preditores, é commum querermos selecionar apenas alguns (os melhores). Para isto, considere o seguinte:
+  *   Evite escolher o preditor apenas do gráfico de dispersão vs. preditor (não sempre é possível ver esta relação)
+  *   Evite escolher apenas pelo $p-valor$ (se tivermos variáveis correlacionadas, o $p-valor$ pode ser enganoso).
+  *   Escolha segundo algumas medidas de desempenho (AIC, AICc, CV).
+  *   Stepwise.
+  *   Regularização.
+  
+  
+## Comentários finais
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+#### Previsão ex-ante
+
+- Ex-ante: antes do evento.
+- Utilizando a informação disponível até o tempo $T$, fazer previsão para o tempo $T+h$ (fazemos a previsão para $T+h$ antes de $T+h$ acontecer)
+
+:::
+
+
+::: {.column width="50%"}
+
+#### Previsão ex-post
+
+- Ex-post: depois do evento.
+- Utilizando informação disponível até o tempo $T$,  fazer "previsão" para o tempo $t$ ( $t < T$).
+:::
+
+::::
+
+
+
+
+## Referências
+
+-   [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 7.
+

@@ -504,3 +504,4 @@ Se quisermos utilizar o $R^2$ precisamos fazer alguns ajustes. Ver o artigo do [
 -   [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 7.
 - Wooldridge, Jeffrey M. (2016). *Introdução à Econometria: Uma abordagem moderna*. Cengage Learning. -- **Cap 10**
 - Wooldridge, J. M. (1991). A note on computing r-squared and adjusted r-squared for trending and seasonal data. Economics Letters, 36(1), 49-54.
+- Trucíos, C. (2021, Feb. 28). Carlos Trucíos: Teorema de Gauss-Markov. Retrieved from https://ctruciosm.github.io/posts/2021-02-28-teorema-de-gauss-markov/

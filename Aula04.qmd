@@ -1,5 +1,5 @@
 ---
-title: "Modelos básicos"
+title: "Modelos básicos +  Avaliação de modelos"
 subtitle: "ME607 - Séries Temporais"
 author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
 Email: "ctrucios@unicamp.br"
