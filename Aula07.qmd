@@ -40,7 +40,7 @@ editor: source
 
 - Uma das limitações dos termos de tendência utilizados nos modelos de regressão é que raramente encontramos séries com tendência determinística (linear, quadrática, cúbica) na vida real.
 - Uma alternativa a este problema é utilizar splines. Contudo, seu uso para fins de  previsão é bastante limitado, pois não sabemos quantas observações passadas utilizar para estimar/predizer o valor futuro da série.
-- Para superar estas limitações, surgiram os modelos de suavização exponencial. A ideia principal destes modelos é permitir com que os últimas observação.
+- Para superar estas limitações, surgiram os modelos de suavização exponencial. A ideia principal destes modelos é permitir com que os últimas observações da série tenham um maior peso nas previsões do que as observações mais antigas.
 - Na aula de hoje veremos alguns dos métodos de suavização exponencial mais conhecidos.
 
 
