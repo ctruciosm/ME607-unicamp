@@ -40,7 +40,7 @@ editor: source
 
 - Uma das limitações dos termos de tendência utilizados nos modelos de regressão é que raramente encontramos séries com tendência determinística (linear, quadrática, cúbica) na vida real.
 - Uma alternativa a este problema é utilizar splines. Contudo, seu uso para fins de  previsão é bastante limitado, pois não sabemos quantas observações passadas utilizar para estimar/predizer o valor futuro da série.
-- Para superar estas limitações, surgiram os modelos de suavização exponencial. A ideia principal destes modelos é permitir com que os últimas observações da série tenham um maior peso nas previsões do que as observações mais antigas.
+- Para superar estas limitações, surgiram os modelos de suavização exponencial. A ideia principal destes modelos é permitir com que as últimas observações da série tenham um maior peso nas previsões do que as observações mais antigas.
 - Na aula de hoje veremos alguns dos métodos de suavização exponencial mais conhecidos.
 
 
@@ -64,7 +64,58 @@ algeria_economy %>%
 
 Com este método, a previsão um passo à frente é obtida através de:
 
-$$\hat{y}_{T+1|T} = \alpha y_{T} + \alpha (1-\alpha) y_{T-1} + \alpha (1-\alpha)^2 y_{T-2} + \ldots,$$ em que $0 \leq \alpha \leq 1$ é o parâmetro de suavização.
+$$\hat{y}_{T+1|T} = \alpha y_{T} + (1-\alpha) \hat{y}_{T|T-1} = \hat{y}_{T|T-1} + \alpha (y_T - \hat{y}_{T|T-1}),$$ em que $0 \leq \alpha \leq 1$ é o parâmetro de suavização.
+
+
+## Suavização Exponencial Simples
+
+
+$$\hat{y}_{T+1|T} = \alpha y_T + (1-\alpha) \underbrace{\hat{y}_{T|T-1}}_{\alpha y_{T-1} + (1-\alpha) \hat{y}_{T - 1|T-2}}$$
+
+. . . 
+
+$$\hat{y}_{T+1|T} = \alpha y_T + \alpha (1-\alpha)y_{T-1} + (1-\alpha)^2 \underbrace{\hat{y}_{T-1|T-2}}_{\alpha y_{T-2} + (1-\alpha) \hat{y}_{T-2|T-3}}$$
+
+. . . 
+
+
+$$\hat{y}_{T+1|T} = \alpha y_{T} + \alpha (1-\alpha) y_{T-1} + \alpha (1-\alpha)^2 y_{T-2} + \ldots,$$
+
+. . . 
+
+
+$$\hat{y}_{T+1|T} = \alpha [y_{T} + (1-\alpha) y_{T-1} +  (1-\alpha)^2 y_{T-2} + \ldots],$$
+
+. . . 
+
+
+> Note que $(1 + (1 - \alpha) + (1-\alpha)^2+ \cdots) = 1/\alpha$. Ou seja, a previsão $\hat{y}_{T+1|T}$ é uma média ponderada (com pesos que somam 1) das observações passadas, em que, as observações mais recentes recebem maior peso.
+
+
+
+## Suavização Exponencial Simples
+
+
+```{r}
+library(ggplot2)
+p <- 0:100
+alpha <- c(0.05, 0.2, 0.4, 0.6, 0.8, 0.95)
+y1 <- alpha[1] * (1 - alpha[1])^p 
+y2 <- alpha[2] * (1 - alpha[2])^p 
+y3 <- alpha[3] * (1 - alpha[3])^p 
+y4 <- alpha[4] * (1 - alpha[4])^p 
+y5 <- alpha[5] * (1 - alpha[5])^p 
+y6 <- alpha[6] * (1 - alpha[6])^p 
+dados <- data.frame(Pesos = c(y1, y2, y3, y4, y5, y6),
+                    Alpha = c(rep("0.05", 101), rep("0.2", 101),
+                    rep("0.4", 101), rep("0.6", 101), 
+                    rep("0.8", 101), rep("0.95", 101)),
+                    Tempo = rep(1:101, 6))
+ggplot(dados) + geom_line(aes(x = Tempo, y = Pesos, color = Alpha))
+```
+
+> O peso que recebem as observações mais antigas cai rapidamente.
+
 
 
 ## Suavização Exponencial Simples
@@ -72,15 +123,13 @@ $$\hat{y}_{T+1|T} = \alpha y_{T} + \alpha (1-\alpha) y_{T-1} + \alpha (1-\alpha)
 
 $$\hat{y}_{T+1|T} = \alpha y_{T} + \alpha (1-\alpha) y_{T-1} + \alpha (1-\alpha)^2 y_{T-2} + \ldots,$$
 
-
-- Se $\alpha \approx 0$, as observações mais atigas recebem um peso maior.
-- Se $\alpha \approx 1$, as observações mais recentes recebem um peso maior.
 - Se $\alpha = 1$, o método se reduz ao método NAIVE, $\hat{y}_{T+1|T} = y_T$.
+- A medida que $\alpha \rightarrow 1$, as observações mais recentes recebem um peso maior.
 
 
 . . . 
 
-De forma alternativa, podemos utilizar uma forma recursiva e escrever:
+Note que,
 
 
 ::: {.nonincremental}
@@ -91,27 +140,26 @@ De forma alternativa, podemos utilizar uma forma recursiva e escrever:
 - $\hat{y}_{2|1} = \alpha y_1 + (1-\alpha) l_0,$
 :::
 
-> $l_0$ e $\alpha$ precisam ser estimados.
+> Assim como nos modelos de regressão, $l_0$ e $\alpha$ precisam ser estimados.
 
 ## Suavização Exponencial Simples
 
-
-Assim como nos modelos de regressão, precisamos estimar alguns parâmetros (neste caso precisamos estimar $\alpha$ e $l_0$). 
-
-. . . 
-
-
-Para obter os valores estimados $\hat{\alpha}$ e $\hat{l}_0$, vamos a minimizar a soma de quadrados dos resíduos, ou seja:
+Para obter os valores estimados $\hat{\alpha}$ e $\hat{l}_0$, buscamos os valores que minimizem a soma de quadrados dos resíduos, ou seja:
 
 $$SQE = \displaystyle \sum_{t=1}^T (\underbrace{y_t - \hat{y}_{t|t-1}}_{e_t})^2 = \sum_{t=1}^T e_t^2$$
 
 
 . . . 
 
-> A diferença de regressão por MQO, desta vez a solução não tem forma fechada e precisaremos de métodos numéricos para encontrá-la. Na pratica, isto não será problema, utilizaremos a função `ETS()` do **R** para ajustar o modelo.
+> Infelizmente, a solução não tem forma fechada e precisaremos de métodos numéricos para encontrá-la. Na pratica, isto não será problema, utilizaremos a função `ETS()` do **R** para ajustar o modelo.
 
+
+. . .
+
+Não é dificil escrever um código para resolver o problema de minimização acima. Explore a função `optim()` do **R** (lhe sera muito útil no futuro) e tente fazer você mesmo.
 
 ## Suavização Exponencial Simples
+
 
 
 ::: {.panel-tabset}
@@ -169,23 +217,104 @@ fore_algeria %>% autoplot(algeria_economy) +
 
 ## Suavização Exponencial Simples
 
+Seja o processo gerados de dados da forma $$y_t = \mu_t + e_t,$$ em que $\mu_t$ é a media (não constante) de $y_t$.
+
+- Seja $\hat{\mu}_{T+1|T}$ a previsão um passo à frente do nível.
+- Como a média muda ao longo do tempo, podemos obter $\hat{\mu}_{T+1|T}$ como a solução de $$\displaystyle \sum_{t = 1}^T (y_t - \mu_{T+1})^2\omega_t.$$ 
+- Derivando, temos que $\hat{\mu}_{T+1|T} = \displaystyle \sum_{t = 1}^T y_t \omega_t.$
+- Vamos impor as restrições de que $\omega_t > 0$, $\sum \omega_t = 1$ e que observações recentes recebem maior peso.
+
+
+## Suavização Exponencial Simples
+
+Uma forma de fazer com que as observações recentes recebam peso maior, é fazer $\omega_t$ descrescer de forma geométrica. 
+
+
+- $\omega_T = c$, $\omega_{T-1} = c\phi$, $\omega_{T-2} = c\phi^2$, $\cdots$
+- $1 = c(1 + \phi + \phi^2 + \phi^3+ \cdots) = \dfrac{c}{1-\phi}$
+- $\hat{\mu}_{T+1|T} = (1-\phi)y_T + (1-\phi)\phi y_{T-1} + (1-\phi)\phi^2 y_{T-2} + \cdots$
+
+. . . 
+
+> Se fizermos $1-\phi = \alpha$, temos a mesma Eq. do slide 9.
+
+
+## Suavização Exponencial Simples
+
+veja que o proceso da forma $y_t = \mu_t + e_t$ é um processo em que nem a tendência nem a sazonalidade são claros.
+
+
+```{r}
+#| echo: true
+n <- 1000
+e <- rnorm(n, 0, 5)
+mu <- runif(n, -10, 10)
+y <- mu + e
+ts.plot(y)
+```
+
+. . . 
 
 Suavização Exponencial Simples tem previsão "flat", i.e. $$\hat{y}_{T+h|T} = \hat{y}_{T+1|T} = \alpha y_T + (1 - \alpha) \hat{y}_{T|T-1}$$
 
 
 # Método de Holt
 
+
+## Método de Holt
+
+Seja o processo gerador de dados da forma\begin{align} 
+y_t = &  \mu_t + e_t, \\
+\mu_t = &  \mu_{t-1} + \beta_{t-1}.
+\end{align}
+
+. . . 
+
+
+Note que o processo acima representa uma série com tendência linear.
+
+```{r}
+#| echo: true
+n <- 1000
+beta <- runif(n, 0, 0.1)
+e <- rnorm(n, 0, 10)
+mu <- rep(100, n)
+y <- rep(100, n)
+for (i in 2:n){
+  mu[i] <- mu[i - 1] + beta[i - 1]
+  y[i] <- mu[i] + e[i]
+}
+ts.plot(y)
+```
+
+
+## Método de Holt
+
+- Note que a diferença entre $\mu_t - \mu_{t-1} = \beta_{t-1}$ (pendente no momento $t-1$).
+- $\hat{y}_{t+1|t} = \hat{\mu}_{t+1|t} = \hat{\mu}_{t|t} + \hat{\beta}_{t}$
+- Após observar $y_{t+1}$, podemos calcular o erro de previsão ($y_{t+1}-\hat{\mu}_{t+1|t}$) e corrigir a previsão anterior por uma fração do erro cometido.
+- Assim, para $\theta<1$ \begin{align} 
+\hat{\mu}_{t+1|t+1} = &  \hat{\mu}_{t+1|t} + (1-\theta) (y_{t+1}-\hat{\mu}_{t+1|t}) \\
+    = &  \hat{\mu}_{t|t} + \hat{\beta}_{t}+ (1-\theta) (y_{t+1}-\hat{\mu}_{t|t} - \hat{\beta}_{t})\\
+    = & (1 - \theta) y_{t+1} + \theta (\hat{\mu}_{t|t} + \hat{\beta}_t)
+\end{align}
+- De forma semelhante, para $\gamma <1$,
+$$\hat{\beta}_{t+1} =  \hat{\beta}_t + (1-\gamma) (\hat{\mu}_{t+1|t+1} - \hat{\mu}_{t|t} - \hat{\beta}_t) = \gamma \hat{\beta}_t + (1-\gamma) (\hat{\mu}_{t+1|t+1} - \hat{\mu}_{t|t})$$
+
+
+
+
 ## Método de Holt
 
 - Utilizado quando a série apresenta tendência.
 - A previsão envolve duas equações de suavização: uma para o nível e outra para a tendência:
-  * $\text{Previsão:} \quad \hat{y}_{t+h|t} = l_t + h b_t,$
-  * $\text{Equação do Nível:} \quad l_t = \alpha y_t + (1 - \alpha) (l_{t-1} + b_{t-1}),$
-  * $\text{Equação de Tendência:} \quad  b_t = \beta (l_t - l_{t-1})  + (1-\beta) b_{t-1}.$
+  * $\text{Previsão: } \quad \hat{y}_{T+h|T} = \hat{\mu}_{T|T} + h \hat{\beta}_T,$
+  * $\text{Equação do Nível: } \hat{\mu}_{T|T} = \theta^{\ast} y_T + (1 - \theta^{\ast}) (\hat{\mu}_{T-1|T-1} + \hat{\beta}_{T-1}),$
+  * $\text{Equação de Tendência: } \quad \hat{\beta}_T= \gamma^{\ast} \hat{\beta}_{T-1} + (1-\gamma^{\ast}) (\hat{\mu}_{T|T} - \hat{\mu}_{T-1|T-1}).$
 
 . . . 
 
-Em que $0 \leq \alpha \leq 1$ e $0 \leq \beta \leq 1$. Note que, no instante $t=1$ precisaremos de $l_0$ e $b_0$
+Em que $0 \leq \theta^{\ast} \leq 1$ e $0 \leq \gamma^{\ast} \leq 1$. Note que, no instante $t=1$ precisaremos de $\hat{\mu}_0$ e $\hat{\beta}_0$
 
 . . . 
 
@@ -249,14 +378,21 @@ fore_aus %>% autoplot(australia_economy) +
 :::
 
 
-## Método de Holt com tendência não constante
+## Método de Holt com amortização
 
-- O método de Holt (1957) assume que a tendência é constante ao longo do tempo.
+- O método de Holt (1957) assume que, para fazer a previsão, a tendência é constante nos $h$ passos à frente.
 - Em 1985, é proposto um método que amortece a tendência. Com este método as equações são definidas como:
-  * $\hat{y}_{t+h|t} = l_t + (\phi  + \phi^2 + \cdots + \phi^h) b_t,$
-  * $l_t = \alpha y_t + (1-\alpha) (l_{t-1} + \phi b_{t-1}),$
-  * $b_t = \beta ( l_t  - l_{t-1}) + (1 - \beta) \phi b_{t-1}.$
-  
+
+. . . 
+
+
+\begin{align} 
+\hat{y}_{t+h|t} = & \hat{\mu}_{t|t} + (\phi  + \phi^2 + \cdots + \phi^h) \hat{\beta}_t, \\
+\hat{\mu}_{t|t} = & \alpha y_t + (1-\alpha) (\hat{\mu}_{t-1|t-1} + \phi \hat{\beta}_{t-1}), \\
+\hat{\beta}_t = & \gamma (\hat{\mu}_{t|t}  - \hat{\mu}_{t-1|t-1}) + (1 - \gamma) \phi \hat{\beta}_{t-1}.
+\end{align}
+
+
 . . . 
 
 > Note que se $\phi = 1$ temos o método de Holt.
@@ -304,7 +440,7 @@ fore_aus |> autoplot(australia_economy, level = NULL) +
 ## Método de Holt com tendência não constante
 
 
-Note que, quando $h \rightarrow \infty$, $$y_{T+h|T} =  l_t + (\phi  + \phi^2 + \cdots + \phi^h) b_t \rightarrow l_t + \dfrac{\phi}{1-\phi} b_t$$
+Note que, quando $h \rightarrow \infty$, $$y_{T+h|T} =  \hat{\mu}_{T|T} + (\phi  + \phi^2 + \cdots + \phi^h) \hat{\beta}_T \rightarrow l_t + \dfrac{\phi}{1-\phi} \hat{\beta}_T$$
 
 
 # Método de Holt-Winters
@@ -319,13 +455,13 @@ Muitas vezes, a série temporal além de possuir tendência, possui também sazo
 ::: {.column width="50%"}
 #### Holt-Winters Aditivo
 
-$$\hat{y}_{t+h|t} = l_t + hb_t + s_{t+h-m(k+1)},$$
+$$\hat{y}_{t+h|t} = \hat{\mu}_{t|t} + h\hat{\beta}_t + s_{t+h-m(k+1)},$$
 
-$$l_t = \alpha (y_t - s_{t-m}) + (1-\alpha) (l_{t-1}+  b_{t-1}),$$
+$$l_t = \alpha (y_t - s_{t-m}) + (1-\alpha) (\hat{\mu}_{t-1|t-1}+  \hat{\beta}_{t-1}),$$
 
-$$b_t = \beta (l_t - l_{t-1}) + (1-\beta) b_{t-1},$$
+$$b_t = \delta (\hat{\mu}_{t|t} - \hat{\mu}_{t-1|t-1}) + (1-\delta) \hat{\beta}_{t-1},$$
 
-$$s_t = \gamma (y_t - l_{t-1} - b_{t-1}) + (1-\gamma) s_{t-m}.$$
+$$s_t = \gamma (y_t - \hat{\mu}_{t-1|t-1} - \hat{\beta}_{t-1}) + (1-\gamma) s_{t-m}.$$
 Em que $k$ é a parte inteira de $(h-1)/m$.
 
 
@@ -335,13 +471,13 @@ Em que $k$ é a parte inteira de $(h-1)/m$.
 #### Holt-Winters Multiplicativo
 
 
-$$\hat{y}_{t+h|t} = (l_t + hb_t)s_{t+h-m(k+1)},$$
+$$\hat{y}_{t+h|t} = (\hat{\mu}_{t|t} + h\hat{\beta}_{t})s_{t+h-m(k+1)},$$
 
-$$l_t = \alpha \dfrac{y_t}{s_{t-m}} + (1-\alpha) (l_{t-1} + b_{t-1}),$$
+$$l_t = \alpha \dfrac{y_t}{s_{t-m}} + (1-\alpha) (\hat{\mu}_{t-1|t-1} + \hat{\beta}_{t-1}),$$
 
-$$b_t = \beta (l_t - l_{t-1}) + (1-\beta) b_{t-1},$$
+$$b_t = \delta (l_t - \hat{\mu}_{t-1|t-1}) + (1-\delta) \hat{\beta}_{t-1},$$
 
-$$s_t = \gamma \dfrac{y_t}{l_{t-1} + b_{t-1}} + (1-\gamma) s_{t-m}$$
+$$s_t = \gamma \dfrac{y_t}{\hat{\mu}_{t-1|t-1} + \hat{\beta}_{t-1}} + (1-\gamma) s_{t-m}$$
 
 
 :::
@@ -419,8 +555,24 @@ fore_holidays |> autoplot(aus_holidays) +
 Se quisermos incluir o amorcetimento na componente de tendência, basta trocar `trend("A")` por `trend("Ad")` nos códigos do slide anterior.
 
 
+## Comentários finais
+
+- Além dos métodos mencionados, existem vários outros métodos de suavização.
+- Esses métodos podem ser obtidos como as possíveis configurações que podem ser obtidas com:
+  *   `error()`: A (aditivo) ou M (multiplicativo)
+  *   `season()`: A, M ou N (nenhum).
+  *   `trend()`: N, A, M, Ad (aditivo amortecido), Md (multiplicativo amortecido).
+- A escolha não sempre é facil. Embora não sejam infalíveis, existem métodos automáticos (teste fazendo, por exemplo, `modelo <- aus_holidays |> model(auto = ETS(Trips))`.
+- Maiores detalhes a respeito do procedimento automático podem ser enconrados em Hydman et al. (2002).
+- Para um maior aprofundamento nos metodos de suavização exponencial, ver Hyndman et al. (2008). Link com código e erratas, [aqui](https://robjhyndman.com/expsmooth/).
+
+
+
 
 ## Referências
 
--   [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 8.
+- [Hyndman, R. J., Koehler, A. B., Snyder, R. D., & Grose, S. (2002). A state space framework for automatic forecasting using exponential smoothing methods. International Journal of forecasting, 18(3), 439-454.](https://www.sciencedirect.com/science/article/abs/pii/S0169207001001108?via%3Dihub)
+- [Hyndman, R., Koehler, A. B., Ord, J. K., & Snyder, R. D. (2008). Forecasting with exponential smoothing: the state space approach. Springer Science & Business Media.](https://link.springer.com/book/10.1007/978-3-540-71918-2)
+- [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 8.
+- Peña, D. (2005). Análisis de series temporales. Alianza. Capítulo 2.
 

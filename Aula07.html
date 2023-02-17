@@ -425,7 +425,7 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 <ul>
 <li class="fragment">Uma das limitações dos termos de tendência utilizados nos modelos de regressão é que raramente encontramos séries com tendência determinística (linear, quadrática, cúbica) na vida real.</li>
 <li class="fragment">Uma alternativa a este problema é utilizar splines. Contudo, seu uso para fins de previsão é bastante limitado, pois não sabemos quantas observações passadas utilizar para estimar/predizer o valor futuro da série.</li>
-<li class="fragment">Para superar estas limitações, surgiram os modelos de suavização exponencial. A ideia principal destes modelos é permitir com que os últimas observações da série tenham um maior peso nas previsões do que as observações mais antigas.</li>
+<li class="fragment">Para superar estas limitações, surgiram os modelos de suavização exponencial. A ideia principal destes modelos é permitir com que as últimas observações da série tenham um maior peso nas previsões do que as observações mais antigas.</li>
 <li class="fragment">Na aula de hoje veremos alguns dos métodos de suavização exponencial mais conhecidos.</li>
 </ul>
 </section></section>
@@ -440,19 +440,43 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 
 <img data-src="Aula07_files/figure-revealjs/unnamed-chunk-1-1.png" width="960" class="r-stretch quarto-figure-center"><div class="fragment">
 <p>Com este método, a previsão um passo à frente é obtida através de:</p>
-<p><span class="math display">\[\hat{y}_{T+1|T} = \alpha y_{T} + \alpha (1-\alpha) y_{T-1} + \alpha (1-\alpha)^2 y_{T-2} + \ldots,\]</span> em que <span class="math inline">\(0 \leq \alpha \leq 1\)</span> é o parâmetro de suavização.</p>
+<p><span class="math display">\[\hat{y}_{T+1|T} = \alpha y_{T} + (1-\alpha) \hat{y}_{T|T-1} = \hat{y}_{T|T-1} + \alpha (y_T - \hat{y}_{T|T-1}),\]</span> em que <span class="math inline">\(0 \leq \alpha \leq 1\)</span> é o parâmetro de suavização.</p>
 </div>
 </section>
 <section id="suavização-exponencial-simples-2" class="slide level2">
 <h2>Suavização Exponencial Simples</h2>
+<p><span class="math display">\[\hat{y}_{T+1|T} = \alpha y_T + (1-\alpha) \underbrace{\hat{y}_{T|T-1}}_{\alpha y_{T-1} + (1-\alpha) \hat{y}_{T - 1|T-2}}\]</span></p>
+<div class="fragment">
+<p><span class="math display">\[\hat{y}_{T+1|T} = \alpha y_T + \alpha (1-\alpha)y_{T-1} + (1-\alpha)^2 \underbrace{\hat{y}_{T-1|T-2}}_{\alpha y_{T-2} + (1-\alpha) \hat{y}_{T-2|T-3}}\]</span></p>
+</div>
+<div class="fragment">
+<p><span class="math display">\[\hat{y}_{T+1|T} = \alpha y_{T} + \alpha (1-\alpha) y_{T-1} + \alpha (1-\alpha)^2 y_{T-2} + \ldots,\]</span></p>
+</div>
+<div class="fragment">
+<p><span class="math display">\[\hat{y}_{T+1|T} = \alpha [y_{T} + (1-\alpha) y_{T-1} +  (1-\alpha)^2 y_{T-2} + \ldots],\]</span></p>
+</div>
+<div class="fragment">
+<blockquote>
+<p>Note que <span class="math inline">\((1 + (1 - \alpha) + (1-\alpha)^2+ \cdots) = 1/\alpha\)</span>. Ou seja, a previsão <span class="math inline">\(\hat{y}_{T+1|T}\)</span> é uma média ponderada (com pesos que somam 1) das observações passadas, em que, as observações mais recentes recebem maior peso.</p>
+</blockquote>
+</div>
+</section>
+<section id="suavização-exponencial-simples-3" class="slide level2">
+<h2>Suavização Exponencial Simples</h2>
+
+<img data-src="Aula07_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch quarto-figure-center"><blockquote>
+<p>O peso que recebem as observações mais antigas cai rapidamente.</p>
+</blockquote>
+</section>
+<section id="suavização-exponencial-simples-4" class="slide level2">
+<h2>Suavização Exponencial Simples</h2>
 <p><span class="math display">\[\hat{y}_{T+1|T} = \alpha y_{T} + \alpha (1-\alpha) y_{T-1} + \alpha (1-\alpha)^2 y_{T-2} + \ldots,\]</span></p>
 <ul>
-<li class="fragment">Se <span class="math inline">\(\alpha \approx 0\)</span>, as observações mais atigas recebem um peso maior.</li>
-<li class="fragment">Se <span class="math inline">\(\alpha \approx 1\)</span>, as observações mais recentes recebem um peso maior.</li>
 <li class="fragment">Se <span class="math inline">\(\alpha = 1\)</span>, o método se reduz ao método NAIVE, <span class="math inline">\(\hat{y}_{T+1|T} = y_T\)</span>.</li>
+<li class="fragment">A medida que <span class="math inline">\(\alpha \rightarrow 1\)</span>, as observações mais recentes recebem um peso maior.</li>
 </ul>
 <div class="fragment">
-<p>De forma alternativa, podemos utilizar uma forma recursiva e escrever:</p>
+<p>Note que,</p>
 <div>
 <ul>
 <li><span class="math inline">\(\hat{y}_{T+1|T} = \alpha y_T + (1-\alpha) \hat{y}_{T|T-1},\)</span></li>
@@ -463,24 +487,24 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 </ul>
 </div>
 <blockquote>
-<p><span class="math inline">\(l_0\)</span> e <span class="math inline">\(\alpha\)</span> precisam ser estimados.</p>
+<p>Assim como nos modelos de regressão, <span class="math inline">\(l_0\)</span> e <span class="math inline">\(\alpha\)</span> precisam ser estimados.</p>
 </blockquote>
 </div>
 </section>
-<section id="suavização-exponencial-simples-3" class="slide level2">
+<section id="suavização-exponencial-simples-5" class="slide level2">
 <h2>Suavização Exponencial Simples</h2>
-<p>Assim como nos modelos de regressão, precisamos estimar alguns parâmetros (neste caso precisamos estimar <span class="math inline">\(\alpha\)</span> e <span class="math inline">\(l_0\)</span>).</p>
-<div class="fragment">
-<p>Para obter os valores estimados <span class="math inline">\(\hat{\alpha}\)</span> e <span class="math inline">\(\hat{l}_0\)</span>, vamos a minimizar a soma de quadrados dos resíduos, ou seja:</p>
+<p>Para obter os valores estimados <span class="math inline">\(\hat{\alpha}\)</span> e <span class="math inline">\(\hat{l}_0\)</span>, buscamos os valores que minimizem a soma de quadrados dos resíduos, ou seja:</p>
 <p><span class="math display">\[SQE = \displaystyle \sum_{t=1}^T (\underbrace{y_t - \hat{y}_{t|t-1}}_{e_t})^2 = \sum_{t=1}^T e_t^2\]</span></p>
-</div>
 <div class="fragment">
 <blockquote>
-<p>A diferença de regressão por MQO, desta vez a solução não tem forma fechada e precisaremos de métodos numéricos para encontrá-la. Na pratica, isto não será problema, utilizaremos a função <code>ETS()</code> do <strong>R</strong> para ajustar o modelo.</p>
+<p>Infelizmente, a solução não tem forma fechada e precisaremos de métodos numéricos para encontrá-la. Na pratica, isto não será problema, utilizaremos a função <code>ETS()</code> do <strong>R</strong> para ajustar o modelo.</p>
 </blockquote>
 </div>
+<div class="fragment">
+<p>Não é dificil escrever um código para resolver o problema de minimização acima. Explore a função <code>optim()</code> do <strong>R</strong> (lhe sera muito útil no futuro) e tente fazer você mesmo.</p>
+</div>
 </section>
-<section id="suavização-exponencial-simples-4" class="slide level2">
+<section id="suavização-exponencial-simples-6" class="slide level2">
 <h2>Suavização Exponencial Simples</h2>
 <div class="panel-tabset">
 <ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Dados</a></li><li><a href="#tabset-1-2">Gráfico</a></li><li><a href="#tabset-1-3">Modelo</a></li><li><a href="#tabset-1-4">Previsão</a></li><li><a href="#tabset-1-5">Gráfico II</a></li></ul>
@@ -519,7 +543,7 @@ $ Population &lt;dbl&gt; 11124888, 11404859, 11690153, 11985136, 12295970, 12626
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-3-1.png" width="960"></p>
+<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-4-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -582,7 +606,7 @@ Model: ETS(A,N,N)
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-6-1.png" width="960"></p>
+<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-7-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -591,9 +615,47 @@ Model: ETS(A,N,N)
 </div>
 </div>
 </section>
-<section id="suavização-exponencial-simples-5" class="slide level2">
+<section id="suavização-exponencial-simples-7" class="slide level2">
 <h2>Suavização Exponencial Simples</h2>
+<p>Seja o processo gerados de dados da forma <span class="math display">\[y_t = \mu_t + e_t,\]</span> em que <span class="math inline">\(\mu_t\)</span> é a media (não constante) de <span class="math inline">\(y_t\)</span>.</p>
+<ul>
+<li class="fragment">Seja <span class="math inline">\(\hat{\mu}_{T+1|T}\)</span> a previsão um passo à frente do nível.</li>
+<li class="fragment">Como a média muda ao longo do tempo, podemos obter <span class="math inline">\(\hat{\mu}_{T+1|T}\)</span> como a solução de <span class="math display">\[\displaystyle \sum_{t = 1}^T (y_t - \mu_{T+1})^2\omega_t.\]</span></li>
+<li class="fragment">Derivando, temos que <span class="math inline">\(\hat{\mu}_{T+1|T} = \displaystyle \sum_{t = 1}^T y_t \omega_t.\)</span></li>
+<li class="fragment">Vamos impor as restrições de que <span class="math inline">\(\omega_t &gt; 0\)</span>, <span class="math inline">\(\sum \omega_t = 1\)</span> e que observações recentes recebem maior peso.</li>
+</ul>
+</section>
+<section id="suavização-exponencial-simples-8" class="slide level2">
+<h2>Suavização Exponencial Simples</h2>
+<p>Uma forma de fazer com que as observações recentes recebam peso maior, é fazer <span class="math inline">\(\omega_t\)</span> descrescer de forma geométrica.</p>
+<ul>
+<li class="fragment"><span class="math inline">\(\omega_T = c\)</span>, <span class="math inline">\(\omega_{T-1} = c\phi\)</span>, <span class="math inline">\(\omega_{T-2} = c\phi^2\)</span>, <span class="math inline">\(\cdots\)</span></li>
+<li class="fragment"><span class="math inline">\(1 = c(1 + \phi + \phi^2 + \phi^3+ \cdots) = \dfrac{c}{1-\phi}\)</span></li>
+<li class="fragment"><span class="math inline">\(\hat{\mu}_{T+1|T} = (1-\phi)y_T + (1-\phi)\phi y_{T-1} + (1-\phi)\phi^2 y_{T-2} + \cdots\)</span></li>
+</ul>
+<div class="fragment">
+<blockquote>
+<p>Se fizermos <span class="math inline">\(1-\phi = \alpha\)</span>, temos a mesma Eq. do slide 9.</p>
+</blockquote>
+</div>
+</section>
+<section id="suavização-exponencial-simples-9" class="slide level2">
+<h2>Suavização Exponencial Simples</h2>
+<p>veja que o proceso da forma <span class="math inline">\(y_t = \mu_t + e_t\)</span> é um processo em que nem a tendência nem a sazonalidade são claros.</p>
+<div class="cell" data-layout-align="center">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a>e <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">5</span>)</span>
+<span id="cb9-3"><a href="#cb9-3"></a>mu <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="sc">-</span><span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb9-4"><a href="#cb9-4"></a>y <span class="ot">&lt;-</span> mu <span class="sc">+</span> e</span>
+<span id="cb9-5"><a href="#cb9-5"></a><span class="fu">ts.plot</span>(y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+</div>
+<img data-src="Aula07_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch quarto-figure-center"><div class="fragment">
 <p>Suavização Exponencial Simples tem previsão “flat”, i.e.&nbsp;<span class="math display">\[\hat{y}_{T+h|T} = \hat{y}_{T+1|T} = \alpha y_T + (1 - \alpha) \hat{y}_{T|T-1}\]</span></p>
+</div>
 </section></section>
 <section>
 <section id="método-de-holt" class="title-slide slide level1 center">
@@ -602,17 +664,63 @@ Model: ETS(A,N,N)
 </section>
 <section id="método-de-holt-1" class="slide level2">
 <h2>Método de Holt</h2>
+<p>Seja o processo gerador de dados da forma<span class="math display">\[\begin{align}
+y_t = &amp;  \mu_t + e_t, \\
+\mu_t = &amp;  \mu_{t-1} + \beta_{t-1}.
+\end{align}\]</span></p>
+<div class="fragment">
+<p>Note que o processo acima representa uma série com tendência linear.</p>
+<div class="cell" data-layout-align="center">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb10-2"><a href="#cb10-2"></a>beta <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="dv">0</span>, <span class="fl">0.1</span>)</span>
+<span id="cb10-3"><a href="#cb10-3"></a>e <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">10</span>)</span>
+<span id="cb10-4"><a href="#cb10-4"></a>mu <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">100</span>, n)</span>
+<span id="cb10-5"><a href="#cb10-5"></a>y <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">100</span>, n)</span>
+<span id="cb10-6"><a href="#cb10-6"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n){</span>
+<span id="cb10-7"><a href="#cb10-7"></a>  mu[i] <span class="ot">&lt;-</span> mu[i <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">+</span> beta[i <span class="sc">-</span> <span class="dv">1</span>]</span>
+<span id="cb10-8"><a href="#cb10-8"></a>  y[i] <span class="ot">&lt;-</span> mu[i] <span class="sc">+</span> e[i]</span>
+<span id="cb10-9"><a href="#cb10-9"></a>}</span>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="fu">ts.plot</span>(y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-9-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="método-de-holt-2" class="slide level2">
+<h2>Método de Holt</h2>
+<ul>
+<li class="fragment">Note que a diferença entre <span class="math inline">\(\mu_t - \mu_{t-1} = \beta_{t-1}\)</span> (pendente no momento <span class="math inline">\(t-1\)</span>).</li>
+<li class="fragment"><span class="math inline">\(\hat{y}_{t+1|t} = \hat{\mu}_{t+1|t} = \hat{\mu}_{t|t} + \hat{\beta}_{t}\)</span></li>
+<li class="fragment">Após observar <span class="math inline">\(y_{t+1}\)</span>, podemos calcular o erro de previsão (<span class="math inline">\(y_{t+1}-\hat{\mu}_{t+1|t}\)</span>) e corrigir a previsão anterior por uma fração do erro cometido.</li>
+<li class="fragment">Assim, para <span class="math inline">\(\theta&lt;1\)</span> <span class="math display">\[\begin{align}
+\hat{\mu}_{t+1|t+1} = &amp;  \hat{\mu}_{t+1|t} + (1-\theta) (y_{t+1}-\hat{\mu}_{t+1|t}) \\
+  = &amp;  \hat{\mu}_{t|t} + \hat{\beta}_{t}+ (1-\theta) (y_{t+1}-\hat{\mu}_{t|t} - \hat{\beta}_{t})\\
+  = &amp; (1 - \theta) y_{t+1} + \theta (\hat{\mu}_{t|t} + \hat{\beta}_t)
+\end{align}\]</span></li>
+<li class="fragment">De forma semelhante, para <span class="math inline">\(\gamma &lt;1\)</span>, <span class="math display">\[\hat{\beta}_{t+1} =  \hat{\beta}_t + (1-\gamma) (\hat{\mu}_{t+1|t+1} - \hat{\mu}_{t|t} - \hat{\beta}_t) = \gamma \hat{\beta}_t + (1-\gamma) (\hat{\mu}_{t+1|t+1} - \hat{\mu}_{t|t})\]</span></li>
+</ul>
+</section>
+<section id="método-de-holt-3" class="slide level2">
+<h2>Método de Holt</h2>
 <ul>
 <li class="fragment">Utilizado quando a série apresenta tendência.</li>
 <li class="fragment">A previsão envolve duas equações de suavização: uma para o nível e outra para a tendência:
 <ul>
-<li class="fragment"><span class="math inline">\(\text{Previsão:} \quad \hat{y}_{t+h|t} = l_t + h b_t,\)</span></li>
-<li class="fragment"><span class="math inline">\(\text{Equação do Nível:} \quad l_t = \alpha y_t + (1 - \alpha) (l_{t-1} + b_{t-1}),\)</span></li>
-<li class="fragment"><span class="math inline">\(\text{Equação de Tendência:} \quad b_t = \beta (l_t - l_{t-1}) + (1-\beta) b_{t-1}.\)</span></li>
+<li class="fragment"><span class="math inline">\(\text{Previsão: } \quad \hat{y}_{T+h|T} = \hat{\mu}_{T|T} + h \hat{\beta}_T,\)</span></li>
+<li class="fragment"><span class="math inline">\(\text{Equação do Nível: } \hat{\mu}_{T|T} = \theta^{\ast} y_T + (1 - \theta^{\ast}) (\hat{\mu}_{T-1|T-1} + \hat{\beta}_{T-1}),\)</span></li>
+<li class="fragment"><span class="math inline">\(\text{Equação de Tendência: } \quad \hat{\beta}_T= \gamma^{\ast} \hat{\beta}_{T-1} + (1-\gamma^{\ast}) (\hat{\mu}_{T|T} - \hat{\mu}_{T-1|T-1}).\)</span></li>
 </ul></li>
 </ul>
 <div class="fragment">
-<p>Em que <span class="math inline">\(0 \leq \alpha \leq 1\)</span> e <span class="math inline">\(0 \leq \beta \leq 1\)</span>. Note que, no instante <span class="math inline">\(t=1\)</span> precisaremos de <span class="math inline">\(l_0\)</span> e <span class="math inline">\(b_0\)</span></p>
+<p>Em que <span class="math inline">\(0 \leq \theta^{\ast} \leq 1\)</span> e <span class="math inline">\(0 \leq \gamma^{\ast} \leq 1\)</span>. Note que, no instante <span class="math inline">\(t=1\)</span> precisaremos de <span class="math inline">\(\hat{\mu}_0\)</span> e <span class="math inline">\(\hat{\beta}_0\)</span></p>
 </div>
 <div class="fragment">
 <blockquote>
@@ -620,7 +728,7 @@ Model: ETS(A,N,N)
 </blockquote>
 </div>
 </section>
-<section id="método-de-holt-2" class="slide level2">
+<section id="método-de-holt-4" class="slide level2">
 <h2>Método de Holt</h2>
 <div class="panel-tabset">
 <ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Dados</a></li><li><a href="#tabset-2-2">Gráfico</a></li><li><a href="#tabset-2-3">Modelo</a></li><li><a href="#tabset-2-4">Previsão</a></li><li><a href="#tabset-2-5">Gráfico II</a></li></ul>
@@ -629,10 +737,10 @@ Model: ETS(A,N,N)
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>australia_economy <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span> </span>
-<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Australia"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">mutate</span>(<span class="at">Pop =</span> Population <span class="sc">/</span> <span class="fl">1e6</span>) <span class="co"># População em milhoes 1e6 = 10^6</span></span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="fu">glimpse</span>(australia_economy)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>australia_economy <span class="ot">&lt;-</span> global_economy <span class="sc">|&gt;</span> </span>
+<span id="cb11-2"><a href="#cb11-2"></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Australia"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb11-3"><a href="#cb11-3"></a>  <span class="fu">mutate</span>(<span class="at">Pop =</span> Population <span class="sc">/</span> <span class="fl">1e6</span>) <span class="co"># População em milhoes 1e6 = 10^6</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a><span class="fu">glimpse</span>(australia_economy)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 58
@@ -655,12 +763,12 @@ $ Pop        &lt;dbl&gt; 10.27648, 10.48300, 10.74200, 10.95000, 11.16700, 11.38
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>australia_economy <span class="sc">%&gt;%</span> <span class="fu">autoplot</span>(Pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>australia_economy <span class="sc">%&gt;%</span> <span class="fu">autoplot</span>(Pop)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
+<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-11-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -671,9 +779,9 @@ $ Pop        &lt;dbl&gt; 10.27648, 10.48300, 10.74200, 10.95000, 11.16700, 11.38
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>modelo <span class="ot">&lt;-</span> australia_economy <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2"></a>  <span class="fu">model</span>(<span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>)))</span>
-<span id="cb12-3"><a href="#cb12-3"></a><span class="fu">report</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>modelo <span class="ot">&lt;-</span> australia_economy <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a>  <span class="fu">model</span>(<span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>)))</span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="fu">report</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: Pop 
@@ -697,8 +805,8 @@ Model: ETS(A,A,N)
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>fore_aus <span class="ot">&lt;-</span> modelo <span class="sc">%&gt;%</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">6</span>)</span>
-<span id="cb14-2"><a href="#cb14-2"></a>fore_aus</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>fore_aus <span class="ot">&lt;-</span> modelo <span class="sc">%&gt;%</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">6</span>)</span>
+<span id="cb16-2"><a href="#cb16-2"></a>fore_aus</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A fable: 6 x 5 [1Y]
@@ -718,13 +826,13 @@ Model: ETS(A,A,N)
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>fore_aus <span class="sc">%&gt;%</span> <span class="fu">autoplot</span>(australia_economy) <span class="sc">+</span></span>
-<span id="cb16-2"><a href="#cb16-2"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted), <span class="at">color =</span> <span class="st">"red"</span>,  <span class="at">data =</span> <span class="fu">augment</span>(modelo)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>fore_aus <span class="sc">%&gt;%</span> <span class="fu">autoplot</span>(australia_economy) <span class="sc">+</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted), <span class="at">color =</span> <span class="st">"red"</span>,  <span class="at">data =</span> <span class="fu">augment</span>(modelo)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-11-1.png" width="960"></p>
+<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-14-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -733,24 +841,26 @@ Model: ETS(A,A,N)
 </div>
 </div>
 </section>
-<section id="método-de-holt-com-tendência-não-constante" class="slide level2">
-<h2>Método de Holt com tendência não constante</h2>
+<section id="método-de-holt-com-amortização" class="slide level2">
+<h2>Método de Holt com amortização</h2>
 <ul>
-<li class="fragment">O método de Holt (1957) assume que a tendência é constante ao longo do tempo.</li>
-<li class="fragment">Em 1985, é proposto um método que amortece a tendência. Com este método as equações são definidas como:
-<ul>
-<li class="fragment"><span class="math inline">\(\hat{y}_{t+h|t} = l_t + (\phi + \phi^2 + \cdots + \phi^h) b_t,\)</span></li>
-<li class="fragment"><span class="math inline">\(l_t = \alpha y_t + (1-\alpha) (l_{t-1} + \phi b_{t-1}),\)</span></li>
-<li class="fragment"><span class="math inline">\(b_t = \beta ( l_t - l_{t-1}) + (1 - \beta) \phi b_{t-1}.\)</span></li>
-</ul></li>
+<li class="fragment">O método de Holt (1957) assume que, para fazer a previsão, a tendência é constante nos <span class="math inline">\(h\)</span> passos à frente.</li>
+<li class="fragment">Em 1985, é proposto um método que amortece a tendência. Com este método as equações são definidas como:</li>
 </ul>
+<div class="fragment">
+<p><span class="math display">\[\begin{align}
+\hat{y}_{t+h|t} = &amp; \hat{\mu}_{t|t} + (\phi  + \phi^2 + \cdots + \phi^h) \hat{\beta}_t, \\
+\hat{\mu}_{t|t} = &amp; \alpha y_t + (1-\alpha) (\hat{\mu}_{t-1|t-1} + \phi \hat{\beta}_{t-1}), \\
+\hat{\beta}_t = &amp; \gamma (\hat{\mu}_{t|t}  - \hat{\mu}_{t-1|t-1}) + (1 - \gamma) \phi \hat{\beta}_{t-1}.
+\end{align}\]</span></p>
+</div>
 <div class="fragment">
 <blockquote>
 <p>Note que se <span class="math inline">\(\phi = 1\)</span> temos o método de Holt.</p>
 </blockquote>
 </div>
 </section>
-<section id="método-de-holt-com-tendência-não-constante-1" class="slide level2">
+<section id="método-de-holt-com-tendência-não-constante" class="slide level2">
 <h2>Método de Holt com tendência não constante</h2>
 <div class="panel-tabset">
 <ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Modelo</a></li><li><a href="#tabset-3-2">Previsão</a></li><li><a href="#tabset-3-3">Gráfico II</a></li></ul>
@@ -759,10 +869,10 @@ Model: ETS(A,A,N)
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>modelo <span class="ot">&lt;-</span> australia_economy <span class="sc">|&gt;</span> </span>
-<span id="cb17-2"><a href="#cb17-2"></a>  <span class="fu">model</span>(<span class="at">holt =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>)),</span>
-<span id="cb17-3"><a href="#cb17-3"></a>        <span class="at">amortecimento =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>)))</span>
-<span id="cb17-4"><a href="#cb17-4"></a>modelo <span class="sc">|&gt;</span> <span class="fu">select</span>(amortecimento) <span class="sc">|&gt;</span> <span class="fu">report</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>modelo <span class="ot">&lt;-</span> australia_economy <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a href="#cb19-2"></a>  <span class="fu">model</span>(<span class="at">holt =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>)),</span>
+<span id="cb19-3"><a href="#cb19-3"></a>        <span class="at">amortecimento =</span> <span class="fu">ETS</span>(Pop <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"Ad"</span>)))</span>
+<span id="cb19-4"><a href="#cb19-4"></a>modelo <span class="sc">|&gt;</span> <span class="fu">select</span>(amortecimento) <span class="sc">|&gt;</span> <span class="fu">report</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: Pop 
@@ -787,8 +897,8 @@ Model: ETS(A,Ad,N)
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>fore_aus <span class="ot">&lt;-</span> modelo <span class="sc">%&gt;%</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">6</span>)</span>
-<span id="cb19-2"><a href="#cb19-2"></a>fore_aus</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>fore_aus <span class="ot">&lt;-</span> modelo <span class="sc">%&gt;%</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">6</span>)</span>
+<span id="cb21-2"><a href="#cb21-2"></a>fore_aus</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A fable: 12 x 5 [1Y]
@@ -814,13 +924,13 @@ Model: ETS(A,Ad,N)
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>fore_aus <span class="sc">|&gt;</span> <span class="fu">autoplot</span>(australia_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb21-2"><a href="#cb21-2"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted, <span class="at">color =</span> .model),  <span class="at">data =</span> <span class="fu">augment</span>(modelo)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1"></a>fore_aus <span class="sc">|&gt;</span> <span class="fu">autoplot</span>(australia_economy, <span class="at">level =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted, <span class="at">color =</span> .model),  <span class="at">data =</span> <span class="fu">augment</span>(modelo)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-14-1.png" width="960"></p>
+<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-17-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -829,9 +939,9 @@ Model: ETS(A,Ad,N)
 </div>
 </div>
 </section>
-<section id="método-de-holt-com-tendência-não-constante-2" class="slide level2">
+<section id="método-de-holt-com-tendência-não-constante-1" class="slide level2">
 <h2>Método de Holt com tendência não constante</h2>
-<p>Note que, quando <span class="math inline">\(h \rightarrow \infty\)</span>, <span class="math display">\[y_{T+h|T} =  l_t + (\phi  + \phi^2 + \cdots + \phi^h) b_t \rightarrow l_t + \dfrac{\phi}{1-\phi} b_t\]</span></p>
+<p>Note que, quando <span class="math inline">\(h \rightarrow \infty\)</span>, <span class="math display">\[y_{T+h|T} =  \hat{\mu}_{T|T} + (\phi  + \phi^2 + \cdots + \phi^h) \hat{\beta}_T \rightarrow l_t + \dfrac{\phi}{1-\phi} \hat{\beta}_T\]</span></p>
 </section></section>
 <section>
 <section id="método-de-holt-winters" class="title-slide slide level1 center">
@@ -844,16 +954,16 @@ Model: ETS(A,Ad,N)
 <div class="columns">
 <div class="column" style="width:50%;">
 <h4 id="holt-winters-aditivo">Holt-Winters Aditivo</h4>
-<p><span class="math display">\[\hat{y}_{t+h|t} = l_t + hb_t + s_{t+h-m(k+1)},\]</span></p>
-<p><span class="math display">\[l_t = \alpha (y_t - s_{t-m}) + (1-\alpha) (l_{t-1}+  b_{t-1}),\]</span></p>
-<p><span class="math display">\[b_t = \beta (l_t - l_{t-1}) + (1-\beta) b_{t-1},\]</span></p>
-<p><span class="math display">\[s_t = \gamma (y_t - l_{t-1} - b_{t-1}) + (1-\gamma) s_{t-m}.\]</span> Em que <span class="math inline">\(k\)</span> é a parte inteira de <span class="math inline">\((h-1)/m\)</span>.</p>
+<p><span class="math display">\[\hat{y}_{t+h|t} = \hat{\mu}_{t|t} + h\hat{\beta}_t + s_{t+h-m(k+1)},\]</span></p>
+<p><span class="math display">\[l_t = \alpha (y_t - s_{t-m}) + (1-\alpha) (\hat{\mu}_{t-1|t-1}+  \hat{\beta}_{t-1}),\]</span></p>
+<p><span class="math display">\[b_t = \delta (\hat{\mu}_{t|t} - \hat{\mu}_{t-1|t-1}) + (1-\delta) \hat{\beta}_{t-1},\]</span></p>
+<p><span class="math display">\[s_t = \gamma (y_t - \hat{\mu}_{t-1|t-1} - \hat{\beta}_{t-1}) + (1-\gamma) s_{t-m}.\]</span> Em que <span class="math inline">\(k\)</span> é a parte inteira de <span class="math inline">\((h-1)/m\)</span>.</p>
 </div><div class="column" style="width:50%;">
 <h4 id="holt-winters-multiplicativo">Holt-Winters Multiplicativo</h4>
-<p><span class="math display">\[\hat{y}_{t+h|t} = (l_t + hb_t)s_{t+h-m(k+1)},\]</span></p>
-<p><span class="math display">\[l_t = \alpha \dfrac{y_t}{s_{t-m}} + (1-\alpha) (l_{t-1} + b_{t-1}),\]</span></p>
-<p><span class="math display">\[b_t = \beta (l_t - l_{t-1}) + (1-\beta) b_{t-1},\]</span></p>
-<p><span class="math display">\[s_t = \gamma \dfrac{y_t}{l_{t-1} + b_{t-1}} + (1-\gamma) s_{t-m}\]</span></p>
+<p><span class="math display">\[\hat{y}_{t+h|t} = (\hat{\mu}_{t|t} + h\hat{\beta}_{t})s_{t+h-m(k+1)},\]</span></p>
+<p><span class="math display">\[l_t = \alpha \dfrac{y_t}{s_{t-m}} + (1-\alpha) (\hat{\mu}_{t-1|t-1} + \hat{\beta}_{t-1}),\]</span></p>
+<p><span class="math display">\[b_t = \delta (l_t - \hat{\mu}_{t-1|t-1}) + (1-\delta) \hat{\beta}_{t-1},\]</span></p>
+<p><span class="math display">\[s_t = \gamma \dfrac{y_t}{\hat{\mu}_{t-1|t-1} + \hat{\beta}_{t-1}} + (1-\gamma) s_{t-m}\]</span></p>
 </div>
 </div>
 </section>
@@ -871,10 +981,10 @@ Model: ETS(A,Ad,N)
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>aus_holidays <span class="ot">&lt;-</span> tourism <span class="sc">%&gt;%</span> </span>
-<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">filter</span>(Purpose <span class="sc">==</span> <span class="st">"Holiday"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">summarise</span>(<span class="at">Trips =</span> <span class="fu">sum</span>(Trips)<span class="sc">/</span><span class="dv">1000</span>) <span class="co"># Agrupamos por Quarter e os valores unidades de mil. </span></span>
-<span id="cb22-4"><a href="#cb22-4"></a><span class="fu">glimpse</span>(aus_holidays)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>aus_holidays <span class="ot">&lt;-</span> tourism <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">filter</span>(Purpose <span class="sc">==</span> <span class="st">"Holiday"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3"></a>  <span class="fu">summarise</span>(<span class="at">Trips =</span> <span class="fu">sum</span>(Trips)<span class="sc">/</span><span class="dv">1000</span>) <span class="co"># Agrupamos por Quarter e os valores unidades de mil. </span></span>
+<span id="cb24-4"><a href="#cb24-4"></a><span class="fu">glimpse</span>(aus_holidays)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 80
@@ -888,12 +998,12 @@ $ Trips   &lt;dbl&gt; 11.806038, 9.275662, 8.642489, 9.299524, 11.172027, 9.6076
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>aus_holidays <span class="sc">%&gt;%</span> <span class="fu">autoplot</span>(Trips)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>aus_holidays <span class="sc">%&gt;%</span> <span class="fu">autoplot</span>(Trips)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-17-1.png" width="960"></p>
+<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-20-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -903,10 +1013,10 @@ $ Trips   &lt;dbl&gt; 11.806038, 9.275662, 8.642489, 9.299524, 11.172027, 9.6076
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a>modelo <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> </span>
-<span id="cb25-2"><a href="#cb25-2"></a>  <span class="fu">model</span>(<span class="at">HWA =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"A"</span>)),</span>
-<span id="cb25-3"><a href="#cb25-3"></a>        <span class="at">HWM =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"M"</span>)))</span>
-<span id="cb25-4"><a href="#cb25-4"></a><span class="fu">report</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>modelo <span class="ot">&lt;-</span> aus_holidays <span class="sc">|&gt;</span> </span>
+<span id="cb27-2"><a href="#cb27-2"></a>  <span class="fu">model</span>(<span class="at">HWA =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"A"</span>)),</span>
+<span id="cb27-3"><a href="#cb27-3"></a>        <span class="at">HWM =</span> <span class="fu">ETS</span>(Trips <span class="sc">~</span> <span class="fu">error</span>(<span class="st">"M"</span>) <span class="sc">+</span> <span class="fu">trend</span>(<span class="st">"A"</span>) <span class="sc">+</span> <span class="fu">season</span>(<span class="st">"M"</span>)))</span>
+<span id="cb27-4"><a href="#cb27-4"></a><span class="fu">report</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 9
@@ -921,8 +1031,8 @@ $ Trips   &lt;dbl&gt; 11.806038, 9.275662, 8.642489, 9.299524, 11.172027, 9.6076
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>fore_holidays <span class="ot">&lt;-</span> modelo <span class="sc">%&gt;%</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">6</span>)</span>
-<span id="cb27-2"><a href="#cb27-2"></a>fore_holidays</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>fore_holidays <span class="ot">&lt;-</span> modelo <span class="sc">%&gt;%</span> <span class="fu">forecast</span>(<span class="at">h =</span> <span class="dv">6</span>)</span>
+<span id="cb29-2"><a href="#cb29-2"></a>fore_holidays</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A fable: 12 x 4 [1Q]
@@ -948,13 +1058,13 @@ $ Trips   &lt;dbl&gt; 11.806038, 9.275662, 8.642489, 9.299524, 11.172027, 9.6076
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a>fore_holidays <span class="sc">|&gt;</span> <span class="fu">autoplot</span>(aus_holidays) <span class="sc">+</span></span>
-<span id="cb29-2"><a href="#cb29-2"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted, <span class="at">color =</span> .model), <span class="at">data =</span> <span class="fu">augment</span>(modelo)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>fore_holidays <span class="sc">|&gt;</span> <span class="fu">autoplot</span>(aus_holidays) <span class="sc">+</span></span>
+<span id="cb31-2"><a href="#cb31-2"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> .fitted, <span class="at">color =</span> .model), <span class="at">data =</span> <span class="fu">augment</span>(modelo)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-20-1.png" width="960"></p>
+<p><img data-src="Aula07_files/figure-revealjs/unnamed-chunk-23-1.png" width="960"></p>
 </figure>
 </div>
 </div>
@@ -968,10 +1078,28 @@ $ Trips   &lt;dbl&gt; 11.806038, 9.275662, 8.642489, 9.299524, 11.172027, 9.6076
 <h2>Método de Holt-Winters</h2>
 <p>Se quisermos incluir o amorcetimento na componente de tendência, basta trocar <code>trend("A")</code> por <code>trend("Ad")</code> nos códigos do slide anterior.</p>
 </section>
+<section id="comentários-finais" class="slide level2">
+<h2>Comentários finais</h2>
+<ul>
+<li class="fragment">Além dos métodos mencionados, existem vários outros métodos de suavização.</li>
+<li class="fragment">Esses métodos podem ser obtidos como as possíveis configurações que podem ser obtidas com:
+<ul>
+<li class="fragment"><code>error()</code>: A (aditivo) ou M (multiplicativo)</li>
+<li class="fragment"><code>season()</code>: A, M ou N (nenhum).</li>
+<li class="fragment"><code>trend()</code>: N, A, M, Ad (aditivo amortecido), Md (multiplicativo amortecido).</li>
+</ul></li>
+<li class="fragment">A escolha não sempre é facil. Embora não sejam infalíveis, existem métodos automáticos (teste fazendo, por exemplo, <code>modelo &lt;- aus_holidays |&gt; model(auto = ETS(Trips))</code>.</li>
+<li class="fragment">Maiores detalhes a respeito do procedimento automático podem ser enconrados em Hydman et al.&nbsp;(2002).</li>
+<li class="fragment">Para um maior aprofundamento nos metodos de suavização exponencial, ver Hyndman et al.&nbsp;(2008). Link com código e erratas, <a href="https://robjhyndman.com/expsmooth/">aqui</a>.</li>
+</ul>
+</section>
 <section id="referências" class="slide level2">
 <h2>Referências</h2>
 <ul>
+<li class="fragment"><a href="https://www.sciencedirect.com/science/article/abs/pii/S0169207001001108?via%3Dihub">Hyndman, R. J., Koehler, A. B., Snyder, R. D., &amp; Grose, S. (2002). A state space framework for automatic forecasting using exponential smoothing methods. International Journal of forecasting, 18(3), 439-454.</a></li>
+<li class="fragment"><a href="https://link.springer.com/book/10.1007/978-3-540-71918-2">Hyndman, R., Koehler, A. B., Ord, J. K., &amp; Snyder, R. D. (2008). Forecasting with exponential smoothing: the state space approach. Springer Science &amp; Business Media.</a></li>
 <li class="fragment"><a href="https://otexts.com/fpp3/">Hyndman, R.J., &amp; Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.</a>. Chapter 8.</li>
+<li class="fragment">Peña, D. (2005). Análisis de series temporales. Alianza. Capítulo 2.</li>
 </ul>
 
 <img src="imagens/imecc.png" class="slide-logo r-stretch"><div class="footer footer-default">
