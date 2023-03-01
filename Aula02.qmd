@@ -402,13 +402,13 @@ dados |> autoplot()
 
 - Embora a *auto*correlação entre $Y_t$ e $Y_{t+k}$ seja de vital importância em um contexto de séries temporais. Podemos estar interessados em calcular a *auto*correlação entre $Y_t$ e $Y_{t+k}$ uma vez que temos removido o efeito da dependência linear de $Y_{t+1}, \cdots, Y_{t+k-1}$
 - Este tipo de correlação é conhecido como *auto*correlação parcial e é dado por $$\phi_{kk} = \mathbb{C}or(Y_t, Y_{t+k}| Y_{t+1}, \cdots, Y_{t+k-1}).$$
-- Pode-se provar que $$\phi_{kk} = \begin{vmatrix}
+- Pode-se provar que $$\phi_{11} = \rho_1 \quad e \quad \phi_{kk} = \begin{vmatrix}
     1 & \rho_1 & \rho_2 & \cdots & \rho_{k-2} & \rho_{1}\\
     \rho_1 & 1 & \rho_1 & \cdots & \rho_{k-3} & \rho_{2}\\
     \vdots & \vdots & \vdots & \cdots & \vdots & \vdots\\
     \rho_{k-1} & \rho_{k-2} & \rho_{k-3} & \cdots & \rho_{1} & \rho_k\\
   \end{vmatrix}  \begin{vmatrix}
-    1 & \rho_1 & \rho_2 & \cdots & \rho_{k-2} & \rho_{k-11}\\
+    1 & \rho_1 & \rho_2 & \cdots & \rho_{k-2} & \rho_{k-1}\\
     \rho_1 & 1 & \rho_1 & \cdots & \rho_{k-3} & \rho_{k-2}\\
     \vdots & \vdots & \vdots & \cdots & \vdots & \vdots\\
     \rho_{k-1} & \rho_{k-2} & \rho_{k-3} & \cdots & \rho_{1} & 1\\

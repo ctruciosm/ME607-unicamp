@@ -1,0 +1,618 @@
+---
+title: "Processos autoregressivos - AR(p)"
+subtitle: "ME607 - Séries Temporais"
+author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
+Email: "ctrucios@unicamp.br"
+institute: "Instituto de Matemática, Estatística e Computação Científica (IMECC), </br> Universidade Estadual de Campinas (UNICAMP)."
+server: shiny
+knitr:
+    opts_chunk: 
+      fig.align: 'center'
+execute:
+    message: false
+    warning: false
+format:
+    revealjs:
+        slide-number: true
+        toc: true
+        toc-depth: 1
+        toc-title: Agenda
+        self-contained: false
+        chalkboard: true
+        width: 1600
+        height: 900
+        theme: [default, styles.scss]
+        incremental: true
+        code-fold: true
+        logo: "imagens/imecc.png"
+        footer: "Carlos Trucíos (IMECC/UNICAMP)  |  ME607 - Séries Temporais  |  [ctruciosm.github.io](https://ctruciosm.github.io/)"
+        highlight-style: "a11y"
+        title-slide-attributes:
+            data-background-image: "imagens/unicamp.png"
+            data-background-size: 20%
+            data-background-position: 99% 5%
+            data-background-opacity: "1"
+editor: source
+---
+
+
+# Operadores
+## Operador de defasagem
+
+Denotado por $B$ (Backshift), o operador de defasagem (ou operador retroativo) é um operador linear que aplicado a uma série temporal, retorna a mesma série mas desafada em um período de tempo, $$BZ_t = Z_{t-1}$$
+
+. . . 
+
+
+#### Propriedades
+
+- $B \mu = \mu$.
+- $B^nZ_t = B^{n-1}(BZ_t) = Z_{t-n}, \quad \forall n \geq 1$.
+- $B(\alpha Z_t \pm \beta X_t) = B(\alpha Z_t) \pm B (\beta Y_t) = \alpha Z_{t-1} \pm \beta Y_{t-1}$
+
+. . . 
+
+> Em geral, o operador $B$ segue todas as regras de operações algébricas.
+
+
+## Operador de defasagem
+
+
+**Ejemplo**
+
+O operador $\phi(B) = 1 - \phi_1B - \phi_2B^2$ aplicado a uma série temporal retornará:
+
+. . . 
+
+
+\begin{align*} 
+(1 - \phi_1B - \phi_2B^2)Z_t & = Z_t - \phi_1B Z_t - \phi_2B^2Z_t \\
+& = Z_t - \phi_1 Z_{t-1} - \phi_2 Z_{t-2}
+\end{align*}
+
+. . . 
+
+> Operadores da forma $\phi(B) = 1 - \phi_1B - \phi_2B^2 - \cdots - \phi_k B^k$ são conhecidos como **operadores polinomiais**
+
+
+## Outros operadores
+
+### Operador diferença
+
+É um caso particular do operador polinomial e é denotado por $\nabla = (1-B)$. Assim, $$\nabla Z_t = (1 - B) Z_t = Z_t - Z_{t-1}.$$
+
+- $\nabla^2 = (1-B)^2$.
+- $\nabla^k = (1-B)^k$.
+- $\nabla_s = (1 - B^s)$
+
+
+## Outros operadores
+
+### Operadores inversos
+
+Os operadores vistos anteriormente posuem seus operadores inversos (o produto do operador pelo seu inverso é a unidade).
+
+- Operador $B^{-1}$: $B^{-1}Z_t = Z_{t+1}$.
+- Note que $B^{-1}BZ_t = B^{-1}Z_{t-1} = Z_t = BB^{-1}Z_t$
+- O inverso do operador polinomial é dado por $\phi(B)^{-1}$ e deve verificar que $\phi(B)^{-1}\phi(B) = 1$
+
+. . . 
+
+**Ejemplo:** Seja  $\phi(B) = (1-\phi B)$, o inverso é definido para $|\phi|<1$ como $$(1-\phi B)^{-1} = 1 + \phi B + \phi^2 B^2 + \phi^3 B^3 + \cdots$$
+
+
+- O inverso do operador diferença é $(1-B)^{-1} = 1 + B + B^2 + \cdots$
+
+# AR(1)
+## AR(1)
+
+### Definição:
+
+Um processo estocástico $\{Y_t\}$ é dito autoregressivo de ordem 1, denotado AR(1), se seu processo gerador de dados é dado por $$Y_t = c + \phi Y_{t-1} + \epsilon_t,$$ em que $c$ e $\phi$ são parâmetros reais e $\epsilon_t \sim RB(0, \sigma^2)$. 
+
+Se $|\phi| < 1$, o processo é estacionário.
+
+## AR(1)
+
+\begin{align*} 
+Y_t & = c + \phi Y_{t-1} + \epsilon_{t} \\ 
+    & = c + \phi B Y_{t} + \epsilon_{t} \\
+(1 - \phi B)Y_t & = c + \epsilon_{t} \\
+Y_t & = \dfrac{c}{1 - \phi B} + \dfrac{\epsilon_{t}}{1 - \phi B} \\
+Y_t & = \dfrac{c}{1 - \phi} + \displaystyle \sum_{j = 0}^{\infty} \phi^j B^j \epsilon_{t} \\
+Y_t & = \dfrac{c}{1 - \phi} + \displaystyle \sum_{j = 0}^{\infty} \phi^j \epsilon_{t-j} \\
+\end{align*}
+
+
+## AR(1)
+
+- $\mathbb{E}(Y_t) = \dfrac{c}{1 - \phi} + \displaystyle \sum_{j = 0}^{\infty} \phi^j \underbrace{\mathbb{E}(\epsilon_{t-j})}_{0} = \dfrac{c}{1 - \phi} = \mu$
+- $\mathbb{V}(Y_t) = \displaystyle \sum_{j = 0}^{\infty} \phi^{2j} \underbrace{\mathbb{V}(\epsilon_{t-j})}_{\sigma^2} = \dfrac{\sigma^2}{1 - \phi^2}$
+- $\mathbb{C}ov(Y_t, Y_{t-k}) = \mathbb{E} \big( \displaystyle \sum_{j = 0}^{\infty} \phi^j \epsilon_{t-j} \times \displaystyle \sum_{j = 0}^{\infty} \phi^j \epsilon_{t-k-j} \big) = \sigma^2 (\phi^k + \phi^{k+2} + \cdots) = \dfrac{\sigma^2 \phi^k}{1-\phi^2},\quad k \geq 0.$
+
+. . . 
+
+> Se $|\phi| < 1$, o processo é estacionário.
+
+
+## AR(1)
+
+Note que $\mu = \dfrac{c}{1-\phi}$. Se substituirmos $c$ por $(1-\phi)\mu$, temos que \begin{align*} 
+Y_t & = c + \phi Y_{t-1} + \epsilon_{t} \\ 
+    & = (1-\phi)\mu + \phi Y_{t-1} + \epsilon_{t} \\
+Y_t - \mu & = \phi (Y_{t-1} - \mu) + \epsilon_{t}\\
+\tilde{Y}_t & = \phi \tilde{Y}_{t-1} + \epsilon_{t} \\
+(1 - \phi B) \tilde{Y}_t & = \epsilon_{t} \\
+\tilde{Y}_t & = \displaystyle \sum_{j = 0}^{\infty} \phi^j \epsilon_{t-j} \\
+\end{align*}
+
+que é outra expressão utilizada para os AR(1). 
+
+
+## AR(1)
+
+```{r}
+sliderInput("n", "n: ", min = 10, max = 5000, value = 1000)
+sliderInput("phi", "phi: ", min = -1.5, max = 1.5, value = 0.1)
+sliderInput("c", "c: ", min = -1, max = 1, value = 0.0, step = 0.2)
+plotOutput("distPlot")
+```
+
+```{r}
+#| context: server
+output$distPlot <- renderPlot({
+  ntot <- input$n + 500
+  e <- rnorm(ntot)
+  y <- c()
+  y[1] <- e[1]
+  for (i in 2:ntot) {
+    y[i] = input$c + input$phi * y[i - 1] + e[i]
+  }
+  ts.plot(y[501:ntot])
+})
+```
+
+## AR(1)
+
+### Função de autocorrelação
+
+
+
+:::: {.columns}
+
+::: {.column width="30%"}
+Para $k \geq 0:$
+$$\rho(k) = \dfrac{\gamma(k)}{\gamma(0)} = \dfrac{\frac{\sigma^2 \phi^k}{1-\phi^2}}{\frac{\sigma^2}{1-\phi^2}} = \phi^k.$$
+
+$\forall k \in \mathbb{Z}:$
+$$\rho(k) = \phi^{|k|}.$$
+
+:::
+
+::: {.column width="70%"}
+
+```{r}
+library(ggplot2)
+k = 1:30
+rho1 = 0.15^k
+rho2 = 0.3^k
+rho3 = 0.5^k
+rho4 = 0.7^k
+rho5 = 0.9^k
+rho7 = (-0.3)^k
+rho8 = (-0.5)^k
+rho9 = (-0.7)^k
+rho10 = (-0.9)^k
+dados <- data.frame(rho = c(rho1, rho2, rho3, rho4, rho5, rho7, rho8, rho9, rho10),
+                    k = rep(1:30, 9),
+                    nome = c(rep("rho = 0.15", 30),
+                             rep("rho = 0.3", 30),
+                             rep("rho = 0.5", 30),
+                             rep("rho = 0.7", 30),
+                             rep("rho = 0.8", 30),
+                             rep("rho = -0.3", 30),
+                             rep("rho = -0.5", 30),
+                             rep("rho = -0.7", 30),
+                             rep("rho = -0.9", 30)))
+ggplot(dados) + geom_bar(aes(x = k, y = rho), stat = "identity", position = "identity", fill = "green4") + facet_wrap(.~nome, scales = "free_y")
+```
+
+
+:::
+
+::::
+
+
+## AR(1)
+
+### Qual a FAC?
+
+$\phi = 0.3$, $\phi = -0.2$, $\phi = 1$?
+
+. . . 
+
+```{r}
+sliderInput("p", "phi: ", min = -1, max = 1, value = 0.3, step = 0.01)
+plotOutput("distPlot2")
+```
+
+```{r}
+#| context: server
+output$distPlot2 <- renderPlot({
+  library(ggplot2)
+  k = 1:30
+  dados <- data.frame(k, rho = input$p^k)
+  ggplot(dados) + 
+    geom_bar(aes(x = k, y = rho), stat = "identity", position = "identity", fill = "green4") +
+    theme(axis.text.y = element_text(size = 20))
+})
+```
+
+
+# AR(2)
+## AR(2)
+
+### Definição:
+
+Um processo estocástico $\{Y_t\}$ é dito autoregressivo de ordem 2, denotado AR(2), se seu processo gerador de dados é dado por $$Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \epsilon_t,$$ em que $c$, $\phi_1$ e $\phi_2$ são parâmetros reais e $\epsilon_t \sim RB(0, \sigma^2)$. 
+
+
+Se $\phi_2 + \phi_1 < 1$,  $\phi_2 - \phi_1 < 1$ e $|\phi_2| < 1$ o processo é estacionário. 
+
+. . . 
+
+
+Sob estacionaridade,
+
+::: {.nonincremental}
+- $\mathbb{E}(Y_t) = \dfrac{c}{1 - \phi_1 - \phi_2} = \mu$
+- $\mathbb{V}(Y_t) = \dfrac{(1-\phi_2)\sigma^2}{(\phi_2 + 1)(1 - \phi_2 - \phi_2)(1 - \phi_2 + \phi_1)}$
+- $\gamma(k) = \phi_1 \gamma(k-1) + \phi_2 \gamma(k-2)$
+:::
+
+
+## AR(2)
+
+::: {.nonincremental}
+- $\rho(1) = \dfrac{\phi_1}{1-\phi_2}$
+- $\rho(2) = \dfrac{\phi_1^2}{1-\phi_2} + \phi_2$
+- $\rho(k) = \phi_1 \rho(k-1) + \phi_2 \rho(k-2), \quad k \geq 3$
+:::
+
+. . . 
+
+> Condições suficientes para estacionaridade são: (a) $\phi_2 + \phi_1 < 1$, (b) $\phi_2 - \phi_1 < 1$ e (c) $|\phi_2| < 1.$
+
+
+## AR(2)
+
+### Qual a FAC?
+
+$\phi_1 = 0.3$, $\phi_2 = 0.1$?
+
+. . . 
+
+```{r}
+sliderInput("phi_1", "phi_1: ", min = -1, max = 1, value = 0.3, step = 0.01)
+sliderInput("phi_2", "phi_2: ", min = -1, max = 1, value = 0.1, step = 0.01)
+plotOutput("distPlot3")
+```
+
+```{r}
+#| context: server
+output$distPlot3 <- renderPlot({
+  library(ggplot2)
+  k <- 1:30
+  rho <- rep(0, 30)
+  rho[1] <- input$phi_1 / (1 - input$phi_2)
+  rho[2] <- (input$phi_1)^2 / (1 - input$phi_2) + input$phi_2
+  for (i in 3:30) {
+    rho[i] = input$phi_1*rho[i - 1] +  input$phi_2*rho[i - 2]
+  }
+  dados <- data.frame(k, rho)
+  ggplot(dados) + 
+    geom_bar(aes(x = k, y = rho), stat = "identity", position = "identity", fill = "green4") +
+    theme(axis.text.y = element_text(size = 20))
+})
+```
+
+
+# AR(p)
+## AR(p)
+
+
+### Definição:
+
+Um processo estocástico $\{Y_t\}$ é dito autoregressivo de ordem p, denotado AR(p), se seu processo gerador de dados é dado por $$Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \cdots + \phi_p Y_{t-p} + \epsilon_t,$$ em que $c$, $\phi_1, \cdots, \phi_p$ são parâmetros reais e $\epsilon_t \sim RB(0, \sigma^2)$. 
+
+
+> Se as raízes da polinomial $1 - \phi_1 z - \phi_2 z^2 - \cdots - \phi_p z^p$ estiverem fora do círculo unitário, o processo é estacionário.
+
+. . . 
+
+>  Equivalentemente, se as raízes da polinomial $\lambda^p - \phi_1 \lambda^{p-1} - \phi_2 \lambda^{p-2} - \cdots - \phi^p \lambda^{}$ estiverem dentro do círculo untário, o processo é estacionário.
+
+
+## AR(p)
+
+Sob estacionaridade:
+
+::: {.nonincremental}
+- $\mathbb{E}(Y_t) = \dfrac{c}{1 - \phi_1 - \phi_2 - \cdots - \phi_p} = \mu$
+- $\mathbb{V}(Y_t) = \phi_1 \gamma(1) + \phi_2 \gamma(2) + \cdots + \phi_p \gamma(p) + \sigma^2$
+- $\gamma(k) = \phi_1 \gamma(k-1) + \phi_2 \gamma(k-2) + \cdots + \phi_p \gamma(k-p)$
+:::
+
+. . . 
+
+Dividindo tudo por $\gamma(0)$, encontra-se o sistema de equações de Yule-Walker: $$\rho(k) = \phi_1 \rho(k-1) + \phi_2 \rho(k-2) + \cdots + \phi_p \rho(k-p), \quad k = 1, \cdots, p.$$
+
+
+
+# Autocorrelação parcial
+## Autocorrelação parcial
+
+- Muitas vezes, é dificil identificar processos AR(p) baseados unicamente no correlograma.
+- Uma forma complementar de identificar o modelo é através da função de autocorrelação parcial (PACF).
+
+. . . 
+
+
+$$\phi_{11} = \rho_1 \quad e \quad \phi_{kk} = \frac{\begin{vmatrix}
+    1 & \rho_1 & \rho_2 & \cdots & \rho_{k-2} & \rho_{1}\\
+    \rho_1 & 1 & \rho_1 & \cdots & \rho_{k-3} & \rho_{2}\\
+    \vdots & \vdots & \vdots & \cdots & \vdots & \vdots\\
+    \rho_{k-1} & \rho_{k-2} & \rho_{k-3} & \cdots & \rho_{1} & \rho_k\\
+  \end{vmatrix}}{\begin{vmatrix}
+    1 & \rho_1 & \rho_2 & \cdots & \rho_{k-2} & \rho_{k-1}\\
+    \rho_1 & 1 & \rho_1 & \cdots & \rho_{k-3} & \rho_{k-2}\\
+    \vdots & \vdots & \vdots & \cdots & \vdots & \vdots\\
+    \rho_{k-1} & \rho_{k-2} & \rho_{k-3} & \cdots & \rho_{1} & 1\\
+  \end{vmatrix}}, k \geq 2$$
+
+
+## Autocorrelação parcial
+
+### AR(1):
+
+$$Y_t = c + \phi Y_{t-1} + \epsilon_t, \quad \rho(k) = \rho_k = \phi^k.$$
+
+- $\phi_{11} = \rho_1 = \phi$
+- $\phi_{22} = \dfrac{\begin{vmatrix}
+    1 & \rho_1 \\
+    \rho_1 & \rho_2\\
+  \end{vmatrix}}{\begin{vmatrix}
+    1 & \rho_1 \\
+    \rho_1 & 1 \\
+  \end{vmatrix}} = \dfrac{\rho_2 - \rho_1^2}{1 - \rho_1^2} = \dfrac{\phi^2 - \phi^2}{1 - \phi^2} = 0$
+- $\phi_{kk} = 0,\quad  k \geq 3$
+
+
+## Autocorrelação parcial
+
+### AR(2):
+
+$$Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \epsilon_t,$$ 
+
+- $\rho_1 = \frac{\phi_1}{1-\phi_2}, \quad \rho_2 = \dfrac{\phi_1^2}{1-\phi_2} + \phi_2 = \dfrac{\phi_1^2 + \phi_2 - \phi_2^2}{1 - \phi_2}, \quad \rho_k = \phi_1 \rho_{k-1} + \phi_2 \rho_{k-2}.$
+- $\phi_{11} = \rho_1 = \frac{\phi_1}{1-\phi_2}$
+- $\phi_{22} = \frac{\begin{vmatrix}
+    1 & \rho_1 \\
+    \rho_1 & \rho_2\\
+  \end{vmatrix}}{\begin{vmatrix}
+    1 & \rho_1 \\
+    \rho_1 & 1 \\
+  \end{vmatrix}} = \frac{\rho_2 - \rho_1^2}{1 - \rho_1^2} = \frac{\frac{\phi_1^2 + \phi_2 - \phi_2^2}{1 - \phi_2} - \big(\frac{\phi_1}{1-\phi_2}\big)^2}{1 - \big(\frac{\phi_1}{1-\phi_2}\big)^2} = \frac{\phi_2(1 + \phi_2^2 - 2\phi_2 - \phi_1^2)}{1 + \phi_2^2 - 2\phi_2 - \phi_1^2} = \phi_2$
+
+
+
+## Autocorrelação parcial
+
+### AR(2):
+
+- $\phi_{33} = \frac{\begin{vmatrix}
+    1 & \rho_1 & \rho_1 \\
+    \rho_1  & 1 & \rho_2\\
+    \rho_2  & \rho_1 & \rho_3\\
+  \end{vmatrix}}{\begin{vmatrix}
+    1 & \rho_1 & \rho_2 \\
+    \rho_1  & 1 & \rho_1\\
+    \rho_2  & \rho_1 & 1\\
+  \end{vmatrix}} = \frac{\begin{vmatrix}
+    1 & \rho_1 & \phi_1 + \phi_2 \rho_1 \\
+    \rho_1  & 1 & \phi_1 \rho_1 + \phi_2 \\
+    \rho_2  & \rho_1 & \phi_1 \rho_2 + \phi_2 \rho_1\\
+  \end{vmatrix}}{\begin{vmatrix}
+    1 & \rho_1 & \rho_2 \\
+    \rho_1  & 1 & \rho_1\\
+    \rho_2  & \rho_1 & 1\\
+  \end{vmatrix}} = 0$
+- $\phi_{kk} = 0, \quad k \geq 4$
+
+
+## Autocorrelação parcial
+
+### AR(p):
+
+$$Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \cdots + \phi_p Y_{t-p} + \epsilon_t,$$ 
+
+
+- $\rho_k = \phi_1 \rho_{k-1} + \phi_2 \rho_{k-2} + \cdots + \phi_p \rho_{k-p}$
+- $\phi_{p+1,p+1} = \frac{\begin{vmatrix}
+    1 & \rho_1 &  \cdots & \rho_{p+1-2} & \rho_{1}\\
+    \rho_1 & 1 &  \cdots & \rho_{p+1-3} & \rho_{2}\\
+    \vdots &  \vdots & \cdots & \vdots & \vdots\\
+    \rho_{p+1-1} & \rho_{p+1-2} &  \cdots & \rho_{1} & \rho_{p+1}\\
+  \end{vmatrix}}{\begin{vmatrix}
+    1 & \rho_1 &  \cdots & \rho_{p+1-2} & \rho_{p+1-1}\\
+    \rho_1 & 1 &  \cdots & \rho_{p+1-3} & \rho_{p+1-2}\\
+    \vdots & \vdots & \cdots & \vdots & \vdots\\
+    \rho_{p+1-1} & \rho_{p+1-2} & \cdots & \rho_{1} & 1\\
+  \end{vmatrix}} = \frac{\begin{vmatrix}
+    1 & \rho_1 &  \cdots & \rho_{p-1} & \phi_1 + \phi_2 \rho_{1} +\cdots + \phi_p \rho_{p-1}\\
+    \rho_1 & 1 & \cdots & \rho_{p-2} & \phi_1 \rho_1 + \phi_2 +\cdots + \phi_{p-1} \rho_{p-2}\\
+    \vdots & \vdots &  \cdots & \vdots & \vdots\\
+    \rho_{p} & \rho_{p-1} &  \cdots & \rho_{1} & \phi_1 \rho_p + \phi_2 \rho_{p-1} +\cdots + \phi_p \rho_1 \\
+  \end{vmatrix}}{\begin{vmatrix}
+    1 & \rho_1 &  \cdots & \rho_{p+1-2} & \rho_{p+1-1}\\
+    \rho_1 & 1 &  \cdots & \rho_{p+1-3} & \rho_{p+1-2}\\
+    \vdots & \vdots & \cdots & \vdots & \vdots\\
+    \rho_{p+1-1} & \rho_{p+1-2} & \cdots & \rho_{1} & 1\\
+  \end{vmatrix}}$
+- $\phi_{kk} = 0\quad k\geq p+1$
+
+
+
+## Autocorrelação parcial
+
+Para processos estacionários AR(p)
+
+- A função de autocorrelação apresenta, após $\rho_{p}$, um decaimento exponencial ou sinoidal.
+- A função de autocorrelaçñao parcial apresenta, $\phi_{kk} = 0\quad k > p.$
+
+. . . 
+
+> Com ambas ferramentas, identificar a ordem de um processo AR(p) é mais fácil.
+
+. . . 
+
+
+**Observação:** Até aqui temos visto as autocorrelações e autocorrelações parciais teóricas. Na prática, trabalhamos com séries observadas (teremos $\hat{\rho}_k$ em lugar de $\rho_k$ e $\hat{\phi}_{kk}$ em lugar de $\phi_{kk}$).
+
+
+## Autocorrelação parcial
+
+**Consegue acertar a ordem $p$ do AR(p)?**
+
+::: {.panel-tabset}
+
+### Caso  1
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(1, 0, 0), ar = .9 ), n = 1000)
+par(mfrow = c(1, 2))
+acf(y, main = "ACF")
+pacf(y, main = "PACF")
+```
+
+
+### Caso  2
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(2, 0, 0), ar = c(0.3, 0.15) ), n = 1000)
+par(mfrow = c(1, 2))
+acf(y, main = "ACF")
+pacf(y, main = "PACF")
+```
+
+### Caso  3
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(2, 0, 0), ar = c(-0.3, 0.15) ), n = 1000)
+par(mfrow = c(1, 2))
+acf(y, main = "ACF")
+pacf(y, main = "PACF")
+```
+
+
+### Caso  4
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(2, 0, 0), ar = c(-0.3, -0.15) ), n = 1000)
+par(mfrow = c(1, 2))
+acf(y, main = "ACF")
+pacf(y, main = "PACF")
+```
+
+
+### Caso  5
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(1, 0, 0), ar = c(-0.2) ), n = 1000)
+par(mfrow = c(1, 2))
+acf(y, main = "ACF")
+pacf(y, main = "PACF")
+```
+
+
+### Caso  6
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(4, 0, 0), ar = c(0.4, 0.2, 0.15, 0.1) ), n = 1000)
+par(mfrow = c(1, 2))
+acf(y, main = "ACF")
+pacf(y, main = "PACF")
+```
+
+
+### Caso  7
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(1, 0, 0), ar = c(0.99) ), n = 1000)
+par(mfrow = c(1, 2))
+acf(y, main = "ACF")
+pacf(y, main = "PACF")
+```
+
+
+:::
+
+
+
+# Conceitos adicionais
+## Equações em diferenças
+
+
+Chamamos de equação em diferenças a uma expressão da forma $$\underbrace{Z_t - \phi_1 Z_{t-1} - \phi_2 Z_{t-2} - \cdots - \phi_k Z_{t-k}}_{\underbrace{(1 - \phi_1 B - \phi_2 B^2 - \cdots - \phi_k B^k)}_{\phi(B)}Z_t} = c$$
+
+- Se $c = 0$, a equação em diferenças é dira homogênea.
+- $\phi(B)$ é chamado de polinômio característico de uma equação em diferenças.
+- A equação $\phi(B) = 0$ é chamada equação característica.
+
+
+## Equações em diferenças
+
+**Ejemplo:** 
+
+A equação característica de uma equação em diferenças de primeira ordem é dada por $$(1 - \phi B) = 0,$$ cuja solução é $B = 1/\phi.$
+
+
+
+## AR(p) e causalidade
+
+### Definição:
+
+Um processo estocástico $Z_t$ é dito causal se pode ser escrito como $$Z_t = \mu + \displaystyle\sum_{j = 0}^{\infty} \psi_j \epsilon_{t-j},$$ para constantes $\psi_j$ satisfazendo $\displaystyle\sum_{j = 0}^{\infty} \psi^2_j < \infty$ e $\epsilon_t \sim RB(0, \sigma^2)$.
+
+
+### Teorema da Causalidade
+
+Um processo AR(p) é causal se e somente se, as raizes do polinômio $\phi(z) = 1 - \phi_1z - \cdots - \phi_p z^p$ estão fora do círculo unitário.
+
+
+## AR(p) e causalidade
+
+
+### Teorema da decomposição de Wold
+
+Todo processo estocástico estacionário ${Z_t}$ pode ser escrito como a combinação linear de processos ruido branco ($\{\epsilon_t\}$). Isto é $$Z_t = \mu + \displaystyle \sum_{j = 0}^{\infty}\psi_j \epsilon_{t-j},$$ em que $\psi_0 = 1$ e $\displaystyle \sum_{j = 0}^{\infty}\psi_j \epsilon_{t-j} < \infty$
+
+
+
+
+## Referências
+
+- Bueno, R. D. L. D. S. (2018). Econometria de séries temporais. Capítulo 2.
+- [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 9.
+- Huang, C., & Petukhina, A. (2022). Applied Time Series Analysis and Forecasting with Python. Springer Nature. Chapter 3.
+- Peña, D. (2005). Análisis de series temporales. Alianza. Capítulo 4.
+- Shumway, R. H., & Stoffer, D. S. (2019). Time series: a data analysis approach using R. Chapman and Hall/CRC. Chapter 4.
+- Wei, W. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2ed, Pearson. Chapter 3.
+
