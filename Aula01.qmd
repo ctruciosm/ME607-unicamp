@@ -98,7 +98,7 @@ Em qualquer projeto envolvendo previsão precisamos determinar qual é nosso int
 
 . . .
 
-> Responder corretamente a essas perguntas nos ajudara na escolha da abordagem a ser utilizada.
+> Responder corretamente a essas perguntas nos ajudará na escolha da abordagem a ser utilizada.
 
 # Séries temporais: *Overview*
 
@@ -215,7 +215,7 @@ Coleção de variáveis aleatórias com médias zero, variância constante e que
 
 ## Conceitos básicos
 
-Na Figura @fig-example01 temos um exemplo da realização de um processo estocástico. **Consegue identificar/explicar o conceito de processo estocástico na mesma figura?**
+Na @fig-example01 temos um exemplo da realização de um processo estocástico. **Consegue identificar/explicar o conceito de processo estocástico na mesma figura?**
 
 ```{r}
 #| label: fig-example01
@@ -241,6 +241,7 @@ ggplot(figura_dados) +
 
 > Obs: como o processo estocástico é uma coleção de variáveis aleatórias $\{Y_t \}$ indexadas pelo tempo $t$, para cada $t$ temos que $Y_t$ tem sua própria distribuição (e então faz sentido pensar na esperança, variância, ...).
 
+
 ## Conceitos básicos
 
 #### Processo estritamente estacionário
@@ -251,7 +252,7 @@ Um processo estocástico $\{Y_t\}_{t = -\infty}^{\infty}$ é dito estritamente e
 
 #### Processo (fracamente) estacionário
 
-Um proceso estocástico $\{Y_t\}_{t = -\infty}^{\infty}$ com é dito fracamente estacionário (estacionário de segunda ordem ou simplesmente estacionário) se:
+Um proceso estocástico $\{Y_t\}_{t = -\infty}^{\infty}$ é dito fracamente estacionário (estacionário de segunda ordem ou simplesmente estacionário) se:
 
 -   $\mathbb{E}(Y_t^2) < \infty, \quad \forall t$
 -   $\mathbb{E}(Y_t) = \mu_t = \mu, \quad \forall t$
@@ -288,6 +289,8 @@ btc2 <- btc[1:935, ] |> mutate(ret = log(close/lag(close))*100) |> select(timest
 p3 <- ggplot(data = btc2) + geom_line(mapping = aes(x = timestamp, y = ret), color = "red") + ylab("y") + xlab("Tempo")
 p1 / p2 / p3
 ```
+
+
 
 ## Referências
 

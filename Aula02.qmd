@@ -39,7 +39,7 @@ editor: source
 ## Introdução
 
 - Como em todo projeto de análise de dados, análise exploratória de dados (EDA, em inglês) tem um papel fundamental.
-- EDA permitirá que identifiquemos padrões, dados atípicos, mudanças de comportamento em diferentes períodos, etc. Isto todo nos ajudara a escolher como abordar o problema.
+- EDA permitirá que identifiquemos padrões, dados atípicos, mudanças de comportamento em diferentes períodos, etc. Isto todo nos ajudará a escolher como abordar o problema.
 - Na aula de hoje focaremos em alguns gráficos, estatísticas e conceitos fundamentais relacionados com EDA em séries temporais.
 
 # Gráficos
@@ -277,9 +277,6 @@ $$\rho(t,t+k) = \dfrac{\mathbb{Cov}(Y_t, Y_{t+k})}{\sigma_t \sigma_{t+k}} = \dfr
 4. $-1 \leq \rho(k) \leq 1$
 5. $\gamma(k)$ é semidefinida positiva, no sentido que $\displaystyle \sum_{i = 1}^n \sum_{j = 1}^n \alpha_i \alpha_j \gamma(t_j - t_i) \geq 0$ para quaisquer $\alpha_i, \alpha_j \in \mathbb{R}$ e $t_j -t_i \in \mathbb{Z}$.
 
-. . . 
-
-**Demostração**
 
 
 ## Autocovariância amostral
@@ -421,7 +418,7 @@ dados |> autoplot()
 ## Ergodicidade
 
 
-- Séries estacionárias são caracterizadas pela média $\mu$, variância $\sigma^2$, autocorrelações $\rho(k)$ e autocorrelações parciais $\phi_{kk}$.
+- Séries estacionárias são caracterizadas pela média $\mu$, variância $\sigma^2$, autocorrelações $\rho(k)$.
 - Se conhecessemos todas as possíveis realizações do processo estocástico, poderiamos calcular com exatidado esses valores.
 - Bastariam apenas algumas realizações do processo estocásticos para estimar os parâmetros de interesse.
 - Na prática não observamos multiples realizações mas apenas uma relização.
