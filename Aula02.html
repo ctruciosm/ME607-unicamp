@@ -426,7 +426,7 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 <h2>Introdução</h2>
 <ul>
 <li class="fragment">Como em todo projeto de análise de dados, análise exploratória de dados (EDA, em inglês) tem um papel fundamental.</li>
-<li class="fragment">EDA permitirá que identifiquemos padrões, dados atípicos, mudanças de comportamento em diferentes períodos, etc. Isto todo nos ajudara a escolher como abordar o problema.</li>
+<li class="fragment">EDA permitirá que identifiquemos padrões, dados atípicos, mudanças de comportamento em diferentes períodos, etc. Isto todo nos ajudará a escolher como abordar o problema.</li>
 <li class="fragment">Na aula de hoje focaremos em alguns gráficos, estatísticas e conceitos fundamentais relacionados com EDA em séries temporais.</li>
 </ul>
 </section></section>
@@ -733,9 +733,6 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 <li class="fragment"><span class="math inline">\(-1 \leq \rho(k) \leq 1\)</span></li>
 <li class="fragment"><span class="math inline">\(\gamma(k)\)</span> é semidefinida positiva, no sentido que <span class="math inline">\(\displaystyle \sum_{i = 1}^n \sum_{j = 1}^n \alpha_i \alpha_j \gamma(t_j - t_i) \geq 0\)</span> para quaisquer <span class="math inline">\(\alpha_i, \alpha_j \in \mathbb{R}\)</span> e <span class="math inline">\(t_j -t_i \in \mathbb{Z}\)</span>.</li>
 </ol>
-<div class="fragment">
-<p><strong>Demostração</strong></p>
-</div>
 </section>
 <section id="autocovariância-amostral" class="slide level2">
 <h2>Autocovariância amostral</h2>
@@ -890,7 +887,18 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 <h2>Correlograma</h2>
 <h4 id="observações">Observações:</h4>
 <ol type="1">
-<li class="fragment">A definição de <span class="math inline">\(\hat{\gamma}(k) = n^{-1} \displaystyle \sum_{t = 1}^{t-k} (y_{t + k} - \bar{y})(y_t - \bar{y})\)</span> é preferida (em lugar de utilizar <span class="math inline">\((n - k)^{-1}\)</span>) pois essa definição faz com que a função seja semidefinida positiva o que garante que a variância de combinações lineares de <span class="math inline">\(y_t\)</span> seja sempre não negativa.</li>
+<li class="fragment">A definição de <span class="math inline">\(\hat{\gamma}(k) = n^{-1} \displaystyle \sum_{t = 1}^{t-k} (y_{t + k} - \bar{y})(y_t - \bar{y})\)</span> é preferida (em lugar de utilizar <span class="math inline">\((n - k)^{-1}\)</span>) pois <span class="math inline">\(\forall\)</span> <span class="math inline">\(k \geq 1\)</span>, a matriz de covariância amostral <span class="math inline">\(\hat{\Gamma}_k\)</span> é semidefinida positiva, em que <span class="math display">\[\hat{\Gamma}_k = \begin{bmatrix}
+\hat{\gamma}_0 &amp; \hat{\gamma}_1 &amp; \cdots &amp; \hat{\gamma}_{k-1} \\
+\hat{\gamma}_1 &amp; \hat{\gamma}_0 &amp; \cdots &amp; \hat{\gamma}_{k-2} \\
+\vdots &amp; \cdots &amp; \ddots &amp; \vdots \\
+\hat{\gamma}_{k-1} &amp; \hat{\gamma}_{k-2} &amp; \cdots &amp; \hat{\gamma}_{0} \\
+  \end{bmatrix}\]</span></li>
+</ol>
+</section>
+<section id="correlograma-4" class="slide level2">
+<h2>Correlograma</h2>
+<h4 id="observações-1">Observações:</h4>
+<ol start="2" type="1">
 <li class="fragment">As linhas azuis tracejadas no correlograma são bandas de confiança e são obtidas como <span class="math inline">\(\pm z_{\alpha/2}\dfrac{1}{\sqrt{n}}\)</span> (voltaremos a este ponto mais adiante).</li>
 <li class="fragment">Uma forma simples de verificar se a <span class="math inline">\(k\)</span>-ésima autocorrelação (<span class="math inline">\(\rho(k)\)</span>) é significativa, é ver se <span class="math inline">\(\hat{\rho}(k)\)</span> está fora das bandas de confiança.</li>
 </ol>
@@ -905,13 +913,13 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 <ul>
 <li class="fragment">Embora a <em>auto</em>correlação entre <span class="math inline">\(Y_t\)</span> e <span class="math inline">\(Y_{t+k}\)</span> seja de vital importância em um contexto de séries temporais. Podemos estar interessados em calcular a <em>auto</em>correlação entre <span class="math inline">\(Y_t\)</span> e <span class="math inline">\(Y_{t+k}\)</span> uma vez que temos removido o efeito da dependência linear de <span class="math inline">\(Y_{t+1}, \cdots, Y_{t+k-1}\)</span></li>
 <li class="fragment">Este tipo de correlação é conhecido como <em>auto</em>correlação parcial e é dado por <span class="math display">\[\phi_{kk} = \mathbb{C}or(Y_t, Y_{t+k}| Y_{t+1}, \cdots, Y_{t+k-1}).\]</span></li>
-<li class="fragment">Pode-se provar que <span class="math display">\[\phi_{kk} = \begin{vmatrix}
+<li class="fragment">Pode-se provar que <span class="math display">\[\phi_{11} = \rho_1 \quad e \quad \phi_{kk} = \begin{vmatrix}
   1 &amp; \rho_1 &amp; \rho_2 &amp; \cdots &amp; \rho_{k-2} &amp; \rho_{1}\\
   \rho_1 &amp; 1 &amp; \rho_1 &amp; \cdots &amp; \rho_{k-3} &amp; \rho_{2}\\
   \vdots &amp; \vdots &amp; \vdots &amp; \cdots &amp; \vdots &amp; \vdots\\
   \rho_{k-1} &amp; \rho_{k-2} &amp; \rho_{k-3} &amp; \cdots &amp; \rho_{1} &amp; \rho_k\\
 \end{vmatrix}  \begin{vmatrix}
-  1 &amp; \rho_1 &amp; \rho_2 &amp; \cdots &amp; \rho_{k-2} &amp; \rho_{k-11}\\
+  1 &amp; \rho_1 &amp; \rho_2 &amp; \cdots &amp; \rho_{k-2} &amp; \rho_{k-1}\\
   \rho_1 &amp; 1 &amp; \rho_1 &amp; \cdots &amp; \rho_{k-3} &amp; \rho_{k-2}\\
   \vdots &amp; \vdots &amp; \vdots &amp; \cdots &amp; \vdots &amp; \vdots\\
   \rho_{k-1} &amp; \rho_{k-2} &amp; \rho_{k-3} &amp; \cdots &amp; \rho_{1} &amp; 1\\
@@ -926,7 +934,7 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 <section id="ergodicidade-1" class="slide level2">
 <h2>Ergodicidade</h2>
 <ul>
-<li class="fragment">Séries estacionárias são caracterizadas pela média <span class="math inline">\(\mu\)</span>, variância <span class="math inline">\(\sigma^2\)</span>, autocorrelações <span class="math inline">\(\rho(k)\)</span> e autocorrelações parciais <span class="math inline">\(\phi_{kk}\)</span>.</li>
+<li class="fragment">Séries estacionárias são caracterizadas pela média <span class="math inline">\(\mu\)</span>, variância <span class="math inline">\(\sigma^2\)</span>, autocorrelações <span class="math inline">\(\rho(k)\)</span>.</li>
 <li class="fragment">Se conhecessemos todas as possíveis realizações do processo estocástico, poderiamos calcular com exatidado esses valores.</li>
 <li class="fragment">Bastariam apenas algumas realizações do processo estocásticos para estimar os parâmetros de interesse.</li>
 <li class="fragment">Na prática não observamos multiples realizações mas apenas uma relização.</li>

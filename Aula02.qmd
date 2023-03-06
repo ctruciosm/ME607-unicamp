@@ -388,7 +388,19 @@ dados |> autoplot()
 
 #### Observações:
 
-1. A definição de $\hat{\gamma}(k) = n^{-1} \displaystyle \sum_{t = 1}^{t-k} (y_{t + k} - \bar{y})(y_t - \bar{y})$ é preferida (em lugar de utilizar $(n - k)^{-1}$) pois essa definição faz com que a função seja semidefinida positiva o que garante que a variância de combinações lineares de $y_t$ seja sempre não negativa.
+1. A definição de $\hat{\gamma}(k) = n^{-1} \displaystyle \sum_{t = 1}^{t-k} (y_{t + k} - \bar{y})(y_t - \bar{y})$ é preferida (em lugar de utilizar $(n - k)^{-1}$) pois $\forall$  $k \geq 1$, a matriz de covariância amostral $\hat{\Gamma}_k$ é semidefinida positiva, em que $$\hat{\Gamma}_k = \begin{bmatrix}
+    \hat{\gamma}_0 & \hat{\gamma}_1 & \cdots & \hat{\gamma}_{k-1} \\
+    \hat{\gamma}_1 & \hat{\gamma}_0 & \cdots & \hat{\gamma}_{k-2} \\
+    \vdots & \cdots & \ddots & \vdots \\
+    \hat{\gamma}_{k-1} & \hat{\gamma}_{k-2} & \cdots & \hat{\gamma}_{0} \\
+  \end{bmatrix}$$
+  
+  
+## Correlograma
+
+#### Observações:
+
+
 2. As linhas azuis tracejadas no correlograma são bandas de confiança e são obtidas como $\pm z_{\alpha/2}\dfrac{1}{\sqrt{n}}$ (voltaremos a este ponto mais adiante). 
 3. Uma forma simples de verificar se a $k$-ésima autocorrelação ($\rho(k)$) é significativa, é ver se $\hat{\rho}(k)$ está fora das bandas de confiança.
 
