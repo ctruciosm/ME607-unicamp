@@ -345,7 +345,7 @@ Sob estacionaridade:
 
 . . . 
 
-Dividindo tudo por $\gamma(0)$, encontra-se o sistema de equações de Yule-Walker: $$\rho(k) = \phi_1 \rho(k-1) + \phi_2 \rho(k-2) + \cdots + \phi_p \rho(k-p), \quad k = 1, \cdots, p.$$
+Dividindo tudo por $\gamma(0)$, encontra-se o sistema de equações de Yule-Walker: $$\rho(k) = \phi_1 \rho(k-1) + \phi_2 \rho(k-2) + \cdots + \phi_p \rho(k-p), \quad k \geq 1.$$
 
 
 
