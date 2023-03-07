@@ -310,6 +310,7 @@ As autocorrelações nos permitem graficar o correlograma (um gráfico que repor
 - O correlograma traz informação da correlação da série com ela mesma defasada no tempo.
 - **Nos permitem identificar tendência**: a correlação de $y_t$ vs. $y_{t-k}$ para pequenos valores de $k$ tende a ser grande e positiva.
 - **Nos permite identificar padrões sazonais**: as autocorrelações serão maiores nos periodos sazonais (e múltiplos deste) do que em outros períodos. Além disso, o padrão (se algúm), repete-se.
+- Quando ambas caracteristicas são observadas, a função de autocorrelação é uma combinação de ambos os casos.
 
 
 
@@ -515,4 +516,5 @@ Pode-se provar que se o processo for ruido branco, então $$\rho(k) \rightarrow^
 
 -   [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 2.
 - Wei, W.W.S. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2nd edition.  Chapter 2.
+- McLeod, A. I., & Jimenéz, C. (1984). Nonnegative definiteness of the sample autocovariance function. The American Statistician, 38(4), 297-298.
 
