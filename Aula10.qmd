@@ -261,11 +261,11 @@ Seja o processo AR(1), $$Y_t = c + \phi Y_{t-1} + \epsilon_t, \quad t = 1, \cdot
 
 ::: {.column width="60%"}
 
-- $\mathbb{E}_T(Y_{T+1}) = c + \phi y_{T}$
+- $\mathbb{E}_T(Y_{T+1}) = c + \phi Y_{T}$
 - $\mathbb{E}_T(Y_{T+2}) = c + \phi \mathbb{E}_T(Y_{T+1}) = c(1 + \phi) + \phi^2 Y_{T}$
 - $\mathbb{E}_T(Y_{T+3}) = c + \phi \mathbb{E}_T(Y_{T+2}) = c(1 + \phi + \phi^2) + \phi^3 Y_{T}$
 - $\vdots$
-- $\mathbb{E}_T(Y_{T+h}) = c \times  \sum_{i = 0}^{h-1}\phi^i + \phi^hT_{T}$
+- $\mathbb{E}_T(Y_{T+h}) = c \times  \sum_{i = 0}^{h-1}\phi^i + \phi^hY_{T}$
 
 :::
 
@@ -336,9 +336,14 @@ $$\underbrace{c \times  \sum_{i = 0}^{h-1}\phi^i + \phi^hY_{T}}_{\mathbb{E}_T(Y_
 ## Referências
 
 
+::: {.nonincremental}
+
 - Bueno, R. D. L. D. S. (2018). Econometria de séries temporais. Capítulo 3.
 - Brockwell, P.J & Davis, R.A. (2016). Introduction to Time Series and Forecasting, 3rd editions, Springer. Chapter 5.
 - Morettin, P.A, & Toloi, C.M.C. (2006). Análise de Séries Temporais, 2ed, Blucher. Capítulo 9.
 - Wei, W. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2ed, Pearson. Chapter 5.
+
+
+:::
 
 
