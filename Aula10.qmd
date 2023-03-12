@@ -43,17 +43,302 @@ editor: source
 ## Diagnóstico
 
 
-# Testes de raiz unitária
-## Testes de raiz unitária
+<center>
+**Como sabermos se o modelo ajustado capturou a dinâmica dos dados?**
+
+![](imagens/duvida.png)
+
+</center>
+
+. . . 
+
+<center>
+
+Diagnóstico do modelo!
+
+</center>
+
+
+. . . 
+
+> Na formulação do modelo, assumiu-se que os erros são ruido branco. O mesmo deve acontecer com os resíduos estimados!
+
+
+## Diagnóstico
+
+### Como verificar se os resíduos são ruido branco?
+
+- ACF
+- PACF
+- Testes de Ljung-Box
+- Homocedasticidade
+- Normalidade*
+
+. . . 
+
+> Rejeitarmos a hipótese de que erros são ruido branco implica que ainda há informação não capturada pelo modelo (o que pode gerar previsões ruins) que pode ser melhor explorada por outros modelos (e pode gerar melhores previsões).  Neste caso, descarta-se o modelo ajustado e testam-se outras possibilidades até obtermos um modelo em que não podemos rejeitar a hipótese de que os erros são ruido branco.
+
+
+## Diagnóstico
+
+Seja o processo AR(p) $$Y_t = c + \phi_1Y_{t-1} + \cdots + \phi_p Y_{t-p} + \epsilon_t.$$
+
+. . . 
+
+Definimos os resíduos como $$\hat{\epsilon}_t = y_t - \hat{c}- \hat{\phi}_1 y_{t-1} - \cdots - \hat{\phi}_p y_{t-p}$$
+
+
+. . . 
+
+A primeira forma de verificar se os erros ($\{ \epsilon_t \}$) são ruido branco é através do gráfico de sequência, ACF e PACF dos resíduos ($\{ \hat{\epsilon_t} \}$).
+
+. . . 
+
+> Se $\{ \hat{\epsilon_t} \}_{t \geq 1}$ for ruido branco: (a) nenhum padrão deveria ser observado no gráfico de sequência, (b) ACF não deveriam indicar $\rho_k \neq 0$ e (c) PACF não deveriam indicar $\phi_{kk} \neq 0$.
+
+
+
+## Diagnóstico
+
+::: {.panel-tabset}
+
+### Serie
+
+```{r}
+#| echo: true
+set.seed(123)
+y <- 0.1 + arima.sim(n = 1000, list(ar = c(0.8, -0.45)), sd = 1.4142)
+ts.plot(y)
+```
+
+### Estimação
+
+```{r}
+#| echo: true
+library(fpp3)
+dados = data.frame(y, t = seq(as.Date("1995-01-11"), as.Date("1995-01-11") + length(y) - 1,"day")) |> as_tsibble(index = t)
+fit <- dados |> model(ar2 = AR(y ~ order(2) + 1))
+report(fit)
+```
+
+
+### Resíduos
+
+```{r}
+#| echo: true
+augment(fit)
+```
+
+
+### Diagnóstico I
+
+```{r}
+#| echo: true
+fit |> gg_tsresiduals()
+```
+
+### Diagnóstico II
+
+```{r}
+#| echo: true
+pacf(augment(fit)$.innov[-c(1,2)])
+```
+
+
+### Diagnóstico II
+
+
+```{r}
+#| echo: true
+augment(fit) |> features(.innov, box_pierce, lag = 10, dof = 3)
+augment(fit) |> features(.innov, ljung_box, lag = 10, dof = 3)
+```
+
+:::
+
+
+
+## Diagnóstico
+
+### Teste LM
+
+Também conhecido como teste Breusch-Godfrey, é utilizado para testar autocorrelação dos resíduos. Consiste em regredir os resíduos com seus valores defasados: $$\hat{\epsilon}_t = \beta_1 \hat{\epsilon}_{t-1} + \cdots + \beta_h \hat{\epsilon}_{t-h} + u_t.$$
+
+$$H_0: \beta_1 = \beta_2 = \cdots = \beta_h = 0 \quad vs. \quad H_1: H_0 \text{ não é verdade}$$
+
+Sob $H_0$, $$LM_h = T \times R^2 \sim \chi^2_h,$$ em que $T$ é o tamanho da série e $R^2$ é o coeficiente de determinação da regressão.
+
+
+
+## Diagnóstico: Teste LM
+
+$$\hat{\epsilon}_t = \beta_1 \hat{\epsilon}_{t-1} + \beta_2 \hat{\epsilon}_{t-2} + \beta_3 \hat{\epsilon}_{t-3} + u_t.$$
+
+. . . 
+
+
+$$H_0: \beta_1 = \beta_2 = \beta_3 = 0 \quad vs. \quad H_1: H_0 \text{ não é verdade}$$
+
+. . . 
+
+
+```{r}
+#| echo: true
+library(lmtest)
+e <- augment(fit)$.innov[-c(1,2)]
+bgtest(e ~ lag(e, 1) + lag(e, 2) + lag(e, 3), order = 3, type = "Chisq")
+```
+
+. . . 
+
+Não rejeitamos $H_0$
+
+
+
+
+## Diagnóstico
+
+### Teste ARCH-LM
+
+Serve para identificar sinais de heterocedasticidade condicional. Consiste em regredir os resíduos ao quadrado com seus valores defasados: $$\hat{\epsilon}_t^2 = \beta_1 \hat{\epsilon}_{t-1}^2 + \cdots + \beta_h \hat{\epsilon}_{t-h}^2 + u_t.$$
+
+$$H_0: \beta_1 = \beta_2 = \cdots = \beta_h = 0 \quad vs. \quad H_1: H_0 \text{ não é verdade}$$
+
+Sob $H_0$, $$ARCH-LM_h = T \times R^2 \sim \chi^2_h,$$ em que $T$ é o tamanho da série e $R^2$ é o coeficiente de determinação da regressão.
+
+
+## Diagnóstico: Teste ARCH-LM
+
+
+$$\hat{\epsilon}_t^2 = \beta_1 \hat{\epsilon}_{t-1}^2 + \beta_2 \hat{\epsilon}_{t-2}^2 + \beta_3 \hat{\epsilon}_{t-3}^2 + u_t.$$
+
+. . . 
+
+
+$$H_0: \beta_1 = \beta_2 = \beta_3 = 0 \quad vs. \quad H_1: H_0 \text{ não é verdade}$$
+
+. . . 
+
+
+```{r}
+#| echo: true
+e2 <- augment(fit)$.innov[-c(1,2)]^2
+bgtest(e2 ~ lag(e2, 1) + lag(e2, 2) + lag(e2, 3), order = 3, type = "Chisq")
+```
+
+. . . 
+
+Não rejeitamos $H_0$.
+
+
+. . . 
+
+
+```{r}
+#| echo: true
+augment(fit) |> features(.innov, stat_arch_lm, lag = 3)
+```
+
 
 # Previsão
 ## Previsão
 
+
+Seja o processo AR(1), $$Y_t = c + \phi Y_{t-1} + \epsilon_t, \quad t = 1, \cdots T$$
+
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+- $Y_{T+1} = c + \phi Y_{T} + \epsilon_{T+1}$
+- $Y_{T+2} = c + \phi Y_{T+1} + \epsilon_{T+2}$
+- $Y_{T+3} = c + \phi Y_{T+2} + \epsilon_{T+3}$
+- $\vdots$
+- $Y_{T+h} = c + \phi Y_{T+h-1} + \epsilon_{T+h}$
+
+:::
+
+::: {.column width="60%"}
+
+- $\mathbb{E}_T(Y_{T+1}) = c + \phi y_{T}$
+- $\mathbb{E}_T(Y_{T+2}) = c + \phi \mathbb{E}_T(Y_{T+1}) = c(1 + \phi) + \phi^2 Y_{T}$
+- $\mathbb{E}_T(Y_{T+3}) = c + \phi \mathbb{E}_T(Y_{T+2}) = c(1 + \phi + \phi^2) + \phi^3 Y_{T}$
+- $\vdots$
+- $\mathbb{E}_T(Y_{T+h}) = c \times  \sum_{i = 0}^{h-1}\phi^i + \phi^hT_{T}$
+
+:::
+
+::::
+
+
+. . . 
+
+Quando $h \rightarrow \infty,$ $$\mathbb{E}_T(Y_{T+h}) = \dfrac{c}{1-\phi}.$$
+
+
+## Previsão
+
+
+#### Erro de previsão
+
+- $e_T(1) = Y_{T+1} - \mathbb{E}_T(Y_{T+1}) = \epsilon_{T+1}$
+- $e_T(2) = Y_{T+2} - \mathbb{E}_T(Y_{T+2}) = \phi\epsilon_{T+1} + \epsilon_{T+2}$
+- $e_T(3) = Y_{T+3} - \mathbb{E}_T(Y_{T+3}) = \epsilon_{T+3} + \phi \epsilon_{T+2} + \phi^2 \epsilon_{T+1}$
+- $\vdots$
+- $e_t(h) = Y_{T+h} - \mathbb{E}_T(Y_{T+h}) = \epsilon_{T+h} + \phi \epsilon_{T+h-1} + \cdots + \phi^{h-1} \epsilon_{T+1}$
+
+. . .
+
+
+
+
+$$\text{Para } h \geq 1\text{ :} \quad \mathbb{E}(e_T(h)) = 0, \quad \mathbb{V}(e_T(h)) = \sigma^2_{\epsilon} (1 + \phi^2 + \cdots + \phi^{2(h-1)})$$
+
+. . . 
+
+
+> Quando $h \rightarrow \infty,$ $\mathbb{V}(e_T(h))= \dfrac{\sigma^2_{\epsilon}}{1-\phi^2}.$
+
+
+## Previsão
+
+Sob normalidade, um intervalo de confiança $100\times(1-\alpha)\%$ para $Y_{T+h}$:
+
+$$\underbrace{c \times  \sum_{i = 0}^{h-1}\phi^i + \phi^hY_{T}}_{\mathbb{E}_T(Y_{T+h})} \pm z_{\alpha/2} \underbrace{\sigma_{\epsilon}\sqrt{1 + \phi^2 + \cdots + \phi^{2(h-1)}}}_{\sqrt{\mathbb{V}(e_T(h))}}$$
+
+. . . 
+
+> De forma semehante, resultados análogos para um AR(p) podem ser obtidos.
+
+
+## Previsão
+
+#### AR(p)
+
+- $\mathbb{E}_T(Y_{T+h})$
+- $\mathbb{V}_T(Y_{T+h}) = \mathbb{V}(e_T(h))$
+
+
+
+. . . 
+
+> Na prática, os valores dos parâmetros são desconhecidos e precisam ser estimados. 
+
+. . . 
+
+> Na prática, a cada nova observação os parâmetros são re-estimados e as previsões são feitas novamente. Assim, quando caalcularmos o erro de previsão deve-se considerar também o erro devido à estimação
+
+
+
+
+
 ## Referências
 
-- Brockwell, P. J., & Davis, R. A. (1991). Time series: Theory and Methods. Springer.
-- Morettin, P.A, & Toloi, C.M.C. (2006). Análise de Séries Temporais, 2ed, Blucher. Capítulo 7.
-- Peña, D. (2005). Análisis de series temporales. Alianza. Capítulo 4.
-- Wei, W. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2ed, Pearson. Chapter 7.
+
+- Bueno, R. D. L. D. S. (2018). Econometria de séries temporais. Capítulo 3.
+- Brockwell, P.J & Davis, R.A. (2016). Introduction to Time Series and Forecasting, 3rd editions, Springer. Chapter 5.
+- Morettin, P.A, & Toloi, C.M.C. (2006). Análise de Séries Temporais, 2ed, Blucher. Capítulo 9.
+- Wei, W. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2ed, Pearson. Chapter 5.
 
 

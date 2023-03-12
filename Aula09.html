@@ -867,8 +867,13 @@ sigma^2 estimated as 0.9951,  Conditional Sum-of-Squares = 993.13,  AIC = 2836.9
 <p>[Ver Brockwell and Davis, 1991] Para um processo AR(p), <span class="math display">\[\hat{\phi} \rightarrow N(\phi, n^{-1} \mathbb{V}(\phi)),\]</span> em que <span class="math inline">\(\mathbb{V}(\phi) = \sigma^2_{\epsilon} \Gamma^{-1}.\)</span> Ou seja, assintóticamente, tem a mesma distribuição do que o estimador Yule-Walker. Pode-se provar que:</p>
 <ul>
 <li class="fragment">Para um AR(1): <span class="math inline">\(\mathbb{V} (\phi_1) \approx \dfrac{1-\phi^2_1}{n}\)</span></li>
-<li class="fragment">Para um AR(2): <span class="math inline">\(\mathbb{V} (\phi_1) = \mathbb{V} (\hat{\phi}_2)\approx \dfrac{1-\phi_2^2}{n}\)</span></li>
+<li class="fragment">Para um AR(2): <span class="math inline">\(\mathbb{V} (\phi_1) = \mathbb{V} (\phi_2)\approx \dfrac{1-\phi_2^2}{n}\)</span></li>
 </ul>
+<div class="fragment">
+<blockquote>
+<p>Note que se substituirmos <span class="math inline">\(\sigma^2_{\epsilon}\)</span> por <span class="math inline">\(\hat{\sigma}^2_{\epsilon}\)</span> e <span class="math inline">\(\Gamma\)</span> por <span class="math inline">\(\hat{\Gamma}\)</span>, temos uma metodo para obter intervalos (regiões) de confiança para <span class="math inline">\(\phi\)</span>.</p>
+</blockquote>
+</div>
 </section>
 <section id="outros-métodos-de-estimação" class="slide level2">
 <h2>Outros métodos de estimação</h2>
@@ -878,12 +883,14 @@ sigma^2 estimated as 0.9951,  Conditional Sum-of-Squares = 993.13,  AIC = 2836.9
 </section>
 <section id="referências" class="slide level2">
 <h2>Referências</h2>
+<div>
 <ul>
-<li class="fragment">Brockwell, P. J., &amp; Davis, R. A. (1991). Time series: Theory and Methods. Springer.</li>
-<li class="fragment">Morettin, P.A, &amp; Toloi, C.M.C. (2006). Análise de Séries Temporais, 2ed, Blucher. Capítulo 7.</li>
-<li class="fragment">Peña, D. (2005). Análisis de series temporales. Alianza. Capítulo 4.</li>
-<li class="fragment">Wei, W. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2ed, Pearson. Chapter 7.</li>
+<li>Brockwell, P. J., &amp; Davis, R. A. (1991). Time series: Theory and Methods. Springer.</li>
+<li>Morettin, P.A, &amp; Toloi, C.M.C. (2006). Análise de Séries Temporais, 2ed, Blucher. Capítulo 7.</li>
+<li>Peña, D. (2005). Análisis de series temporales. Alianza. Capítulo 4.</li>
+<li>Wei, W. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2ed, Pearson. Chapter 7.</li>
 </ul>
+</div>
 
 <img src="imagens/imecc.png" class="slide-logo r-stretch"><div class="footer footer-default">
 <p>Carlos Trucíos (IMECC/UNICAMP) | ME607 - Séries Temporais | <a href="https://ctruciosm.github.io/">ctruciosm.github.io</a></p>

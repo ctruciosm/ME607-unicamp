@@ -472,8 +472,12 @@ O método de MV condicional, tem as mesma propriedades assintóticas do que o m�
 [Ver Brockwell and Davis, 1991] Para um processo AR(p), $$\hat{\phi} \rightarrow N(\phi, n^{-1} \mathbb{V}(\phi)),$$ em que $\mathbb{V}(\phi) = \sigma^2_{\epsilon} \Gamma^{-1}.$ Ou seja, assintóticamente, tem a mesma distribuição do que o estimador Yule-Walker. Pode-se provar que:
 
 - Para um AR(1): $\mathbb{V} (\phi_1) \approx \dfrac{1-\phi^2_1}{n}$
-- Para um AR(2): $\mathbb{V} (\phi_1) = \mathbb{V} (\hat{\phi}_2)\approx \dfrac{1-\phi_2^2}{n}$
+- Para um AR(2): $\mathbb{V} (\phi_1) = \mathbb{V} (\phi_2)\approx \dfrac{1-\phi_2^2}{n}$
 
+
+. . . 
+
+> Note que se substituirmos $\sigma^2_{\epsilon}$ por $\hat{\sigma}^2_{\epsilon}$ e $\Gamma$ por $\hat{\Gamma}$, temos uma metodo para obter intervalos (regiões) de confiança para $\phi$.
 
 
 ## Outros métodos de estimação
@@ -485,9 +489,17 @@ O método de MV condicional, tem as mesma propriedades assintóticas do que o m�
 
 ## Referências
 
+
+
+::: {.nonincremental}
+
+
 - Brockwell, P. J., & Davis, R. A. (1991). Time series: Theory and Methods. Springer.
 - Morettin, P.A, & Toloi, C.M.C. (2006). Análise de Séries Temporais, 2ed, Blucher. Capítulo 7.
 - Peña, D. (2005). Análisis de series temporales. Alianza. Capítulo 4.
 - Wei, W. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2ed, Pearson. Chapter 7.
+
+
+:::
 
 
