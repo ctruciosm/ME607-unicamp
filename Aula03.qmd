@@ -289,7 +289,7 @@ Um conceito ainda mais geral que envolve ambos os casos desscritos anteriormente
 
 #### Médias Móveis Ponderadas
 
-$$\hat{T}_t = \displaystyle \sum_{j = -k}^k a_k y_{t+j},$$ em que $\displaystyle \sum_{j = -k}^k a_k = 1$ e $a_j = a_j$.
+$$\hat{T}_t = \displaystyle \sum_{j = -k}^k a_k y_{t+j},$$ em que $\displaystyle \sum_{j = -k}^k a_k = 1$ e $a_j = a_{-j}$.
 
 . . . 
 
