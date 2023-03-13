@@ -39,7 +39,7 @@ editor: source
 # Operadores
 ## Operador de defasagem
 
-Denotado por $B$ (Backshift), o operador de defasagem (ou operador retroativo) é um operador linear que aplicado a uma série temporal, retorna a mesma série mas desafada em um período de tempo, $$BZ_t = Z_{t-1}$$
+Denotado por $B$ (Backshift), o operador de defasagem (ou operador retroativo) é um operador linear que,  aplicado a uma série temporal, retorna a mesma série mas desafada em um período de tempo, $$BZ_t = Z_{t-1}$$
 
 . . . 
 
@@ -101,14 +101,13 @@ Os operadores vistos anteriormente posuem seus operadores inversos (o produto do
 **Ejemplo:** Seja  $\phi(B) = (1-\phi B)$, o inverso é definido para $|\phi|<1$ como $$(1-\phi B)^{-1} = 1 + \phi B + \phi^2 B^2 + \phi^3 B^3 + \cdots$$
 
 
-- O inverso do operador diferença é $(1-B)^{-1} = 1 + B + B^2 + \cdots$
 
 # AR(1)
 ## AR(1)
 
 ### Definição:
 
-Um processo estocástico $\{Y_t\}$ é dito autoregressivo de ordem 1, denotado AR(1), se seu processo gerador de dados é dado por $$Y_t = c + \phi Y_{t-1} + \epsilon_t,$$ em que $c$ e $\phi$ são parâmetros reais e $\epsilon_t \sim RB(0, \sigma^2)$. 
+Um processo estocástico $\{Y_t\}$ é dito autoregressivo de ordem 1, denotado AR(1), se seu processo gerador de dados é dado por $$Y_t = c + \phi Y_{t-1} + \epsilon_t,$$ em que $c$ e $\phi$ são parâmetros reais e $\epsilon_t \sim RB(0, \sigma^2_{\epsilon})$. 
 
 Se $|\phi| < 1$, o processo é estacionário.
 
@@ -127,8 +126,8 @@ Y_t & = \dfrac{c}{1 - \phi} + \displaystyle \sum_{j = 0}^{\infty} \phi^j \epsilo
 ## AR(1)
 
 - $\mathbb{E}(Y_t) = \dfrac{c}{1 - \phi} + \displaystyle \sum_{j = 0}^{\infty} \phi^j \underbrace{\mathbb{E}(\epsilon_{t-j})}_{0} = \dfrac{c}{1 - \phi} = \mu$
-- $\mathbb{V}(Y_t) = \displaystyle \sum_{j = 0}^{\infty} \phi^{2j} \underbrace{\mathbb{V}(\epsilon_{t-j})}_{\sigma^2} = \dfrac{\sigma^2}{1 - \phi^2}$
-- $\mathbb{C}ov(Y_t, Y_{t-k}) = \mathbb{E} \big( \displaystyle \sum_{j = 0}^{\infty} \phi^j \epsilon_{t-j} \times \displaystyle \sum_{j = 0}^{\infty} \phi^j \epsilon_{t-k-j} \big) = \sigma^2 (\phi^k + \phi^{k+2} + \cdots) = \dfrac{\sigma^2 \phi^k}{1-\phi^2},\quad k \geq 0.$
+- $\mathbb{V}(Y_t) = \displaystyle \sum_{j = 0}^{\infty} \phi^{2j} \underbrace{\mathbb{V}(\epsilon_{t-j})}_{\sigma^2_{\epsilon}} = \dfrac{\sigma^2_{\epsilon}}{1 - \phi^2}$
+- $\mathbb{C}ov(Y_t, Y_{t-k}) = \mathbb{E} \big( \displaystyle \sum_{j = 0}^{\infty} \phi^j \epsilon_{t-j} \times \displaystyle \sum_{j = 0}^{\infty} \phi^j \epsilon_{t-k-j} \big) = \sigma^2_{\epsilon} (\phi^k + \phi^{k+2} + \cdots) = \dfrac{\sigma^2_{\epsilon} \phi^k}{1-\phi^2},\quad k \geq 0.$
 
 . . . 
 
@@ -182,7 +181,7 @@ output$distPlot <- renderPlot({
 
 ::: {.column width="30%"}
 Para $k \geq 0:$
-$$\rho(k) = \dfrac{\gamma(k)}{\gamma(0)} = \dfrac{\frac{\sigma^2 \phi^k}{1-\phi^2}}{\frac{\sigma^2}{1-\phi^2}} = \phi^k.$$
+$$\rho(k) = \dfrac{\gamma(k)}{\gamma(0)} = \dfrac{\frac{\sigma^2_{\epsilon} \phi^k}{1-\phi^2}}{\frac{\sigma^2_{\epsilon}}{1-\phi^2}} = \phi^k.$$
 
 $\forall k \in \mathbb{Z}:$
 $$\rho(k) = \phi^{|k|}.$$
@@ -254,7 +253,7 @@ output$distPlot2 <- renderPlot({
 
 ### Definição:
 
-Um processo estocástico $\{Y_t\}$ é dito autoregressivo de ordem 2, denotado AR(2), se seu processo gerador de dados é dado por $$Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \epsilon_t,$$ em que $c$, $\phi_1$ e $\phi_2$ são parâmetros reais e $\epsilon_t \sim RB(0, \sigma^2)$. 
+Um processo estocástico $\{Y_t\}$ é dito autoregressivo de ordem 2, denotado AR(2), se seu processo gerador de dados é dado por $$Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \epsilon_t,$$ em que $c$, $\phi_1$ e $\phi_2$ são parâmetros reais e $\epsilon_t \sim RB(0, \sigma^2_{\epsilon})$. 
 
 
 Se $\phi_2 + \phi_1 < 1$,  $\phi_2 - \phi_1 < 1$ e $|\phi_2| < 1$ o processo é estacionário. 
@@ -266,7 +265,7 @@ Sob estacionaridade,
 
 ::: {.nonincremental}
 - $\mathbb{E}(Y_t) = \dfrac{c}{1 - \phi_1 - \phi_2} = \mu$
-- $\mathbb{V}(Y_t) = \dfrac{(1-\phi_2)\sigma^2}{(\phi_2 + 1)(1 - \phi_2 - \phi_2)(1 - \phi_2 + \phi_1)}$
+- $\mathbb{V}(Y_t) = \dfrac{(1-\phi_2)\sigma^2_{\epsilon}}{(\phi_2 + 1)(1 - \phi_2 - \phi_2)(1 - \phi_2 + \phi_1)}$
 - $\gamma(k) = \phi_1 \gamma(k-1) + \phi_2 \gamma(k-2)$
 :::
 
@@ -323,7 +322,7 @@ output$distPlot3 <- renderPlot({
 
 ### Definição:
 
-Um processo estocástico $\{Y_t\}$ é dito autoregressivo de ordem p, denotado AR(p), se seu processo gerador de dados é dado por $$Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \cdots + \phi_p Y_{t-p} + \epsilon_t,$$ em que $c$, $\phi_1, \cdots, \phi_p$ são parâmetros reais e $\epsilon_t \sim RB(0, \sigma^2)$. 
+Um processo estocástico $\{Y_t\}$ é dito autoregressivo de ordem p, denotado AR(p), se seu processo gerador de dados é dado por $$Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \cdots + \phi_p Y_{t-p} + \epsilon_t,$$ em que $c$, $\phi_1, \cdots, \phi_p$ são parâmetros reais e $\epsilon_t \sim RB(0, \sigma^2_{\epsilon})$. 
 
 
 > Se as raízes da polinomial $1 - \phi_1 z - \phi_2 z^2 - \cdots - \phi_p z^p$ estiverem fora do círculo unitário, o processo é estacionário.
@@ -339,7 +338,7 @@ Sob estacionaridade:
 
 ::: {.nonincremental}
 - $\mathbb{E}(Y_t) = \dfrac{c}{1 - \phi_1 - \phi_2 - \cdots - \phi_p} = \mu$
-- $\mathbb{V}(Y_t) = \phi_1 \gamma(1) + \phi_2 \gamma(2) + \cdots + \phi_p \gamma(p) + \sigma^2$
+- $\mathbb{V}(Y_t) = \phi_1 \gamma(1) + \phi_2 \gamma(2) + \cdots + \phi_p \gamma(p) + \sigma^2_{\epsilon}$
 - $\gamma(k) = \phi_1 \gamma(k-1) + \phi_2 \gamma(k-2) + \cdots + \phi_p \gamma(k-p)$
 :::
 
@@ -572,7 +571,7 @@ pacf(y, main = "PACF")
 
 Chamamos de equação em diferenças a uma expressão da forma $$\underbrace{Z_t - \phi_1 Z_{t-1} - \phi_2 Z_{t-2} - \cdots - \phi_k Z_{t-k}}_{\underbrace{(1 - \phi_1 B - \phi_2 B^2 - \cdots - \phi_k B^k)}_{\phi(B)}Z_t} = c$$
 
-- Se $c = 0$, a equação em diferenças é dira homogênea.
+- Se $c = 0$, a equação em diferenças é dita homogênea.
 - $\phi(B)$ é chamado de polinômio característico de uma equação em diferenças.
 - A equação $\phi(B) = 0$ é chamada equação característica.
 
@@ -583,18 +582,21 @@ Chamamos de equação em diferenças a uma expressão da forma $$\underbrace{Z_t
 
 A equação característica de uma equação em diferenças de primeira ordem é dada por $$(1 - \phi B) = 0,$$ cuja solução é $B = 1/\phi.$
 
+. . . 
 
+Note que a solução do polinômio caracteristico estará fora do círculo unitário se $|\phi| < 1$ (condição de estacionariedade).
 
 ## AR(p) e causalidade
 
 ### Definição:
 
-Um processo estocástico $Z_t$ é dito causal se pode ser escrito como $$Z_t = \mu + \displaystyle\sum_{j = 0}^{\infty} \psi_j \epsilon_{t-j},$$ para constantes $\psi_j$ satisfazendo $\displaystyle\sum_{j = 0}^{\infty} \psi^2_j < \infty$ e $\epsilon_t \sim RB(0, \sigma^2)$.
+Um processo estocástico $Z_t$ é dito causal se pode ser escrito como $$Z_t = \mu + \displaystyle\sum_{j = 0}^{\infty} \psi_j \epsilon_{t-j},$$ para constantes $\psi_j$ satisfazendo $\displaystyle\sum_{j = 0}^{\infty} \psi^2_j < \infty$ e $\epsilon_t \sim RB(0, \sigma^2_{\epsilon})$.
 
 
 ### Teorema da Causalidade
 
 Um processo AR(p) é causal se e somente se, as raizes do polinômio $\phi(z) = 1 - \phi_1z - \cdots - \phi_p z^p$ estão fora do círculo unitário.
+
 
 
 ## AR(p) e causalidade
@@ -605,9 +607,12 @@ Um processo AR(p) é causal se e somente se, as raizes do polinômio $\phi(z) = 
 Todo processo estocástico estacionário ${Z_t}$ pode ser escrito como a combinação linear de processos ruido branco ($\{\epsilon_t\}$). Isto é $$Z_t = \mu + \displaystyle \sum_{j = 0}^{\infty}\psi_j \epsilon_{t-j},$$ em que $\psi_0 = 1$ e $\displaystyle \sum_{j = 0}^{\infty}\psi_j \epsilon_{t-j} < \infty$
 
 
-
+> Obs: daqui em diante, assumiremos que os processos com os quais estamos trabalhando são estacionários e causais.
 
 ## Referências
+
+
+::: {.nonincremental}
 
 - Bueno, R. D. L. D. S. (2018). Econometria de séries temporais. Capítulo 2.
 - [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 9.
@@ -615,4 +620,7 @@ Todo processo estocástico estacionário ${Z_t}$ pode ser escrito como a combina
 - Peña, D. (2005). Análisis de series temporales. Alianza. Capítulo 4.
 - Shumway, R. H., & Stoffer, D. S. (2019). Time series: a data analysis approach using R. Chapman and Hall/CRC. Chapter 4.
 - Wei, W. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2ed, Pearson. Chapter 3.
+
+
+:::
 

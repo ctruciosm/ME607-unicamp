@@ -5,12 +5,12 @@ account: ctruciosm
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8395196
-bundleId: 6920998
+bundleId: 6952853
 url: https://ctruciosm.shinyapps.io/Aula08/
-when: 1678102245.3215
-lastSyncTime: 1678102245.32152
+when: 1678727966.36229
+lastSyncTime: 1678727966.36421
 quarto_version: 1.2.269
 quarto_engines: knitr
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: Aula01.html|Aula01.qmd|Aula02.html|Aula02.qmd|Aula03.html|Aula03.qmd|Aula04.html|Aula04.qmd|Aula05.html|Aula05.qmd|Aula06.html|Aula06.qmd|Aula07.html|Aula07.qmd|Aula09.html|Aula09.qmd|datasets/global_economy_aula.csv|Aula01_files|Aula02_files|Aula03_files|Aula04_files|Aula05_files|Aula06_files|Aula07_files|Aula09_files
+ignoredFiles: Aula01.html|Aula01.qmd|Aula02.html|Aula02.qmd|Aula03.html|Aula03.qmd|Aula04.html|Aula04.qmd|Aula05.html|Aula05.qmd|Aula06.html|Aula06.qmd|Aula07.html|Aula07.qmd|Aula09.html|Aula09.qmd|Aula10.html|Aula10.qmd|datasets/dados_aula10.csv|datasets/global_economy_aula.csv|Aula01_files|Aula02_files|Aula03_files|Aula04_files|Aula05_files|Aula06_files|Aula07_files|Aula09_files|Aula10_files

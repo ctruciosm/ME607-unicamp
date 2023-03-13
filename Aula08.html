@@ -424,7 +424,7 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 </section>
 <section id="operador-de-defasagem" class="slide level2">
 <h2>Operador de defasagem</h2>
-<p>Denotado por <span class="math inline">\(B\)</span> (Backshift), o operador de defasagem (ou operador retroativo) é um operador linear que aplicado a uma série temporal, retorna a mesma série mas desafada em um período de tempo, <span class="math display">\[BZ_t = Z_{t-1}\]</span></p>
+<p>Denotado por <span class="math inline">\(B\)</span> (Backshift), o operador de defasagem (ou operador retroativo) é um operador linear que, aplicado a uma série temporal, retorna a mesma série mas desafada em um período de tempo, <span class="math display">\[BZ_t = Z_{t-1}\]</span></p>
 <div class="fragment">
 <h4 id="propriedades">Propriedades</h4>
 <ul>
@@ -476,9 +476,6 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 </ul>
 <div class="fragment">
 <p><strong>Ejemplo:</strong> Seja <span class="math inline">\(\phi(B) = (1-\phi B)\)</span>, o inverso é definido para <span class="math inline">\(|\phi|&lt;1\)</span> como <span class="math display">\[(1-\phi B)^{-1} = 1 + \phi B + \phi^2 B^2 + \phi^3 B^3 + \cdots\]</span></p>
-<ul>
-<li class="fragment">O inverso do operador diferença é <span class="math inline">\((1-B)^{-1} = 1 + B + B^2 + \cdots\)</span></li>
-</ul>
 </div>
 </section></section>
 <section>
@@ -489,7 +486,7 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 <section id="ar1-1" class="slide level2">
 <h2>AR(1)</h2>
 <h3 id="definição">Definição:</h3>
-<p>Um processo estocástico <span class="math inline">\(\{Y_t\}\)</span> é dito autoregressivo de ordem 1, denotado AR(1), se seu processo gerador de dados é dado por <span class="math display">\[Y_t = c + \phi Y_{t-1} + \epsilon_t,\]</span> em que <span class="math inline">\(c\)</span> e <span class="math inline">\(\phi\)</span> são parâmetros reais e <span class="math inline">\(\epsilon_t \sim RB(0, \sigma^2)\)</span>.</p>
+<p>Um processo estocástico <span class="math inline">\(\{Y_t\}\)</span> é dito autoregressivo de ordem 1, denotado AR(1), se seu processo gerador de dados é dado por <span class="math display">\[Y_t = c + \phi Y_{t-1} + \epsilon_t,\]</span> em que <span class="math inline">\(c\)</span> e <span class="math inline">\(\phi\)</span> são parâmetros reais e <span class="math inline">\(\epsilon_t \sim RB(0, \sigma^2_{\epsilon})\)</span>.</p>
 <p>Se <span class="math inline">\(|\phi| &lt; 1\)</span>, o processo é estacionário.</p>
 </section>
 <section id="ar1-2" class="slide level2">
@@ -507,8 +504,8 @@ Y_t &amp; = \dfrac{c}{1 - \phi} + \displaystyle \sum_{j = 0}^{\infty} \phi^j \ep
 <h2>AR(1)</h2>
 <ul>
 <li class="fragment"><span class="math inline">\(\mathbb{E}(Y_t) = \dfrac{c}{1 - \phi} + \displaystyle \sum_{j = 0}^{\infty} \phi^j \underbrace{\mathbb{E}(\epsilon_{t-j})}_{0} = \dfrac{c}{1 - \phi} = \mu\)</span></li>
-<li class="fragment"><span class="math inline">\(\mathbb{V}(Y_t) = \displaystyle \sum_{j = 0}^{\infty} \phi^{2j} \underbrace{\mathbb{V}(\epsilon_{t-j})}_{\sigma^2} = \dfrac{\sigma^2}{1 - \phi^2}\)</span></li>
-<li class="fragment"><span class="math inline">\(\mathbb{C}ov(Y_t, Y_{t-k}) = \mathbb{E} \big( \displaystyle \sum_{j = 0}^{\infty} \phi^j \epsilon_{t-j} \times \displaystyle \sum_{j = 0}^{\infty} \phi^j \epsilon_{t-k-j} \big) = \sigma^2 (\phi^k + \phi^{k+2} + \cdots) = \dfrac{\sigma^2 \phi^k}{1-\phi^2},\quad k \geq 0.\)</span></li>
+<li class="fragment"><span class="math inline">\(\mathbb{V}(Y_t) = \displaystyle \sum_{j = 0}^{\infty} \phi^{2j} \underbrace{\mathbb{V}(\epsilon_{t-j})}_{\sigma^2_{\epsilon}} = \dfrac{\sigma^2_{\epsilon}}{1 - \phi^2}\)</span></li>
+<li class="fragment"><span class="math inline">\(\mathbb{C}ov(Y_t, Y_{t-k}) = \mathbb{E} \big( \displaystyle \sum_{j = 0}^{\infty} \phi^j \epsilon_{t-j} \times \displaystyle \sum_{j = 0}^{\infty} \phi^j \epsilon_{t-k-j} \big) = \sigma^2_{\epsilon} (\phi^k + \phi^{k+2} + \cdots) = \dfrac{\sigma^2_{\epsilon} \phi^k}{1-\phi^2},\quad k \geq 0.\)</span></li>
 </ul>
 <div class="fragment">
 <blockquote>
@@ -562,7 +559,7 @@ Y_t - \mu &amp; = \phi (Y_{t-1} - \mu) + \epsilon_{t}\\
 <h3 id="função-de-autocorrelação">Função de autocorrelação</h3>
 <div class="columns">
 <div class="column" style="width:30%;">
-<p>Para <span class="math inline">\(k \geq 0:\)</span> <span class="math display">\[\rho(k) = \dfrac{\gamma(k)}{\gamma(0)} = \dfrac{\frac{\sigma^2 \phi^k}{1-\phi^2}}{\frac{\sigma^2}{1-\phi^2}} = \phi^k.\]</span></p>
+<p>Para <span class="math inline">\(k \geq 0:\)</span> <span class="math display">\[\rho(k) = \dfrac{\gamma(k)}{\gamma(0)} = \dfrac{\frac{\sigma^2_{\epsilon} \phi^k}{1-\phi^2}}{\frac{\sigma^2_{\epsilon}}{1-\phi^2}} = \phi^k.\]</span></p>
 <p><span class="math inline">\(\forall k \in \mathbb{Z}:\)</span> <span class="math display">\[\rho(k) = \phi^{|k|}.\]</span></p>
 </div><div class="column" style="width:70%;">
 <div class="cell" data-layout-align="center">
@@ -606,14 +603,14 @@ Y_t - \mu &amp; = \phi (Y_{t-1} - \mu) + \epsilon_{t}\\
 <section id="ar2-1" class="slide level2">
 <h2>AR(2)</h2>
 <h3 id="definição-1">Definição:</h3>
-<p>Um processo estocástico <span class="math inline">\(\{Y_t\}\)</span> é dito autoregressivo de ordem 2, denotado AR(2), se seu processo gerador de dados é dado por <span class="math display">\[Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \epsilon_t,\]</span> em que <span class="math inline">\(c\)</span>, <span class="math inline">\(\phi_1\)</span> e <span class="math inline">\(\phi_2\)</span> são parâmetros reais e <span class="math inline">\(\epsilon_t \sim RB(0, \sigma^2)\)</span>.</p>
+<p>Um processo estocástico <span class="math inline">\(\{Y_t\}\)</span> é dito autoregressivo de ordem 2, denotado AR(2), se seu processo gerador de dados é dado por <span class="math display">\[Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \epsilon_t,\]</span> em que <span class="math inline">\(c\)</span>, <span class="math inline">\(\phi_1\)</span> e <span class="math inline">\(\phi_2\)</span> são parâmetros reais e <span class="math inline">\(\epsilon_t \sim RB(0, \sigma^2_{\epsilon})\)</span>.</p>
 <p>Se <span class="math inline">\(\phi_2 + \phi_1 &lt; 1\)</span>, <span class="math inline">\(\phi_2 - \phi_1 &lt; 1\)</span> e <span class="math inline">\(|\phi_2| &lt; 1\)</span> o processo é estacionário.</p>
 <div class="fragment">
 <p>Sob estacionaridade,</p>
 <div>
 <ul>
 <li><span class="math inline">\(\mathbb{E}(Y_t) = \dfrac{c}{1 - \phi_1 - \phi_2} = \mu\)</span></li>
-<li><span class="math inline">\(\mathbb{V}(Y_t) = \dfrac{(1-\phi_2)\sigma^2}{(\phi_2 + 1)(1 - \phi_2 - \phi_2)(1 - \phi_2 + \phi_1)}\)</span></li>
+<li><span class="math inline">\(\mathbb{V}(Y_t) = \dfrac{(1-\phi_2)\sigma^2_{\epsilon}}{(\phi_2 + 1)(1 - \phi_2 - \phi_2)(1 - \phi_2 + \phi_1)}\)</span></li>
 <li><span class="math inline">\(\gamma(k) = \phi_1 \gamma(k-1) + \phi_2 \gamma(k-2)\)</span></li>
 </ul>
 </div>
@@ -669,7 +666,7 @@ Y_t - \mu &amp; = \phi (Y_{t-1} - \mu) + \epsilon_{t}\\
 <section id="arp-1" class="slide level2">
 <h2>AR(p)</h2>
 <h3 id="definição-2">Definição:</h3>
-<p>Um processo estocástico <span class="math inline">\(\{Y_t\}\)</span> é dito autoregressivo de ordem p, denotado AR(p), se seu processo gerador de dados é dado por <span class="math display">\[Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \cdots + \phi_p Y_{t-p} + \epsilon_t,\]</span> em que <span class="math inline">\(c\)</span>, <span class="math inline">\(\phi_1, \cdots, \phi_p\)</span> são parâmetros reais e <span class="math inline">\(\epsilon_t \sim RB(0, \sigma^2)\)</span>.</p>
+<p>Um processo estocástico <span class="math inline">\(\{Y_t\}\)</span> é dito autoregressivo de ordem p, denotado AR(p), se seu processo gerador de dados é dado por <span class="math display">\[Y_t = c + \phi_1 Y_{t-1} + \phi_2 Y_{t-2} + \cdots + \phi_p Y_{t-p} + \epsilon_t,\]</span> em que <span class="math inline">\(c\)</span>, <span class="math inline">\(\phi_1, \cdots, \phi_p\)</span> são parâmetros reais e <span class="math inline">\(\epsilon_t \sim RB(0, \sigma^2_{\epsilon})\)</span>.</p>
 <blockquote>
 <p>Se as raízes da polinomial <span class="math inline">\(1 - \phi_1 z - \phi_2 z^2 - \cdots - \phi_p z^p\)</span> estiverem fora do círculo unitário, o processo é estacionário.</p>
 </blockquote>
@@ -685,7 +682,7 @@ Y_t - \mu &amp; = \phi (Y_{t-1} - \mu) + \epsilon_{t}\\
 <div>
 <ul>
 <li><span class="math inline">\(\mathbb{E}(Y_t) = \dfrac{c}{1 - \phi_1 - \phi_2 - \cdots - \phi_p} = \mu\)</span></li>
-<li><span class="math inline">\(\mathbb{V}(Y_t) = \phi_1 \gamma(1) + \phi_2 \gamma(2) + \cdots + \phi_p \gamma(p) + \sigma^2\)</span></li>
+<li><span class="math inline">\(\mathbb{V}(Y_t) = \phi_1 \gamma(1) + \phi_2 \gamma(2) + \cdots + \phi_p \gamma(p) + \sigma^2_{\epsilon}\)</span></li>
 <li><span class="math inline">\(\gamma(k) = \phi_1 \gamma(k-1) + \phi_2 \gamma(k-2) + \cdots + \phi_p \gamma(k-p)\)</span></li>
 </ul>
 </div>
@@ -916,7 +913,7 @@ Y_t - \mu &amp; = \phi (Y_{t-1} - \mu) + \epsilon_{t}\\
 <h2>Equações em diferenças</h2>
 <p>Chamamos de equação em diferenças a uma expressão da forma <span class="math display">\[\underbrace{Z_t - \phi_1 Z_{t-1} - \phi_2 Z_{t-2} - \cdots - \phi_k Z_{t-k}}_{\underbrace{(1 - \phi_1 B - \phi_2 B^2 - \cdots - \phi_k B^k)}_{\phi(B)}Z_t} = c\]</span></p>
 <ul>
-<li class="fragment">Se <span class="math inline">\(c = 0\)</span>, a equação em diferenças é dira homogênea.</li>
+<li class="fragment">Se <span class="math inline">\(c = 0\)</span>, a equação em diferenças é dita homogênea.</li>
 <li class="fragment"><span class="math inline">\(\phi(B)\)</span> é chamado de polinômio característico de uma equação em diferenças.</li>
 <li class="fragment">A equação <span class="math inline">\(\phi(B) = 0\)</span> é chamada equação característica.</li>
 </ul>
@@ -925,11 +922,14 @@ Y_t - \mu &amp; = \phi (Y_{t-1} - \mu) + \epsilon_{t}\\
 <h2>Equações em diferenças</h2>
 <p><strong>Ejemplo:</strong></p>
 <p>A equação característica de uma equação em diferenças de primeira ordem é dada por <span class="math display">\[(1 - \phi B) = 0,\]</span> cuja solução é <span class="math inline">\(B = 1/\phi.\)</span></p>
+<div class="fragment">
+<p>Note que a solução do polinômio caracteristico estará fora do círculo unitário se <span class="math inline">\(|\phi| &lt; 1\)</span> (condição de estacionariedade).</p>
+</div>
 </section>
 <section id="arp-e-causalidade" class="slide level2">
 <h2>AR(p) e causalidade</h2>
 <h3 id="definição-3">Definição:</h3>
-<p>Um processo estocástico <span class="math inline">\(Z_t\)</span> é dito causal se pode ser escrito como <span class="math display">\[Z_t = \mu + \displaystyle\sum_{j = 0}^{\infty} \psi_j \epsilon_{t-j},\]</span> para constantes <span class="math inline">\(\psi_j\)</span> satisfazendo <span class="math inline">\(\displaystyle\sum_{j = 0}^{\infty} \psi^2_j &lt; \infty\)</span> e <span class="math inline">\(\epsilon_t \sim RB(0, \sigma^2)\)</span>.</p>
+<p>Um processo estocástico <span class="math inline">\(Z_t\)</span> é dito causal se pode ser escrito como <span class="math display">\[Z_t = \mu + \displaystyle\sum_{j = 0}^{\infty} \psi_j \epsilon_{t-j},\]</span> para constantes <span class="math inline">\(\psi_j\)</span> satisfazendo <span class="math inline">\(\displaystyle\sum_{j = 0}^{\infty} \psi^2_j &lt; \infty\)</span> e <span class="math inline">\(\epsilon_t \sim RB(0, \sigma^2_{\epsilon})\)</span>.</p>
 <h3 id="teorema-da-causalidade">Teorema da Causalidade</h3>
 <p>Um processo AR(p) é causal se e somente se, as raizes do polinômio <span class="math inline">\(\phi(z) = 1 - \phi_1z - \cdots - \phi_p z^p\)</span> estão fora do círculo unitário.</p>
 </section>
@@ -937,17 +937,22 @@ Y_t - \mu &amp; = \phi (Y_{t-1} - \mu) + \epsilon_{t}\\
 <h2>AR(p) e causalidade</h2>
 <h3 id="teorema-da-decomposição-de-wold">Teorema da decomposição de Wold</h3>
 <p>Todo processo estocástico estacionário <span class="math inline">\({Z_t}\)</span> pode ser escrito como a combinação linear de processos ruido branco (<span class="math inline">\(\{\epsilon_t\}\)</span>). Isto é <span class="math display">\[Z_t = \mu + \displaystyle \sum_{j = 0}^{\infty}\psi_j \epsilon_{t-j},\]</span> em que <span class="math inline">\(\psi_0 = 1\)</span> e <span class="math inline">\(\displaystyle \sum_{j = 0}^{\infty}\psi_j \epsilon_{t-j} &lt; \infty\)</span></p>
+<blockquote>
+<p>Obs: daqui em diante, assumiremos que os processos com os quais estamos trabalhando são estacionários e causais.</p>
+</blockquote>
 </section>
 <section id="referências" class="slide level2">
 <h2>Referências</h2>
+<div>
 <ul>
-<li class="fragment">Bueno, R. D. L. D. S. (2018). Econometria de séries temporais. Capítulo 2.</li>
-<li class="fragment"><a href="https://otexts.com/fpp3/">Hyndman, R.J., &amp; Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.</a>. Chapter 9.</li>
-<li class="fragment">Huang, C., &amp; Petukhina, A. (2022). Applied Time Series Analysis and Forecasting with Python. Springer Nature. Chapter 3.</li>
-<li class="fragment">Peña, D. (2005). Análisis de series temporales. Alianza. Capítulo 4.</li>
-<li class="fragment">Shumway, R. H., &amp; Stoffer, D. S. (2019). Time series: a data analysis approach using R. Chapman and Hall/CRC. Chapter 4.</li>
-<li class="fragment">Wei, W. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2ed, Pearson. Chapter 3.</li>
+<li>Bueno, R. D. L. D. S. (2018). Econometria de séries temporais. Capítulo 2.</li>
+<li><a href="https://otexts.com/fpp3/">Hyndman, R.J., &amp; Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.</a>. Chapter 9.</li>
+<li>Huang, C., &amp; Petukhina, A. (2022). Applied Time Series Analysis and Forecasting with Python. Springer Nature. Chapter 3.</li>
+<li>Peña, D. (2005). Análisis de series temporales. Alianza. Capítulo 4.</li>
+<li>Shumway, R. H., &amp; Stoffer, D. S. (2019). Time series: a data analysis approach using R. Chapman and Hall/CRC. Chapter 4.</li>
+<li>Wei, W. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2ed, Pearson. Chapter 3.</li>
 </ul>
+</div>
 <p>
 <script type="application/shiny-prerendered" data-context="server">
 output$distPlot <- renderPlot({

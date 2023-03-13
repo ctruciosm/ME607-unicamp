@@ -36,8 +36,11 @@ editor: source
 
 
 # Introdução
-
 ## Introdução
+
+- Já aprendimos a identificar processos AR(p) através da ACF e PACF.
+- Aprendimos também como estimar os parâmetros do modelo.
+- Agora aprenderemos a fazer diagnóstico do modelo e previsão.
 
 # Diagnóstico
 ## Diagnóstico
@@ -246,6 +249,28 @@ augment(fit) |> features(.innov, stat_arch_lm, lag = 3)
 
 Seja o processo AR(1), $$Y_t = c + \phi Y_{t-1} + \epsilon_t, \quad t = 1, \cdots T$$
 
+. . . 
+
+Estamos interessados em prever $Y_{T + h}$ para $h \geq 1$, dada a informação até o tempo $T$, cuja notação é $\hat{Y}_{T+h|T}$.
+
+. . . 
+
+#### Mas como escolhermos $\hat{Y}_{T+h|T}$?
+
+Escolheremos $\hat{Y}_{T+h|T}$ a forma a minimizar o valor esperado do erro (de previsão) quadrático médio.
+
+- Erro de previsão: $e(h) = Y_{T+h} - \hat{Y}_{T+h|T}$.
+- Queremos minimizar: $\mathbb{E}(e(h))^2 = \mathbb{E}(Y_{T+h} - \hat{Y}_{T+h|T})^2$
+- Pode-se mostrar que, o valor que minimiza a função é $\hat{Y}_{T+h|T} = \mathbb{E}_T(Y_{T+h})$
+
+
+
+
+## Previsão
+
+
+$$Y_t = c + \phi Y_{t-1} + \epsilon_t, \quad t = 1, \cdots T$$
+
 
 :::: {.columns}
 
@@ -316,20 +341,27 @@ $$\underbrace{c \times  \sum_{i = 0}^{h-1}\phi^i + \phi^hY_{T}}_{\mathbb{E}_T(Y_
 
 #### AR(p)
 
-- $\mathbb{E}_T(Y_{T+h})$
-- $\mathbb{V}_T(Y_{T+h}) = \mathbb{V}(e_T(h))$
+$$Y_t = c + \phi_1 Y_{t-1} + \cdots + \phi_p Y_{t-p} + \epsilon_t.$$
 
-
-
-. . . 
+- $\mathbb{E}_T(Y_{T+1}) = c + \phi_1 Y_{T} + \cdots + \phi_p Y_{T-p+1} \rightarrow e_T(1) = \epsilon_{T+1}$
+- $\mathbb{E}_T(Y_{T+2}) = c + \phi_1 \mathbb{E}_T(Y_{T+1}) + \cdots + \phi_p Y_{T-p+2} \rightarrow e_T(2) = \epsilon_{T+2} + \phi_1 \epsilon_{T+1}$
+- $\vdots$
+- $\mathbb{E}_T(Y_{T+p+1}) = c + \phi_1 \mathbb{E}_T(Y_{T+p}) + \cdots + \phi_p \mathbb{E}_T(Y_{T+1}) \rightarrow e_T(p+1) = \epsilon_{T+p+1} + \phi_1 \epsilon_{T+p} + \cdots + \phi_p \epsilon_{T+1}$
+- Para $h \geq p+2,$ 
+  * $\mathbb{E}_T(Y_{T+h}) = c + \phi_1 \mathbb{E}_T(Y_{T+h-1}) + \cdots + \phi_p \mathbb{E}_T(Y_{T+h-p}),$
+  * $e_T(h) = \epsilon_{T+h} + \phi_1 e_T(T+h-1) + \cdots + \phi_p e_T(T+h-p)$
 
 > Na prática, os valores dos parâmetros são desconhecidos e precisam ser estimados. 
 
-. . . 
 
-> Na prática, a cada nova observação os parâmetros são re-estimados e as previsões são feitas novamente. Assim, quando caalcularmos o erro de previsão deve-se considerar também o erro devido à estimação
+## Mão na massa
 
 
+Este exercício constiste em analisar duas séries temporais passando por todo o processo visto até aqui: (EDA, identificação, estimação, diagnostico e previsão).
+
+
+- [Colab](http://colab.to/r)
+- [Dados](https://raw.githubusercontent.com/ctruciosm/ME607-unicamp/master/datasets/dados_aula10.csv)
 
 
 

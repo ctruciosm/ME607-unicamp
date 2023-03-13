@@ -421,6 +421,11 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 </section>
 <section id="introdução-1" class="slide level2">
 <h2>Introdução</h2>
+<ul>
+<li class="fragment">Já aprendimos a identificar processos AR(p) através da ACF e PACF.</li>
+<li class="fragment">Aprendimos também como estimar os parâmetros do modelo.</li>
+<li class="fragment">Agora aprenderemos a fazer diagnóstico do modelo e previsão.</li>
+</ul>
 </section></section>
 <section>
 <section id="diagnóstico" class="title-slide slide level1 center">
@@ -690,6 +695,22 @@ LM test = 5.4761, df = 3, p-value = 0.1401</code></pre>
 <section id="previsão-1" class="slide level2">
 <h2>Previsão</h2>
 <p>Seja o processo AR(1), <span class="math display">\[Y_t = c + \phi Y_{t-1} + \epsilon_t, \quad t = 1, \cdots T\]</span></p>
+<div class="fragment">
+<p>Estamos interessados em prever <span class="math inline">\(Y_{T + h}\)</span> para <span class="math inline">\(h \geq 1\)</span>, dada a informação até o tempo <span class="math inline">\(T\)</span>, cuja notação é <span class="math inline">\(\hat{Y}_{T+h|T}\)</span>.</p>
+</div>
+<div class="fragment">
+<h4 id="mas-como-escolhermos-haty_tht">Mas como escolhermos <span class="math inline">\(\hat{Y}_{T+h|T}\)</span>?</h4>
+<p>Escolheremos <span class="math inline">\(\hat{Y}_{T+h|T}\)</span> a forma a minimizar o valor esperado do erro (de previsão) quadrático médio.</p>
+<ul>
+<li class="fragment">Erro de previsão: <span class="math inline">\(e(h) = Y_{T+h} - \hat{Y}_{T+h|T}\)</span>.</li>
+<li class="fragment">Queremos minimizar: <span class="math inline">\(\mathbb{E}(e(h))^2 = \mathbb{E}(Y_{T+h} - \hat{Y}_{T+h|T})^2\)</span></li>
+<li class="fragment">Pode-se mostrar que, o valor que minimiza a função é <span class="math inline">\(\hat{Y}_{T+h|T} = \mathbb{E}_T(Y_{T+h})\)</span></li>
+</ul>
+</div>
+</section>
+<section id="previsão-2" class="slide level2">
+<h2>Previsão</h2>
+<p><span class="math display">\[Y_t = c + \phi Y_{t-1} + \epsilon_t, \quad t = 1, \cdots T\]</span></p>
 <div class="columns">
 <div class="column" style="width:40%;">
 <ul>
@@ -713,7 +734,7 @@ LM test = 5.4761, df = 3, p-value = 0.1401</code></pre>
 <p>Quando <span class="math inline">\(h \rightarrow \infty,\)</span> <span class="math display">\[\mathbb{E}_T(Y_{T+h}) = \dfrac{c}{1-\phi}.\]</span></p>
 </div>
 </section>
-<section id="previsão-2" class="slide level2">
+<section id="previsão-3" class="slide level2">
 <h2>Previsão</h2>
 <h4 id="erro-de-previsão">Erro de previsão</h4>
 <ul>
@@ -732,7 +753,7 @@ LM test = 5.4761, df = 3, p-value = 0.1401</code></pre>
 </blockquote>
 </div>
 </section>
-<section id="previsão-3" class="slide level2">
+<section id="previsão-4" class="slide level2">
 <h2>Previsão</h2>
 <p>Sob normalidade, um intervalo de confiança <span class="math inline">\(100\times(1-\alpha)\%\)</span> para <span class="math inline">\(Y_{T+h}\)</span>:</p>
 <p><span class="math display">\[\underbrace{c \times  \sum_{i = 0}^{h-1}\phi^i + \phi^hY_{T}}_{\mathbb{E}_T(Y_{T+h})} \pm z_{\alpha/2} \underbrace{\sigma_{\epsilon}\sqrt{1 + \phi^2 + \cdots + \phi^{2(h-1)}}}_{\sqrt{\mathbb{V}(e_T(h))}}\]</span></p>
@@ -742,23 +763,32 @@ LM test = 5.4761, df = 3, p-value = 0.1401</code></pre>
 </blockquote>
 </div>
 </section>
-<section id="previsão-4" class="slide level2">
+<section id="previsão-5" class="slide level2">
 <h2>Previsão</h2>
 <h4 id="arp">AR(p)</h4>
+<p><span class="math display">\[Y_t = c + \phi_1 Y_{t-1} + \cdots + \phi_p Y_{t-p} + \epsilon_t.\]</span></p>
 <ul>
-<li class="fragment"><span class="math inline">\(\mathbb{E}_T(Y_{T+h})\)</span></li>
-<li class="fragment"><span class="math inline">\(\mathbb{V}_T(Y_{T+h}) = \mathbb{V}(e_T(h))\)</span></li>
+<li class="fragment"><span class="math inline">\(\mathbb{E}_T(Y_{T+1}) = c + \phi_1 Y_{T} + \cdots + \phi_p Y_{T-p+1} \rightarrow e_T(1) = \epsilon_{T+1}\)</span></li>
+<li class="fragment"><span class="math inline">\(\mathbb{E}_T(Y_{T+2}) = c + \phi_1 \mathbb{E}_T(Y_{T+1}) + \cdots + \phi_p Y_{T-p+2} \rightarrow e_T(2) = \epsilon_{T+2} + \phi_1 \epsilon_{T+1}\)</span></li>
+<li class="fragment"><span class="math inline">\(\vdots\)</span></li>
+<li class="fragment"><span class="math inline">\(\mathbb{E}_T(Y_{T+p+1}) = c + \phi_1 \mathbb{E}_T(Y_{T+p}) + \cdots + \phi_p \mathbb{E}_T(Y_{T+1}) \rightarrow e_T(p+1) = \epsilon_{T+p+1} + \phi_1 \epsilon_{T+p} + \cdots + \phi_p \epsilon_{T+1}\)</span></li>
+<li class="fragment">Para <span class="math inline">\(h \geq p+2,\)</span>
+<ul>
+<li class="fragment"><span class="math inline">\(\mathbb{E}_T(Y_{T+h}) = c + \phi_1 \mathbb{E}_T(Y_{T+h-1}) + \cdots + \phi_p \mathbb{E}_T(Y_{T+h-p}),\)</span></li>
+<li class="fragment"><span class="math inline">\(e_T(h) = \epsilon_{T+h} + \phi_1 e_T(T+h-1) + \cdots + \phi_p e_T(T+h-p)\)</span></li>
+</ul></li>
 </ul>
-<div class="fragment">
 <blockquote>
 <p>Na prática, os valores dos parâmetros são desconhecidos e precisam ser estimados.</p>
 </blockquote>
-</div>
-<div class="fragment">
-<blockquote>
-<p>Na prática, a cada nova observação os parâmetros são re-estimados e as previsões são feitas novamente. Assim, quando caalcularmos o erro de previsão deve-se considerar também o erro devido à estimação</p>
-</blockquote>
-</div>
+</section>
+<section id="mão-na-massa" class="slide level2">
+<h2>Mão na massa</h2>
+<p>Este exercício constiste em analisar duas séries temporais passando por todo o processo visto até aqui: (EDA, identificação, estimação, diagnostico e previsão).</p>
+<ul>
+<li class="fragment"><a href="http://colab.to/r">Colab</a></li>
+<li class="fragment"><a href="https://raw.githubusercontent.com/ctruciosm/ME607-unicamp/master/datasets/dados_aula10.csv">Dados</a></li>
+</ul>
 </section>
 <section id="referências" class="slide level2">
 <h2>Referências</h2>
