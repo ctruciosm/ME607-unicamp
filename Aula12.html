@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="Aula10_files/libs/clipboard/clipboard.min.js"></script>
-<script src="Aula10_files/libs/quarto-html/tabby.min.js"></script>
-<script src="Aula10_files/libs/quarto-html/popper.min.js"></script>
-<script src="Aula10_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="Aula10_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="Aula10_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="Aula10_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="Aula12_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Aula12_files/libs/quarto-html/tabby.min.js"></script>
+<script src="Aula12_files/libs/quarto-html/popper.min.js"></script>
+<script src="Aula12_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="Aula12_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Aula12_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="Aula12_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.2.269">
 
   <meta name="author" content="Prof.&nbsp;Carlos Trucíos  ctrucios@unicamp.br">
-  <title>Processos autoregressivos - AR(p): Parte III</title>
+  <title>Processos autoregressivos de média moveis - ARMA(p,q)</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="Aula10_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="Aula10_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="Aula12_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="Aula12_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -93,13 +93,13 @@
     code span.vs { color: #008000; } /* VerbatimString */
     code span.wa { color: #696969; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="Aula10_files/libs/revealjs/dist/theme/quarto.css" id="theme">
-  <link href="Aula10_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="Aula10_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="Aula10_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="Aula10_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
-  <link href="Aula10_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
-  <link href="Aula10_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="Aula12_files/libs/revealjs/dist/theme/quarto.css" id="theme">
+  <link href="Aula12_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="Aula12_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="Aula12_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="Aula12_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="Aula12_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="Aula12_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
   .callout {
@@ -390,7 +390,7 @@
     <div class="slides">
 
 <section id="title-slide" data-background-image="imagens/unicamp.png" data-background-opacity="1" data-background-position="99% 5%" data-background-size="20%" class="quarto-title-block center">
-  <h1 class="title">Processos autoregressivos - AR(p): Parte III</h1>
+  <h1 class="title">Processos autoregressivos de média moveis - ARMA(p,q)</h1>
   <p class="subtitle">ME607 - Séries Temporais</p>
 
 <div class="quarto-title-authors">
@@ -409,7 +409,10 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 <h2 id="toc-title">Agenda</h2>
 <ul>
 <li class="fragment"><a href="#/introdução" id="/toc-introdução">Introdução</a></li>
-<li class="fragment"><a href="#/diagnóstico" id="/toc-diagnóstico">Diagnóstico</a></li>
+<li class="fragment"><a href="#/armapq" id="/toc-armapq">ARMA(p,q)</a></li>
+<li class="fragment"><a href="#/acf" id="/toc-acf">ACF</a></li>
+<li class="fragment"><a href="#/pacf" id="/toc-pacf">PACF</a></li>
+<li class="fragment"><a href="#/raízes-do-polinômio" id="/toc-raízes-do-polinômio">Raízes do polinômio</a></li>
 <li class="fragment"><a href="#/previsão" id="/toc-previsão">Previsão</a></li>
 </ul>
 </nav>
@@ -422,282 +425,163 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 <section id="introdução-1" class="slide level2">
 <h2>Introdução</h2>
 <ul>
-<li class="fragment">Já aprendimos a identificar processos AR(p) através da ACF e PACF.</li>
-<li class="fragment">Aprendimos também como estimar os parâmetros do modelo.</li>
-<li class="fragment">Agora aprenderemos a fazer diagnóstico do modelo e previsão.</li>
+<li class="fragment">Todo processo AR(p) estacionário pode ser escrito como um MA(<span class="math inline">\(\infty\)</span>).</li>
+<li class="fragment">Todo processo MA(q) invertível pode ser escrito como um AR(<span class="math inline">\(\infty\)</span>).</li>
+<li class="fragment">Muitas vezes, o modelo pode ter uma ordem <span class="math inline">\(p\)</span> ou <span class="math inline">\(q\)</span> grande (o que implica, em geral, reducir a eficiencia do estimador).</li>
+<li class="fragment">Assim, pode ser necessário incluir tanto termos AR quanto termos MA em um único modelo.</li>
 </ul>
 </section></section>
 <section>
-<section id="diagnóstico" class="title-slide slide level1 center">
-<h1>Diagnóstico</h1>
+<section id="armapq" class="title-slide slide level1 center">
+<h1>ARMA(p,q)</h1>
 
 </section>
-<section id="diagnóstico-1" class="slide level2">
-<h2>Diagnóstico</h2>
-<center>
-<p><strong>Como sabermos se o modelo ajustado capturou a dinâmica dos dados?</strong></p>
-<p><img data-src="imagens/duvida.png"></p>
-</center>
-<div class="fragment">
-<center>
-<p>Diagnóstico do modelo!</p>
-</center>
-</div>
-<div class="fragment">
-<blockquote>
-<p>Na formulação do modelo, assumiu-se que os erros são ruido branco. Se o modelo for adequado, os resíduos deverão estar próximos de erros e, por tanto, deverão ser aproximadamente um ruido branco.</p>
-</blockquote>
-</div>
-</section>
-<section id="diagnóstico-2" class="slide level2">
-<h2>Diagnóstico</h2>
-<h3 id="como-verificar-se-os-resíduos-são-ruido-branco">Como verificar se os resíduos são ruido branco?</h3>
+<section id="armapq-1" class="slide level2">
+<h2>ARMA(p,q)</h2>
+<h3 id="definição">Definição:</h3>
+<p>Um processo estocástico <span class="math inline">\(\{Y_t\}\)</span> é dito ARMA(p,q) se seu processo gerador de dados é dado por <span class="math display">\[\tilde{Y}_t\underbrace{(1 - \phi_1 B - \cdots - \phi_p B^p)}_{\phi_p(B)} = \underbrace{(1 + \theta_1 B + \cdots + \theta_q B^q)}_{\theta_q(B)} \epsilon_t,\]</span> equivalentemente, <span class="math display">\[\tilde{Y}_t = \phi_1 \tilde{Y}_{t-1} + \phi_2 \tilde{Y}_{t-2} + \cdots \phi_p \tilde{Y}_{t-p}  +  \epsilon_t + \theta_1 \epsilon_{t-1} + \cdots + \theta_q \epsilon_{t-q}\]</span> em que <span class="math inline">\(\phi_1, \cdots, \phi_p\)</span> e <span class="math inline">\(\theta_1, \cdots, \theta_1\)</span> são parâmetros reais e <span class="math inline">\(\epsilon_t \sim RB(0, \sigma^2_{\epsilon})\)</span>. Assumimos também que <span class="math inline">\(\phi_p(B)\)</span> e <span class="math inline">\(\theta_q(B)\)</span> não tem raizes em comum<sup>1</sup>.</p>
+<aside><ol class="aside-footnotes"><li id="fn1"><p>voltaremos a este ponto depois.</p></li></ol></aside></section>
+<section id="armapq-2" class="slide level2">
+<h2>ARMA(p,q)</h2>
+<p><span class="math display">\[\tilde{Y}_t\underbrace{(1 - \phi_1 B - \cdots - \phi_p B^p)}_{\phi_p(B)} = \underbrace{(1 + \theta_1 B + \cdots + \theta_q B^q)}_{\theta_q(B)} \epsilon_t,\]</span></p>
 <ul>
-<li class="fragment">ACF</li>
-<li class="fragment">PACF</li>
-<li class="fragment">Testes de Ljung-Box</li>
-<li class="fragment">Homocedasticidade</li>
-<li class="fragment">Normalidade*</li>
+<li class="fragment">Se as raizes de <span class="math inline">\(\phi_p(B)\)</span> estiverem fora do círculo unitário, o processo é estacionário.</li>
+<li class="fragment">Se as raizes de <span class="math inline">\(\theta_q(B)\)</span> estiverem fora do circulo unitário o processo é invertível.</li>
 </ul>
 <div class="fragment">
+<p>Um processo ARMA(p, q) estacionário e invertível pode ser escrito como</p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><span class="math display">\[\pi(B)\tilde{Y}_t = \epsilon_t,\]</span> em que <span class="math inline">\(\pi(B) = \dfrac{\phi_p(B)}{\theta_q(B)} = 1 - \pi_1 B - \pi_2 B^2 - \cdots\)</span></p>
+</div><div class="column" style="width:50%;">
+<p><span class="math display">\[\tilde{Y}_t = \psi(B) \epsilon_t,\]</span> em que <span class="math inline">\(\psi(B)= \dfrac{\theta_q(B)}{\phi_p(B)} = 1 + \psi_1 B + \psi_2 B^2 + \cdots\)</span></p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="acf" class="title-slide slide level1 center">
+<h1>ACF</h1>
+
+</section>
+<section id="acf-1" class="slide level2">
+<h2>ACF</h2>
+<p>Seja o processo ARMA(p, q) estacionário e invertível: <span class="math display">\[\tilde{Y}_t = \phi_1 \tilde{Y}_{t-1} + \phi_2 \tilde{Y}_{t-2} + \cdots \phi_p \tilde{Y}_{t-p}  +  \epsilon_t + \theta_1 \epsilon_{t-1} + \cdots + \theta_q \epsilon_{t-q}\]</span></p>
+<div class="fragment">
+<p>Então,</p>
+<p><span class="math inline">\(\gamma_k = \mathbb{E}(\tilde{Y}_{t-k}\tilde{Y}_{t}) = \phi_1 \gamma_{k-1} + \cdots \phi_p \gamma_{k-p} + \mathbb{E}(\tilde{Y}_{t-k}\epsilon_t) + \theta_1 \mathbb{E}(\tilde{Y}_{t-k}\epsilon_{t-1}) +\cdots + \theta_q \mathbb{E}(\tilde{Y}_{t-k} \epsilon_{t-q})\)</span></p>
+</div>
+<div class="fragment">
+<p>Note que, para <span class="math inline">\(k &gt; i\)</span>, <span class="math inline">\(\mathbb{E}(\tilde{Y}_{t-k} \epsilon_{t-i}) = 0\)</span>.</p>
+</div>
+<div class="fragment">
+<p>Assim, para <span class="math inline">\(k &gt; q\)</span></p>
+<p><span class="math display">\[\gamma_k = \phi_1 \gamma_{k-1} + \cdots + \phi_p \gamma_{k-p} \rightarrow \rho_k = \phi_1 \rho_{k-1} + \cdots + \phi_p \rho_{k-p}\]</span></p>
+</div>
+<div class="fragment">
 <blockquote>
-<p>Rejeitarmos a hipótese de que erros são ruido branco implica que ainda há informação não capturada pelo modelo (o que pode gerar previsões ruins) que pode ser melhor explorada por outros modelos (e pode gerar melhores previsões). Neste caso, descarta-se o modelo ajustado e testam-se outras possibilidades até obtermos um modelo em que não podemos rejeitar a hipótese de que os erros são ruido branco.</p>
+<p>Após a defasagem <span class="math inline">\(q\)</span>, a ACF de um ARMA(p,q) é semelhante à ACF de um AR(p). Isto pode ser utilizado para identificar o modelo</p>
 </blockquote>
 </div>
 </section>
-<section id="diagnóstico-3" class="slide level2">
-<h2>Diagnóstico</h2>
-<p>Seja o processo AR(p) <span class="math display">\[Y_t = c + \phi_1Y_{t-1} + \cdots + \phi_p Y_{t-p} + \epsilon_t.\]</span></p>
+<section id="acf-2" class="slide level2">
+<h2>ACF</h2>
+<p>Por outro lado, note que se o processo for estacionário, pode ser escrito como um MA(<span class="math inline">\(\infty\)</span>).</p>
 <div class="fragment">
-<p>Definimos os resíduos como <span class="math display">\[\hat{\epsilon}_t = y_t - \hat{c}- \hat{\phi}_1 y_{t-1} - \cdots - \hat{\phi}_p y_{t-p}\]</span></p>
+<p><span class="math display">\[\tilde{Y}_t = \displaystyle \sum_{j = 0}^{\infty} \psi_j \epsilon_{t-j}.\]</span></p>
 </div>
 <div class="fragment">
-<p>A primeira forma de verificar se os erros (<span class="math inline">\(\{ \epsilon_t \}\)</span>) são ruido branco é através do gráfico de sequência, ACF e PACF dos resíduos (<span class="math inline">\(\{ \hat{\epsilon_t} \}\)</span>).</p>
-</div>
-<div class="fragment">
-<blockquote>
-<p>Se <span class="math inline">\(\{ \hat{\epsilon_t} \}_{t \geq 1}\)</span> for ruido branco: (a) nenhum padrão deveria ser observado no gráfico de sequência, (b) ACF não deveriam indicar <span class="math inline">\(\rho_k \neq 0\)</span> e (c) PACF não deveriam indicar <span class="math inline">\(\phi_{kk} \neq 0\)</span>.</p>
-</blockquote>
+<p>Então,</p>
+<p><span class="math display">\[\gamma(k) = \mathbb{E}(\tilde{Y}_{t+k}\tilde{Y}_t) = \sigma_{\epsilon}^2 \displaystyle \sum_{j=0}^{\infty}\psi_j \psi_{j+k}\]</span></p>
 </div>
 </section>
-<section id="diagnóstico-4" class="slide level2">
-<h2>Diagnóstico</h2>
-<div class="panel-tabset">
-<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Serie</a></li><li><a href="#tabset-1-2">Estimação</a></li><li><a href="#tabset-1-3">Resíduos</a></li><li><a href="#tabset-1-4">Diagnóstico I</a></li><li><a href="#tabset-1-5">Diagnóstico II</a></li><li><a href="#tabset-1-6">Diagnóstico II</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1">
-<div class="cell" data-layout-align="center">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb1-2"><a href="#cb1-2"></a>y <span class="ot">&lt;-</span> <span class="fl">0.1</span> <span class="sc">+</span> <span class="fu">arima.sim</span>(<span class="at">n =</span> <span class="dv">1000</span>, <span class="fu">list</span>(<span class="at">ar =</span> <span class="fu">c</span>(<span class="fl">0.8</span>, <span class="sc">-</span><span class="fl">0.45</span>)), <span class="at">sd =</span> <span class="fl">1.4142</span>)</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">ts.plot</span>(y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="Aula10_files/figure-revealjs/unnamed-chunk-1-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-1-2">
-<div class="cell" data-layout-align="center">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">library</span>(fpp3)</span>
-<span id="cb2-2"><a href="#cb2-2"></a>dados <span class="ot">=</span> <span class="fu">data.frame</span>(y, <span class="at">t =</span> <span class="fu">seq</span>(<span class="fu">as.Date</span>(<span class="st">"1995-01-11"</span>), <span class="fu">as.Date</span>(<span class="st">"1995-01-11"</span>) <span class="sc">+</span> <span class="fu">length</span>(y) <span class="sc">-</span> <span class="dv">1</span>,<span class="st">"day"</span>)) <span class="sc">|&gt;</span> <span class="fu">as_tsibble</span>(<span class="at">index =</span> t)</span>
-<span id="cb2-3"><a href="#cb2-3"></a>fit <span class="ot">&lt;-</span> dados <span class="sc">|&gt;</span> <span class="fu">model</span>(<span class="at">ar2 =</span> <span class="fu">AR</span>(y <span class="sc">~</span> <span class="fu">order</span>(<span class="dv">2</span>) <span class="sc">+</span> <span class="dv">1</span>))</span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="fu">report</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Series: y 
-Model: AR(2) w/ mean 
-
-Coefficients:
-  constant     ar1      ar2
-    0.0918  0.7805  -0.4574
-
-sigma^2 estimated as 2.001
-AIC = -566.14   AICc = -566.11  BIC = -551.41</code></pre>
-</div>
-</div>
-</div>
-<div id="tabset-1-3">
-<div class="cell" data-layout-align="center">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">augment</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tsibble: 1,000 x 6 [1D]
-# Key:       .model [1]
-   .model t               y .fitted .resid .innov
-   &lt;chr&gt;  &lt;date&gt;      &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
- 1 ar2    1995-01-11 -1.17  NA      NA     NA    
- 2 ar2    1995-01-12 -0.884 NA      NA     NA    
- 3 ar2    1995-01-13 -1.63  -0.0637 -1.56  -1.56 
- 4 ar2    1995-01-14 -1.15  -0.773  -0.373 -0.373
- 5 ar2    1995-01-15 -1.57  -0.0591 -1.51  -1.51 
- 6 ar2    1995-01-16 -1.71  -0.610  -1.10  -1.10 
- 7 ar2    1995-01-17 -1.48  -0.522  -0.956 -0.956
- 8 ar2    1995-01-18 -2.73  -0.281  -2.45  -2.45 
- 9 ar2    1995-01-19 -0.273 -1.37    1.09   1.09 
-10 ar2    1995-01-20  1.29   1.13    0.165  0.165
-# … with 990 more rows</code></pre>
-</div>
-</div>
-</div>
-<div id="tabset-1-4">
-<div class="cell" data-layout-align="center">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>fit <span class="sc">|&gt;</span> <span class="fu">gg_tsresiduals</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="Aula10_files/figure-revealjs/unnamed-chunk-4-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-1-5">
-<div class="cell" data-layout-align="center">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">pacf</span>(<span class="fu">augment</span>(fit)<span class="sc">$</span>.innov[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="Aula10_files/figure-revealjs/unnamed-chunk-5-1.png" width="960"></p>
-</figure>
-</div>
-</div>
-</div>
-</div>
-<div id="tabset-1-6">
-<div class="cell" data-layout-align="center">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="fu">augment</span>(fit) <span class="sc">|&gt;</span> <span class="fu">features</span>(.innov, box_pierce, <span class="at">lag =</span> <span class="dv">10</span>, <span class="at">dof =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 3
-  .model bp_stat bp_pvalue
-  &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;
-1 ar2       2.59     0.920</code></pre>
-</div>
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">augment</span>(fit) <span class="sc">|&gt;</span> <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">10</span>, <span class="at">dof =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 3
-  .model lb_stat lb_pvalue
-  &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;
-1 ar2       2.61     0.918</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="diagnóstico-5" class="slide level2">
-<h2>Diagnóstico</h2>
-<p>Em particular, deveriamos ter que, aproximadamente <span class="math display">\[\hat{\rho}_k \sim N(0, 1/n).\]</span></p>
+<section id="acf-3" class="slide level2">
+<h2>ACF</h2>
+<p>Seja o processo estacionário e invertível ARMA(1,1) da forma <span class="math display">\[Y_t - \phi Y_{t-1} = \epsilon_t + \theta \epsilon_{t-1}, \quad \epsilon_t \sim RB(0, \sigma_{\epsilon}^2).\]</span></p>
 <div class="fragment">
-<p>Contudo, <span class="math inline">\(\mathbb{V}(\hat{\rho}_k)\)</span> pode ser bem menor do que <span class="math inline">\(1/n\)</span>. Por exemplo, Box, Jenkins e Reinsel (1994) provam que, para um AR(1), <span class="math display">\[\mathbb{V}(\hat{\rho}_k) \approx \dfrac{1}{n}[1 - \phi^{2(k-1)}(1-\phi^2)].\]</span></p>
 <ul>
-<li class="fragment">Para <span class="math inline">\(k\)</span> grande, <span class="math inline">\(\approx \dfrac{1}{n}\)</span> mas para <span class="math inline">\(k\)</span> pequeno, a variância pode ser bem menor.</li>
+<li class="fragment"><span class="math inline">\(Y_t = \dfrac{1+\theta B}{1-\phi B} \epsilon_t \rightarrow \dfrac{1+\theta B}{1-\phi B} = \psi_0 + \psi_1 B + \psi_2 B^2 + \cdots\)</span></li>
+<li class="fragment"><span class="math inline">\(1 + \theta B = (1 - \phi B)(\psi_0 + \psi_1 B + \psi_2 B^2 + \cdots).\)</span></li>
+<li class="fragment"><span class="math inline">\(\psi_0 = 1\)</span>, <span class="math inline">\(\psi_1 = \phi + \theta\)</span>, <span class="math inline">\(\psi_2 = \phi(\phi + \theta)\)</span>, <span class="math inline">\(\psi_3 = \phi^2 (\phi + \theta)\)</span>, <span class="math inline">\(\cdots\)</span></li>
+<li class="fragment"><span class="math inline">\(\gamma(0) = \sigma_{\epsilon}^2 \displaystyle \sum_{j = 0}^{\infty}\psi_j^2 = \sigma_{\epsilon_t}^2 (1 + (\phi + \theta)^2 \sum_{j=0}^{\infty} \phi^{2j}) = \sigma_{\epsilon}^2 \Big(1 + \dfrac{(\phi + \theta)^2}{1-\phi^{2}} \Big)\)</span></li>
+</ul>
+</div>
+</section>
+<section id="acf-4" class="slide level2">
+<h2>ACF</h2>
+<ul>
+<li class="fragment"><span class="math inline">\(\gamma(1) = \sigma_{\epsilon}^2 \displaystyle \sum_{j = 0}^{\infty} \psi_{j+1}\psi_j = \sigma_{\epsilon}^2 (\phi + \theta + (\phi + \theta)^2 \phi \sum_{j = 0}^{\infty} \phi^{2j} = \sigma_{\epsilon}^2 \Big(\phi + \theta + \dfrac{(\phi + \theta)^2 \phi}{1-\phi^2}\Big)\)</span></li>
+<li class="fragment"><span class="math inline">\(\gamma(2) = \phi \gamma(1)\)</span></li>
+<li class="fragment"><span class="math inline">\(\gamma(3) = \phi \gamma(2) = \phi^2 \gamma(1)\)</span></li>
+<li class="fragment"><span class="math inline">\(\gamma(k) = \phi^k \gamma(1).\)</span></li>
+</ul>
+</section></section>
+<section>
+<section id="pacf" class="title-slide slide level1 center">
+<h1>PACF</h1>
+
+</section>
+<section id="pacf-1" class="slide level2">
+<h2>PACF</h2>
+<p>A função de autocorrelação parcial de um processo ARMA(p,q) é definida pela função <span class="math inline">\(\alpha(\cdot)\)</span>, em que</p>
+<div>
+<ul>
+<li><span class="math inline">\(\alpha(0) = 1,\)</span></li>
+<li><span class="math inline">\(\alpha(k) = \phi_{kk},\)</span> para <span class="math inline">\(k \geq 1\)</span></li>
+</ul>
+</div>
+<p>com <span class="math inline">\(\phi_{kk}\)</span> sendo o último elemento de <span class="math display">\[\Gamma^{-1}_h \times [\gamma(1), \gamma(2), \cdots, \gamma(k)]',\]</span> em que <span class="math inline">\(\Gamma_h = [\gamma(i-j)]_{i,j = 1}^{h}\)</span></p>
+</section></section>
+<section>
+<section id="raízes-do-polinômio" class="title-slide slide level1 center">
+<h1>Raízes do polinômio</h1>
+
+</section>
+<section id="raízes-do-polinômio-1" class="slide level2">
+<h2>Raízes do polinômio</h2>
+<p>Seja o processo ARMA(1,1) dado por <span class="math display">\[Y_t = 0.5Y_{t-1} + \epsilon_t + 0.4 \epsilon_{t-1}, \quad, \epsilon_t \sim RB(0, \sigma_{\epsilon}^2).\]</span></p>
+<p>O processo é estacionário? é invertível?</p>
+<div class="fragment">
+<ul>
+<li class="fragment">O processo pode ser escrito como: <span class="math inline">\(Y_t\underbrace{(1 - 0.5B)}_{\phi(B)} = \underbrace{(1 + 0.4B)}_{\theta(B)}\epsilon_t\)</span></li>
+<li class="fragment">O processo é estacionário se as raízes de <span class="math inline">\(\phi(B)\)</span> estão fora do círculo unitário.</li>
+<li class="fragment">Calculando as raízes: <span class="math inline">\(\phi(B) = 0\)</span> sss <span class="math inline">\((1 - 0.5B) = 0 \rightarrow B = 2\)</span>.</li>
+<li class="fragment">O processo é invertível se as raízes de <span class="math inline">\(\theta(B)\)</span> estão fora do círculo unitário.</li>
+<li class="fragment">Calculando as raízes: <span class="math inline">\(\theta(B) = 0\)</span> sss <span class="math inline">\((1 + 0.4B) = 0 \rightarrow B = -2.5\)</span>.</li>
 </ul>
 </div>
 <div class="fragment">
 <blockquote>
-<p>De qualquer modo, a comparação com <span class="math inline">\(\pm 2/\sqrt{n}\)</span> fornece uma indicação geral da possível quebra de comportamento ruído branco.</p>
+<p>O processo é estacionário e invertível.</p>
 </blockquote>
 </div>
 </section>
-<section id="diagnóstico-6" class="slide level2">
-<h2>Diagnóstico</h2>
-<h3 id="teste-lm">Teste LM</h3>
-<p>Também conhecido como teste Breusch-Godfrey, é utilizado para testar autocorrelação dos resíduos. Consiste em regredir os resíduos com seus valores defasados: <span class="math display">\[\hat{\epsilon}_t = \beta_1 \hat{\epsilon}_{t-1} + \cdots + \beta_h \hat{\epsilon}_{t-h} + u_t.\]</span></p>
-<p><span class="math display">\[H_0: \beta_1 = \beta_2 = \cdots = \beta_h = 0 \quad vs. \quad H_1: H_0 \text{ não é verdade}\]</span></p>
-<p>Sob <span class="math inline">\(H_0\)</span>, <span class="math display">\[LM_h = T \times R^2 \sim \chi^2_h,\]</span> em que <span class="math inline">\(T\)</span> é o tamanho da série e <span class="math inline">\(R^2\)</span> é o coeficiente de determinação da regressão.</p>
-</section>
-<section id="diagnóstico-teste-lm" class="slide level2">
-<h2>Diagnóstico: Teste LM</h2>
-<p><span class="math display">\[\hat{\epsilon}_t = \beta_1 \hat{\epsilon}_{t-1} + \beta_2 \hat{\epsilon}_{t-2} + \beta_3 \hat{\epsilon}_{t-3} + u_t.\]</span></p>
+<section id="raízes-do-polinômio-2" class="slide level2">
+<h2>Raízes do polinômio</h2>
+<p>Seja o processo ARMA(2,2) dado por <span class="math display">\[(1 - 0.7B - 0.4B^2)Y_t = (1-1.6B + 0.7B^2)\epsilon_t\]</span></p>
+<p>o processo é estacionário? é invertível?</p>
 <div class="fragment">
-<p><span class="math display">\[H_0: \beta_1 = \beta_2 = \beta_3 = 0 \quad vs. \quad H_1: H_0 \text{ não é verdade}\]</span></p>
+<ul>
+<li class="fragment">É estacionário se as raízes de <span class="math inline">\(\phi(B) = (1 - 0.7B - 0.4B^2)\)</span> estão fora do círculo unitário.</li>
+<li class="fragment">Calculando as raizes: <span class="math inline">\((1 - 0.7B - 0.4B^2) = 0 \rightarrow \dfrac{0.7 \pm \sqrt{0.49 + 4\times 0.4}}{-0.8} = \dfrac{0.7 \pm \sqrt{2.09}}{-0.8} \approx - 2.68 \text{ e } = 0.93\)</span></li>
+<li class="fragment">É invertivel se as raízes de <span class="math inline">\(\theta(B) = (1 - 1.6B + 0.7B^2)\)</span> estão fora do círculo unitário.</li>
+</ul>
 </div>
 <div class="fragment">
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">library</span>(lmtest)</span>
-<span id="cb12-2"><a href="#cb12-2"></a>e <span class="ot">&lt;-</span> <span class="fu">augment</span>(fit)<span class="sc">$</span>.innov[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)]</span>
-<span id="cb12-3"><a href="#cb12-3"></a><span class="fu">bgtest</span>(e <span class="sc">~</span> <span class="fu">lag</span>(e, <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">lag</span>(e, <span class="dv">2</span>) <span class="sc">+</span> <span class="fu">lag</span>(e, <span class="dv">3</span>), <span class="at">order =</span> <span class="dv">3</span>, <span class="at">type =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">polyroot</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="fl">1.6</span>, <span class="fl">0.7</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-    Breusch-Godfrey test for serial correlation of order up to 3
-
-data:  e ~ lag(e, 1) + lag(e, 2) + lag(e, 3)
-LM test = 4.2014, df = 3, p-value = 0.2405</code></pre>
+<pre><code>[1] 1.142857+0.349927i 1.142857-0.349927i</code></pre>
 </div>
-</div>
-</div>
-<div class="fragment">
-<p>Não rejeitamos <span class="math inline">\(H_0\)</span></p>
-</div>
-</section>
-<section id="diagnóstico-7" class="slide level2">
-<h2>Diagnóstico</h2>
-<h3 id="teste-arch-lm">Teste ARCH-LM</h3>
-<p>Serve para identificar sinais de heterocedasticidade condicional. Consiste em regredir os resíduos ao quadrado com seus valores defasados: <span class="math display">\[\hat{\epsilon}_t^2 = \beta_1 \hat{\epsilon}_{t-1}^2 + \cdots + \beta_h \hat{\epsilon}_{t-h}^2 + u_t.\]</span></p>
-<p><span class="math display">\[H_0: \beta_1 = \beta_2 = \cdots = \beta_h = 0 \quad vs. \quad H_1: H_0 \text{ não é verdade}\]</span></p>
-<p>Sob <span class="math inline">\(H_0\)</span>, <span class="math display">\[ARCH-LM_h = T \times R^2 \sim \chi^2_h,\]</span> em que <span class="math inline">\(T\)</span> é o tamanho da série e <span class="math inline">\(R^2\)</span> é o coeficiente de determinação da regressão.</p>
-</section>
-<section id="diagnóstico-teste-arch-lm" class="slide level2">
-<h2>Diagnóstico: Teste ARCH-LM</h2>
-<p><span class="math display">\[\hat{\epsilon}_t^2 = \beta_1 \hat{\epsilon}_{t-1}^2 + \beta_2 \hat{\epsilon}_{t-2}^2 + \beta_3 \hat{\epsilon}_{t-3}^2 + u_t.\]</span></p>
-<div class="fragment">
-<p><span class="math display">\[H_0: \beta_1 = \beta_2 = \beta_3 = 0 \quad vs. \quad H_1: H_0 \text{ não é verdade}\]</span></p>
-</div>
-<div class="fragment">
-<div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a>e2 <span class="ot">&lt;-</span> <span class="fu">augment</span>(fit)<span class="sc">$</span>.innov[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)]<span class="sc">^</span><span class="dv">2</span></span>
-<span id="cb14-2"><a href="#cb14-2"></a><span class="fu">bgtest</span>(e2 <span class="sc">~</span> <span class="fu">lag</span>(e2, <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">lag</span>(e2, <span class="dv">2</span>) <span class="sc">+</span> <span class="fu">lag</span>(e2, <span class="dv">3</span>), <span class="at">order =</span> <span class="dv">3</span>, <span class="at">type =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">abs</span>(<span class="fu">polyroot</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="fl">1.6</span>, <span class="fl">0.7</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>
-    Breusch-Godfrey test for serial correlation of order up to 3
-
-data:  e2 ~ lag(e2, 1) + lag(e2, 2) + lag(e2, 3)
-LM test = 5.4761, df = 3, p-value = 0.1401</code></pre>
-</div>
-</div>
-</div>
-<div class="fragment">
-<p>Não rejeitamos <span class="math inline">\(H_0\)</span>.</p>
-</div>
-<div class="fragment">
-<div class="cell" data-layout-align="center">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">augment</span>(fit) <span class="sc">|&gt;</span> <span class="fu">features</span>(.innov, stat_arch_lm, <span class="at">lag =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 2
-  .model stat_arch_lm
-  &lt;chr&gt;         &lt;dbl&gt;
-1 ar2          0.0190</code></pre>
+<pre><code>[1] 1.195229 1.195229</code></pre>
 </div>
 </div>
 </div>
@@ -709,109 +593,192 @@ LM test = 5.4761, df = 3, p-value = 0.1401</code></pre>
 </section>
 <section id="previsão-1" class="slide level2">
 <h2>Previsão</h2>
-<p>Seja o processo AR(1), <span class="math display">\[Y_t = c + \phi Y_{t-1} + \epsilon_t, \quad t =  \cdots T\]</span></p>
+<p>Sem perda de generalizade, consideremos um processo ARMA(p,q) estacionário com média zero, <span class="math display">\[\phi_p(B)Y_t= \theta_q(B)\epsilon_t\]</span></p>
 <div class="fragment">
-<p>Estamos interessados em prever <span class="math inline">\(Y_{T + h}\)</span> para <span class="math inline">\(h \geq 1\)</span>, dada a informação até o tempo <span class="math inline">\(T\)</span>, cuja notação é <span class="math inline">\(\hat{Y}_{T+h|T}\)</span>.</p>
+<p>Então, <span class="math display">\[\begin{equation}\label{ARMA_MA_infty}
+Y_t= \dfrac{\theta_q(B)}{\phi_p(B)} \epsilon_t = \epsilon_t + \psi_1 \epsilon_{t-1} + \psi_2 \epsilon_{t-2} + \cdots\end{equation}\]</span></p>
 </div>
 <div class="fragment">
-<h4 id="mas-como-escolhermos-haty_tht">Mas como escolhermos <span class="math inline">\(\hat{Y}_{T+h|T}\)</span>?</h4>
-<p>Escolheremos <span class="math inline">\(\hat{Y}_{T+h|T}\)</span> a forma a minimizar o valor esperado do erro (de previsão) quadrático médio.</p>
-<ul>
-<li class="fragment">Erro de previsão: <span class="math inline">\(e(h) = Y_{T+h} - \hat{Y}_{T+h|T}\)</span>.</li>
-<li class="fragment">Queremos minimizar: <span class="math inline">\(\mathbb{E}(e(h))^2 = \mathbb{E}(Y_{T+h} - \hat{Y}_{T+h|T})^2\)</span></li>
-<li class="fragment">Pode-se mostrar que, o valor que minimiza a função é <span class="math inline">\(\hat{Y}_{T+h|T} = \mathbb{E}_T(Y_{T+h})\)</span></li>
-</ul>
+<p>Fazendo <span class="math inline">\(\psi_0 = 1\)</span>, <span class="math display">\[Y_{T+h} = \displaystyle \sum_{j = 0}^{\infty} \psi_j \epsilon_{T+h-j}\]</span></p>
 </div>
 </section>
 <section id="previsão-2" class="slide level2">
 <h2>Previsão</h2>
-<p><span class="math display">\[Y_t = c + \phi Y_{t-1} + \epsilon_t, \quad t =  \cdots T\]</span></p>
-<div class="columns">
-<div class="column" style="width:40%;">
 <ul>
-<li class="fragment"><span class="math inline">\(Y_{T+1} = c + \phi Y_{T} + \epsilon_{T+1}\)</span></li>
-<li class="fragment"><span class="math inline">\(Y_{T+2} = c + \phi Y_{T+1} + \epsilon_{T+2}\)</span></li>
-<li class="fragment"><span class="math inline">\(Y_{T+3} = c + \phi Y_{T+2} + \epsilon_{T+3}\)</span></li>
-<li class="fragment"><span class="math inline">\(\vdots\)</span></li>
-<li class="fragment"><span class="math inline">\(Y_{T+h} = c + \phi Y_{T+h-1} + \epsilon_{T+h}\)</span></li>
+<li class="fragment">Vamos supor que no tempo <span class="math inline">\(T\)</span>, observamos <span class="math inline">\(Y_{T}, Y_{T-1}, Y_{T-2}, \cdots\)</span> e queremos a previsão de <span class="math inline">\(Y_{T+h}\)</span> como uma combinação liner de <span class="math inline">\(Y_{T}, Y_{T-1}, Y_{T-2}, \cdots\)</span></li>
+<li class="fragment">Note que <span class="math inline">\(Y_{T}, Y_{T-1}, Y_{T-2}, \cdots\)</span> podem todos ser escritos como MA(<span class="math inline">\(\infty\)</span>)</li>
 </ul>
-</div><div class="column" style="width:60%;">
+<div class="fragment">
 <ul>
-<li class="fragment"><span class="math inline">\(\mathbb{E}_T(Y_{T+1}) = c + \phi Y_{T}\)</span></li>
-<li class="fragment"><span class="math inline">\(\mathbb{E}_T(Y_{T+2}) = c + \phi \mathbb{E}_T(Y_{T+1}) = c(1 + \phi) + \phi^2 Y_{T}\)</span></li>
-<li class="fragment"><span class="math inline">\(\mathbb{E}_T(Y_{T+3}) = c + \phi \mathbb{E}_T(Y_{T+2}) = c(1 + \phi + \phi^2) + \phi^3 Y_{T}\)</span></li>
-<li class="fragment"><span class="math inline">\(\vdots\)</span></li>
-<li class="fragment"><span class="math inline">\(\mathbb{E}_T(Y_{T+h}) = c \times \sum_{i = 0}^{h-1}\phi^i + \phi^hY_{T}\)</span></li>
+<li class="fragment">Então,</li>
 </ul>
-</div>
 </div>
 <div class="fragment">
-<p>Quando <span class="math inline">\(h \rightarrow \infty,\)</span> <span class="math display">\[\mathbb{E}_T(Y_{T+h}) = \dfrac{c}{1-\phi}.\]</span></p>
+<p><span class="math display">\[\hat{Y}_{T+h} = \psi^{\ast}_l \epsilon_{T} + \psi^{\ast}_{l+1} \epsilon_{T-1} + \psi^{\ast}_{l+2} \epsilon_{T-2} +\cdots,\]</span> em que <span class="math inline">\(\psi^{\ast}s\)</span> precisam ser determinados.</p>
 </div>
 </section>
 <section id="previsão-3" class="slide level2">
 <h2>Previsão</h2>
-<h4 id="erro-de-previsão">Erro de previsão</h4>
-<ul>
-<li class="fragment"><span class="math inline">\(e_T(1) = Y_{T+1} - \mathbb{E}_T(Y_{T+1}) = \epsilon_{T+1}\)</span></li>
-<li class="fragment"><span class="math inline">\(e_T(2) = Y_{T+2} - \mathbb{E}_T(Y_{T+2}) = \phi\epsilon_{T+1} + \epsilon_{T+2}\)</span></li>
-<li class="fragment"><span class="math inline">\(e_T(3) = Y_{T+3} - \mathbb{E}_T(Y_{T+3}) = \epsilon_{T+3} + \phi \epsilon_{T+2} + \phi^2 \epsilon_{T+1}\)</span></li>
-<li class="fragment"><span class="math inline">\(\vdots\)</span></li>
-<li class="fragment"><span class="math inline">\(e_t(h) = Y_{T+h} - \mathbb{E}_T(Y_{T+h}) = \epsilon_{T+h} + \phi \epsilon_{T+h-1} + \cdots + \phi^{h-1} \epsilon_{T+1}\)</span></li>
-</ul>
+<p>O erro quadrático médio da previsão é dado por:</p>
+<p><span class="math display">\[\begin{align*}
+\mathbb{E}(Y_{T+h} - \hat{Y}_{T+h})^2 = \mathbb{E}( &amp; \epsilon_{T+h} + \psi_1 \epsilon_{T+h-1} + \cdots + \psi_h \epsilon_{T} + \cdots \\
+&amp; - \psi^{\ast}_h \epsilon_T - \psi^{\ast}_{h+1} \epsilon_{T-1} - \psi^{\ast}_{h+2} \epsilon_{T-2} - \cdots )^2 \\
+= \mathbb{E}( &amp; \epsilon_{T+h} + \psi_1 \epsilon_{T+h-1} + \cdots + \psi_{h-1} \epsilon_{T+1} \\
+&amp; + (\psi_h - \psi_h^{\ast})\epsilon_T + (\psi_{h+1} - \psi_{h+1}^{\ast})\epsilon_{T-1} + \cdots)^2
+\end{align*}\]</span></p>
 <div class="fragment">
-<p><span class="math display">\[\text{Para } h \geq 1\text{ :} \quad \mathbb{E}(e_T(h)) = 0, \quad \mathbb{V}(e_T(h)) = \sigma^2_{\epsilon} (1 + \phi^2 + \cdots + \phi^{2(h-1)})\]</span></p>
+<p>Como <span class="math inline">\(\{\epsilon_t \}\)</span> é ruido branco,</p>
+<p><span class="math display">\[\mathbb{E}(Y_{T+h} - \hat{Y}_{T+h})^2 = \sigma_{\epsilon}^2 \displaystyle \sum_{j = 0}^{h-1}\psi_j^2  + \sigma_{\epsilon}^2 \sum_{j = h}^{\infty}(\psi_j-\psi_j^{\ast})^2\]</span></p>
 </div>
 <div class="fragment">
-<blockquote>
-<p>Quando <span class="math inline">\(h \rightarrow \infty,\)</span> <span class="math inline">\(\mathbb{V}(e_T(h))= \dfrac{\sigma^2_{\epsilon}}{1-\phi^2}.\)</span></p>
-</blockquote>
+<p>Que é minimizado quando <span class="math inline">\(\psi_j = \psi_j^{\ast}\)</span> para <span class="math inline">\(j \geq h\)</span>.</p>
 </div>
 </section>
 <section id="previsão-4" class="slide level2">
 <h2>Previsão</h2>
-<p>Sob normalidade, um intervalo de confiança <span class="math inline">\(100\times(1-\alpha)\%\)</span> para <span class="math inline">\(Y_{T+h}\)</span>:</p>
-<p><span class="math display">\[\underbrace{c \times  \sum_{i = 0}^{h-1}\phi^i + \phi^hY_{T}}_{\mathbb{E}_T(Y_{T+h})} \pm z_{\alpha/2} \underbrace{\sigma_{\epsilon}\sqrt{1 + \phi^2 + \cdots + \phi^{2(h-1)}}}_{\sqrt{\mathbb{V}(e_T(h))}}\]</span></p>
+<p>Assim, temos que <span class="math display">\[\hat{Y}_{T+h} = \psi_h \epsilon_{T} + \psi_{h+1} \epsilon_{T-1} + \psi_{h+2} \epsilon_{T-2}+ \cdots\]</span></p>
 <div class="fragment">
+<p>Utilizando o fato de que <span class="math display">\[\mathbb{E}(\epsilon_{T+h}|Y_{T}, Y_{T-1}, \cdots) = \begin{cases}
+  0 &amp; \quad , se \quad h&gt;0\\
+  \epsilon_{T+h} &amp; \quad , se \quad h\leq 0\\
+  \end{cases}\]</span></p>
+</div>
+<div class="fragment">
+<p>Temos, <span class="math display">\[\mathbb{E}(Y_{T+h}|Y_{T}, Y_{T-1}, \cdots) = \psi_h \epsilon_T + \psi_{h+1} \epsilon_{T-1} + \psi_{h+2}\epsilon_{T-2} + \cdots = \hat{Y}_{T+h}\]</span></p>
 <blockquote>
-<p>De forma semehante, resultados análogos para um AR(p) podem ser obtidos.</p>
+<p>O menor error quadrático médio da previsão <span class="math inline">\(Y_{T+h}\)</span> é obtido quando <span class="math inline">\(\hat{Y}_{T+h} = \mathbb{E}(Y_{T+h} | Y_T, T_{T-1}, \cdots) = \psi_h \epsilon_T + \psi_{h+1} \epsilon_{T-1} + \psi_{h+2}\epsilon_{T-2} + \cdots\)</span></p>
 </blockquote>
 </div>
 </section>
 <section id="previsão-5" class="slide level2">
 <h2>Previsão</h2>
-<h4 id="arp">AR(p)</h4>
-<p><span class="math display">\[Y_t = c + \phi_1 Y_{t-1} + \cdots + \phi_p Y_{t-p} + \epsilon_t.\]</span></p>
-<ul>
-<li class="fragment"><span class="math inline">\(\mathbb{E}_T(Y_{T+1}) = c + \phi_1 Y_{T} + \cdots + \phi_p Y_{T-p+1} \rightarrow e_T(1) = \epsilon_{T+1}\)</span></li>
-<li class="fragment"><span class="math inline">\(\mathbb{E}_T(Y_{T+2}) = c + \phi_1 \mathbb{E}_T(Y_{T+1}) + \cdots + \phi_p Y_{T-p+2} \rightarrow e_T(2) = \epsilon_{T+2} + \phi_1 \epsilon_{T+1}\)</span></li>
-<li class="fragment"><span class="math inline">\(\vdots\)</span></li>
-<li class="fragment"><span class="math inline">\(\mathbb{E}_T(Y_{T+p+1}) = c + \phi_1 \mathbb{E}_T(Y_{T+p}) + \cdots + \phi_p \mathbb{E}_T(Y_{T+1}) \rightarrow e_T(p+1) = \epsilon_{T+p+1} + \phi_1 \epsilon_{T+p} + \cdots + \phi_p \epsilon_{T+1}\)</span></li>
-<li class="fragment">Para <span class="math inline">\(h \geq p+2,\)</span>
-<ul>
-<li class="fragment"><span class="math inline">\(\mathbb{E}_T(Y_{T+h}) = c + \phi_1 \mathbb{E}_T(Y_{T+h-1}) + \cdots + \phi_p \mathbb{E}_T(Y_{T+h-p}),\)</span></li>
-<li class="fragment"><span class="math inline">\(e_T(h) = \epsilon_{T+h} + \phi_1 e_T(T+h-1) + \cdots + \phi_p e_T(T+h-p)\)</span></li>
-</ul></li>
-</ul>
-<blockquote>
-<p>Na prática, os valores dos parâmetros são desconhecidos e precisam ser estimados.</p>
-</blockquote>
+<p>O erro de previsão é dado por:</p>
+<p><span class="math display">\[e(h) = Y_{T+h}-\hat{Y}_{T+h} = \psi_0 \epsilon_{T+h} + \psi_1 \epsilon_{T+h-1} + \cdots + \psi_{h-1}\epsilon_{T+1}.\]</span></p>
+<div class="fragment">
+<p>A variância do erro de previsão é dada por: <span class="math display">\[\mathbb{V}(e(h)) = \sigma_{\epsilon}^2 \displaystyle \sum_{j = 0}^{h-1}\psi_j^2.\]</span></p>
+</div>
+<div class="fragment">
+<p>Sob normalidade, o intervalo de previsão <span class="math inline">\((1-\alpha)\times 100\%\)</span> é dado por <span class="math display">\[\hat{Y}_{T+h} \pm Z_{\alpha/2} \sqrt{\sigma_{\epsilon}^2\displaystyle \sum_{j = 0}^{h-1}\psi_j^2}.\]</span></p>
+</div>
 </section>
-<section id="mão-na-massa" class="slide level2">
-<h2>Mão na massa</h2>
-<p>Este exercício constiste em analisar duas séries temporais passando por todo o processo visto até aqui: (EDA, identificação, estimação, diagnostico e previsão).</p>
+<section id="previsão-6" class="slide level2">
+<h2>Previsão</h2>
+<p>A previsão de <span class="math inline">\(Y_{T+h}\)</span> que minimiza o erro quadrático médio de previsão é dada por <span class="math display">\[\hat{Y}_{T+h} = \mathbb{E}(Y_{T+h}|Y_T, Y_{T-1}, \cdots).\]</span></p>
+<div class="fragment">
+<p>Note que a previsão pode ser facilmente obtida através da equação de diferenças.</p>
+<p><span class="math display">\[Y_{T+h} = \phi_1 Y_{T+h-1} + \cdots + \phi_p Y_{T+h-p} + \epsilon_{T+h} + \theta_1 \epsilon_{T+h-1} + ... + \theta_q \epsilon_{T+h-q}\]</span></p>
+</div>
+<div class="fragment">
+<p>Aplicando <span class="math inline">\(\mathbb{E}( \cdot | Y_T, Y_{T-1}, \cdots)\)</span> temos:</p>
+<p><span class="math display">\[
+\begin{align*}
+\hat{Y}_{T+h} &amp;= \phi_1 \mathbb{E}(Y_{T+h-1}| Y_T, Y_{T-1}, \cdots) + \cdots + \phi_p \mathbb{E}(Y_{T+h-p} | Y_T, Y_{T-1}, \cdots) + \\
+&amp;\mathbb{E}(\epsilon_{T+h}| Y_T, Y_{T-1}, \cdots) + \theta_1 \mathbb{E}(\epsilon_{T+h-1}| Y_T, Y_{T-1}, \cdots) + ... + \theta_q \mathbb{E}(\epsilon_{T+h-q}| Y_T, Y_{T-1}, \cdots)
+\end{align*}
+\]</span></p>
+</div>
+</section>
+<section id="previsão-7" class="slide level2">
+<h2>Previsão</h2>
+<div>
 <ul>
-<li class="fragment"><a href="http://colab.to/r">Colab</a></li>
-<li class="fragment"><a href="https://raw.githubusercontent.com/ctruciosm/ME607-unicamp/master/datasets/dados_aula10.csv">Dados</a></li>
+<li><span class="math inline">\(\mathbb{E}(Y_{T+k}| Y_T, Y_{T-1}, \cdots) = Y_{T+k}\)</span> se <span class="math inline">\(k\leq 0\)</span></li>
+<li><span class="math inline">\(\mathbb{E}(Y_{T+k}| Y_T, Y_{T-1}, \cdots) = \hat{Y}_{T+k}\)</span> se <span class="math inline">\(k &gt; 0\)</span></li>
+<li><span class="math inline">\(\mathbb{E}(\epsilon_{T+k}| Y_T, Y_{T-1}, \cdots) = \epsilon_{T+k}\)</span> se <span class="math inline">\(k\leq 0\)</span></li>
+<li><span class="math inline">\(\mathbb{E}(\epsilon_{T+k}| Y_T, Y_{T-1}, \cdots) = 0\)</span> se <span class="math inline">\(k &gt; 0\)</span></li>
 </ul>
+</div>
+</section>
+<section id="previsão-8" class="slide level2">
+<h2>Previsão</h2>
+<p><strong>Exemplo:</strong> Seja o processo (estacionário e invertível) ARMA(1,1) da forma <span class="math display">\[(1-\phi B)Y_t = (1 + \theta B) \epsilon_t, \quad \epsilon_t \sim RB(0, \sigma_{\epsilon}^2).\]</span></p>
+<p>Calcular <span class="math inline">\(\hat{Y}_{T+h}\)</span> e <span class="math inline">\(\mathbb{V}(e(h))\)</span></p>
+<div class="fragment">
+<ul>
+<li class="fragment"><span class="math inline">\(Y_{T+h} = \phi Y_{T+h-1} + \epsilon_{T+h} + \theta \epsilon_{T+h-1}.\)</span></li>
+<li class="fragment"><span class="math inline">\(\hat{Y}_{T+1} = \phi Y_{T} + \theta \epsilon_{T}\)</span></li>
+<li class="fragment"><span class="math inline">\(\hat{Y}_{T+2} = \phi \hat{Y}_{T + 1} = \phi^2 Y_{T} + \phi \theta \epsilon_{T}\)</span></li>
+<li class="fragment"><span class="math inline">\(\hat{Y}_{T+3} = \phi \hat{Y}_{T + 2} = \phi^3 Y_{T} + \phi^2 \theta \epsilon_{T}\)</span></li>
+<li class="fragment"><span class="math inline">\(\hat{Y}_{T+h} = \phi \hat{Y}_{T + h -1} = \phi^h Y_{T} + \phi^{h-1} \theta \epsilon_{T}\)</span></li>
+</ul>
+</div>
+</section>
+<section id="previsão-9" class="slide level2">
+<h2>Previsão</h2>
+<p>Sabemos que <span class="math inline">\(\mathbb{V}(e(h)) = \sigma_{\epsilon}^2 \displaystyle \sum_{j = 0}^{h-1} \psi_j^2\)</span>. Assim, basta sabermos quem são <span class="math inline">\(\psi_0, \psi_1, ..., \psi_{h-1}\)</span></p>
+<div class="fragment">
+<p><span class="math display">\[(1 - \phi B) (1 + \psi_1 B + \psi_2 B^2 + \cdots) = (1 + \theta B)\]</span> - <span class="math inline">\(\psi_1 = \phi + \theta\)</span> - <span class="math inline">\(\psi_2 = \phi (\phi + \theta)\)</span> - <span class="math inline">\(\psi_3 = \phi^2 (\phi + \theta)\)</span> - <span class="math inline">\(\psi_h = \phi^{h-1} (\phi + \theta)\)</span></p>
+</div>
+<div class="fragment">
+<p><span class="math display">\[\mathbb{V}(e(h)) = \sigma_{\epsilon}^2 \Big( 1 + \displaystyle \sum_{j = 1}^{h-1} [\phi^{j-1} (\phi + \theta)]^2 \Big)\]</span></p>
+</div>
+</section>
+<section id="previsão-10" class="slide level2">
+<h2>Previsão</h2>
+<p>Lembre-se que todo processo ARMA invertível pode ser escrito como um AR(<span class="math inline">\(\infty\)</span>).</p>
+<p><span class="math display">\[Y_{T+h} = \epsilon_{T+h} + \displaystyle \sum_{j = 1}^{\infty} \pi_j Y_{T+h-j} \equiv \pi(B) Y_{T+h} = \epsilon_{T+h},\]</span> em que <span class="math inline">\(\pi(B) = \dfrac{\phi(B)}{\theta(B)}.\)</span></p>
+<div class="fragment">
+<p><span class="math display">\[\hat{Y}_{T+h} = \displaystyle \sum_{j = 1}^{\infty} \pi_j \hat{Y}_{T+h-j}.\]</span></p>
+</div>
+</section>
+<section id="previsão-11" class="slide level2">
+<h2>Previsão</h2>
+<ul>
+<li class="fragment"><span class="math inline">\(\hat{Y}_{T+1} = \pi_1 Y_T + \pi_2 Y_{T-1} + \cdots = \displaystyle \sum_{j=1}^{\infty} \pi_j Y_{T+1-j}\)</span></li>
+<li class="fragment"><span class="math inline">\(\hat{Y}_{T+2} = \pi_1 \hat{Y}_{T+1} + \pi_2 Y_{T} + \cdots = \pi_1 \displaystyle \sum_{j=1}^{\infty} \pi_j Y_{T+1-j} + \sum_{j=1}^{\infty} \pi_{j+1} Y_{T+1-j} = \sum_{j=1}^{\infty} \pi_j^{(2)} Y_{T+1-j}\)</span></li>
+<li class="fragment"><span class="math inline">\(\vdots\)</span></li>
+<li class="fragment"><span class="math inline">\(\hat{Y}_{T+h} = \sum_{j=1}^{\infty} \pi_j^{(j)} Y_{T+1-j}\)</span></li>
+</ul>
+<div class="fragment">
+<p>em que <span class="math inline">\(\pi_j^{(h)} = \pi_{j + h - 1} + \displaystyle \sum_{i = 1}^{h-1}\pi_i \pi_j^{(h-i)}\)</span> e <span class="math inline">\(\pi_j^{(1)} = \pi_j\)</span>.</p>
+</div>
+</section>
+<section id="previsão-12" class="slide level2">
+<h2>Previsão</h2>
+<p><strong>Exemplo:</strong> Seja o processo (estacionário e invertível) ARMA(1,1) da forma <span class="math display">\[(1-\phi B)Y_t = (1 + \theta B) \epsilon_t, \quad \epsilon_t \sim RB(0, \sigma_{\epsilon}^2).\]</span></p>
+<div class="fragment">
+<p><span class="math display">\[(1 - \phi B) = (1 - \pi_1 B - \pi_2 B^2 - \cdots) (1 + \theta B)\]</span></p>
+</div>
+<div class="fragment">
+<p>Igualando os termos comoo no exemplo anterior, <span class="math inline">\(\pi_1 = \phi + \theta\)</span>, <span class="math inline">\(\pi_2 = - \theta (\phi + \theta)\)</span>, … <span class="math inline">\(\pi_j = (-\theta)^{j-1}(\phi + \theta)\)</span>.</p>
+</div>
+<div class="fragment">
+<ul>
+<li class="fragment"><span class="math inline">\(\hat{Y}_{T+1} = \displaystyle \sum_{j = 1}^{\infty} (\phi + \theta)(-\theta)^{j-1}Y_{T+1-j}.\)</span></li>
+<li class="fragment"><span class="math inline">\(\hat{Y}_{T+h} = \displaystyle \sum_{j = 1}^{\infty} (\phi + \theta)(-\theta)^{j-1}\hat{Y}_{T+h-j}.\)</span></li>
+</ul>
+</div>
+</section>
+<section id="previsão-13" class="slide level2">
+<h2>Previsão</h2>
+<p>Assim, temos visto três formas de calcular <span class="math inline">\(\hat{Y}_{T+h}\)</span>:</p>
+<ul>
+<li class="fragment">Utilizando um MA(<span class="math inline">\(\infty\)</span>).</li>
+<li class="fragment">Utilizando um AR(<span class="math inline">\(\infty\)</span>).</li>
+<li class="fragment">Utilizando as equações de diferença.</li>
+</ul>
+</section>
+<section id="previsão-14" class="slide level2">
+<h2>Previsão</h2>
+<p>Atualização das previsões:</p>
+<ul>
+<li class="fragment"><span class="math inline">\(\hat{Y}_{T + h + 1 | T} = \psi_{h+1}\epsilon_T + \psi_{h+2} \epsilon_{T-1}+ \psi_{h+3} \epsilon_{T-2} + \cdots\)</span></li>
+<li class="fragment"><span class="math inline">\(\hat{Y}_{T + 1 + h| T + 1} = \psi_h \epsilon_{T+1} + \psi_{h+1} \epsilon_T + \psi_{h+2} \epsilon_{T-1} + \cdots\)</span></li>
+</ul>
+<div class="fragment">
+<p>Então, <span class="math display">\[\hat{Y}_{T + 1 + h| T + 1} = \hat{Y}_{T + h + 1 | T} + \psi_h \epsilon_{T+1}.\]</span></p>
+</div>
+<div class="fragment">
+<blockquote>
+<p>Ou seja, a previsão de <span class="math inline">\(Y_{T+h+1}\)</span> feita no instante <span class="math inline">\(T\)</span> pode ser atualizada, após observado <span class="math inline">\(Y_{T+1}\)</span>, adicionando-se um múltiplo do erro de previsão <span class="math inline">\(\epsilon_{T+1} = Y_{T+1} - \hat{Y}_{T+1|T} = e(1)\)</span></p>
+</blockquote>
+</div>
 </section>
 <section id="referências" class="slide level2">
 <h2>Referências</h2>
 <div>
 <ul>
-<li>Bueno, R. D. L. D. S. (2018). Econometria de séries temporais. Capítulo 3.</li>
-<li>Brockwell, P.J &amp; Davis, R.A. (2016). Introduction to Time Series and Forecasting, 3rd editions, Springer. Chapter 5.</li>
-<li>Morettin, P.A, &amp; Toloi, C.M.C. (2006). Análise de Séries Temporais, 2ed, Blucher. Capítulo 9.</li>
+<li>Brockwell, P.J &amp; Davis, R.A. (2016). Introduction to Time Series and Forecasting, 3rd editions, Springer. Chapter 3.</li>
 <li>Wei, W. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2ed, Pearson. Chapter 5.</li>
 </ul>
 </div>
@@ -820,24 +787,25 @@ LM test = 5.4761, df = 3, p-value = 0.1401</code></pre>
 <p>Carlos Trucíos (IMECC/UNICAMP) | ME607 - Séries Temporais | <a href="https://ctruciosm.github.io/">ctruciosm.github.io</a></p>
 </div>
 </section></section>
+
     </div>
   </div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="Aula10_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="Aula12_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="Aula10_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="Aula10_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="Aula10_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="Aula10_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="Aula10_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
-  <script src="Aula10_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="Aula12_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="Aula12_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="Aula12_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="Aula12_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="Aula12_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="Aula12_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="Aula10_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="Aula10_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="Aula10_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="Aula10_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="Aula12_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="Aula12_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="Aula12_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="Aula12_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>

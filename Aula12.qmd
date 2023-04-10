@@ -1,0 +1,444 @@
+---
+title: "Processos autoregressivos de média moveis - ARMA(p,q)"
+subtitle: "ME607 - Séries Temporais"
+author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
+Email: "ctrucios@unicamp.br"
+institute: "Instituto de Matemática, Estatística e Computação Científica (IMECC), </br> Universidade Estadual de Campinas (UNICAMP)."
+knitr:
+    opts_chunk: 
+      fig.align: 'center'
+execute:
+    message: false
+    warning: false
+format:
+    revealjs:
+        slide-number: true
+        toc: true
+        toc-depth: 1
+        toc-title: Agenda
+        self-contained: false
+        chalkboard: true
+        width: 1600
+        height: 900
+        theme: [default, styles.scss]
+        incremental: true
+        code-fold: true
+        logo: "imagens/imecc.png"
+        footer: "Carlos Trucíos (IMECC/UNICAMP)  |  ME607 - Séries Temporais  |  [ctruciosm.github.io](https://ctruciosm.github.io/)"
+        highlight-style: "a11y"
+        title-slide-attributes:
+            data-background-image: "imagens/unicamp.png"
+            data-background-size: 20%
+            data-background-position: 99% 5%
+            data-background-opacity: "1"
+editor: source
+---
+
+
+# Introdução
+## Introdução
+
+- Todo processo AR(p) estacionário pode ser escrito como um MA($\infty$).
+- Todo processo MA(q) invertível pode ser escrito como um AR($\infty$).
+- Muitas vezes, o modelo pode ter uma ordem $p$ ou $q$ grande (o que implica, em geral, reducir a eficiencia do estimador).
+- Assim, pode ser necessário incluir tanto termos AR quanto termos MA em um único modelo.
+
+# ARMA(p,q)
+
+## ARMA(p,q)
+
+
+
+### Definição:
+
+Um processo estocástico $\{Y_t\}$ é dito ARMA(p,q) se seu processo gerador de dados é dado por $$\tilde{Y}_t\underbrace{(1 - \phi_1 B - \cdots - \phi_p B^p)}_{\phi_p(B)} = \underbrace{(1 + \theta_1 B + \cdots + \theta_q B^q)}_{\theta_q(B)} \epsilon_t,$$ equivalentemente, $$\tilde{Y}_t = \phi_1 \tilde{Y}_{t-1} + \phi_2 \tilde{Y}_{t-2} + \cdots \phi_p \tilde{Y}_{t-p}  +  \epsilon_t + \theta_1 \epsilon_{t-1} + \cdots + \theta_q \epsilon_{t-q}$$ em que $\phi_1, \cdots, \phi_p$ e $\theta_1, \cdots, \theta_1$ são parâmetros reais e $\epsilon_t \sim RB(0, \sigma^2_{\epsilon})$. Assumimos também que $\phi_p(B)$ e  $\theta_q(B)$ não tem raizes em comum^[voltaremos a este ponto depois.].
+
+
+## ARMA(p,q)
+
+$$\tilde{Y}_t\underbrace{(1 - \phi_1 B - \cdots - \phi_p B^p)}_{\phi_p(B)} = \underbrace{(1 + \theta_1 B + \cdots + \theta_q B^q)}_{\theta_q(B)} \epsilon_t,$$
+
+
+- Se as raizes de $\phi_p(B)$ estiverem fora do círculo unitário, o processo é estacionário. 
+- Se as raizes de $\theta_q(B)$ estiverem fora do circulo unitário o processo é invertível. 
+
+. . . 
+
+Um processo ARMA(p, q) estacionário e invertível pode ser escrito como
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+$$\pi(B)\tilde{Y}_t = \epsilon_t,$$ em que $\pi(B) = \dfrac{\phi_p(B)}{\theta_q(B)} = 1 - \pi_1 B - \pi_2 B^2 - \cdots$
+
+
+:::
+
+::: {.column width="50%"}
+
+$$\tilde{Y}_t = \psi(B) \epsilon_t,$$ em que $\psi(B)= \dfrac{\theta_q(B)}{\phi_p(B)} = 1 + \psi_1 B + \psi_2 B^2 + \cdots$
+:::
+
+::::
+
+# ACF
+## ACF
+
+Seja o processo ARMA(p, q) estacionário e invertível:
+$$\tilde{Y}_t = \phi_1 \tilde{Y}_{t-1} + \phi_2 \tilde{Y}_{t-2} + \cdots \phi_p \tilde{Y}_{t-p}  +  \epsilon_t + \theta_1 \epsilon_{t-1} + \cdots + \theta_q \epsilon_{t-q}$$
+
+. . . 
+
+Então,
+
+$\gamma_k = \mathbb{E}(\tilde{Y}_{t-k}\tilde{Y}_{t}) = \phi_1 \gamma_{k-1} + \cdots \phi_p \gamma_{k-p} + \mathbb{E}(\tilde{Y}_{t-k}\epsilon_t) + \theta_1 \mathbb{E}(\tilde{Y}_{t-k}\epsilon_{t-1}) +\cdots + \theta_q \mathbb{E}(\tilde{Y}_{t-k} \epsilon_{t-q})$
+
+. . . 
+
+Note que, para $k > i$, $\mathbb{E}(\tilde{Y}_{t-k} \epsilon_{t-i}) = 0$.
+
+. . . 
+
+Assim, para $k > q$
+
+$$\gamma_k = \phi_1 \gamma_{k-1} + \cdots + \phi_p \gamma_{k-p} \rightarrow \rho_k = \phi_1 \rho_{k-1} + \cdots + \phi_p \rho_{k-p}$$
+
+. . . 
+
+
+> Após a defasagem $q$, a ACF de um ARMA(p,q) é semelhante à ACF de um AR(p). Isto pode ser utilizado para identificar o modelo
+
+
+## ACF
+
+Por outro lado, note que se o processo for estacionário, pode ser escrito como um MA($\infty$).
+
+. . . 
+
+$$\tilde{Y}_t = \displaystyle \sum_{j = 0}^{\infty} \psi_j \epsilon_{t-j}.$$
+
+. . . 
+
+Então,
+
+$$\gamma(k) = \mathbb{E}(\tilde{Y}_{t+k}\tilde{Y}_t) = \sigma_{\epsilon}^2 \displaystyle \sum_{j=0}^{\infty}\psi_j \psi_{j+k}$$
+
+## ACF
+
+Seja o processo estacionário e invertível ARMA(1,1) da forma $$Y_t - \phi Y_{t-1} = \epsilon_t + \theta \epsilon_{t-1}, \quad \epsilon_t \sim RB(0, \sigma_{\epsilon}^2).$$
+
+
+. . . 
+
+- $Y_t = \dfrac{1+\theta B}{1-\phi B} \epsilon_t \rightarrow \dfrac{1+\theta B}{1-\phi B} = \psi_0 + \psi_1 B + \psi_2 B^2 + \cdots$
+- $1 + \theta B = (1 - \phi B)(\psi_0 + \psi_1 B + \psi_2 B^2 + \cdots).$
+- $\psi_0 = 1$, $\psi_1 = \phi + \theta$, $\psi_2 = \phi(\phi + \theta)$, $\psi_3 = \phi^2 (\phi + \theta)$, $\cdots$
+- $\gamma(0) = \sigma_{\epsilon}^2 \displaystyle \sum_{j = 0}^{\infty}\psi_j^2 = \sigma_{\epsilon_t}^2 (1 + (\phi + \theta)^2 \sum_{j=0}^{\infty} \phi^{2j}) = \sigma_{\epsilon}^2 \Big(1 + \dfrac{(\phi + \theta)^2}{1-\phi^{2}} \Big)$
+
+## ACF
+
+- $\gamma(1) = \sigma_{\epsilon}^2 \displaystyle \sum_{j = 0}^{\infty} \psi_{j+1}\psi_j = \sigma_{\epsilon}^2 (\phi + \theta + (\phi + \theta)^2 \phi \sum_{j = 0}^{\infty} \phi^{2j} = \sigma_{\epsilon}^2 \Big(\phi + \theta + \dfrac{(\phi + \theta)^2 \phi}{1-\phi^2}\Big)$
+- $\gamma(2) = \phi \gamma(1)$
+- $\gamma(3) = \phi \gamma(2) = \phi^2 \gamma(1)$
+- $\gamma(k) = \phi^k \gamma(1).$
+
+
+# PACF
+## PACF
+
+A função de autocorrelação parcial de um processo ARMA(p,q) é definida pela função $\alpha(\cdot)$, em que
+
+::: {.nonincremental}
+- $\alpha(0) = 1,$
+- $\alpha(k) = \phi_{kk},$ para $k \geq 1$
+:::
+
+
+com $\phi_{kk}$ sendo o último elemento de $$\Gamma^{-1}_h \times [\gamma(1), \gamma(2), \cdots, \gamma(k)]',$$ em que $\Gamma_h = [\gamma(i-j)]_{i,j = 1}^{h}$
+
+
+# Raízes do polinômio
+## Raízes do polinômio
+
+Seja o processo ARMA(1,1) dado por $$Y_t = 0.5Y_{t-1} + \epsilon_t + 0.4 \epsilon_{t-1}, \quad, \epsilon_t \sim RB(0, \sigma_{\epsilon}^2).$$
+
+O processo é estacionário? é invertível? 
+
+. . . 
+
+- O processo pode ser escrito como: $Y_t\underbrace{(1 - 0.5B)}_{\phi(B)} = \underbrace{(1 + 0.4B)}_{\theta(B)}\epsilon_t$
+- O processo é estacionário se as raízes de $\phi(B)$ estão fora do círculo unitário.
+- Calculando as raízes: $\phi(B) = 0$ sss $(1 - 0.5B) = 0 \rightarrow B = 2$.
+- O processo é invertível se as raízes de $\theta(B)$ estão fora do círculo unitário.
+- Calculando as raízes: $\theta(B) = 0$ sss $(1 + 0.4B) = 0 \rightarrow B = -2.5$.
+
+. . . 
+
+> O processo é estacionário e invertível.
+
+
+## Raízes do polinômio
+
+
+Seja o processo ARMA(2,2) dado por $$(1 - 0.7B - 0.4B^2)Y_t = (1-1.6B + 0.7B^2)\epsilon_t$$
+
+
+o processo é estacionário? é invertível?
+
+. . . 
+
+- É estacionário se as raízes de $\phi(B) = (1 - 0.7B - 0.4B^2)$ estão fora do círculo unitário.
+- Calculando as raizes: $(1 - 0.7B - 0.4B^2) = 0 \rightarrow \dfrac{0.7 \pm \sqrt{0.49 + 4\times 0.4}}{-0.8} = \dfrac{0.7 \pm \sqrt{2.09}}{-0.8} \approx - 2.68 \text{ e } = 0.93$
+- É invertivel se as raízes de $\theta(B) = (1 - 1.6B + 0.7B^2)$ estão fora do círculo unitário.
+
+. . . 
+
+```{r}
+#| echo: true
+polyroot(c(1, -1.6, 0.7))
+abs(polyroot(c(1, -1.6, 0.7)))
+```
+
+
+
+# Previsão
+## Previsão
+
+Sem perda de generalizade, consideremos um processo ARMA(p,q) estacionário com média zero, $$\phi_p(B)Y_t= \theta_q(B)\epsilon_t$$
+
+. . . 
+
+Então, \begin{equation}\label{ARMA_MA_infty}
+Y_t= \dfrac{\theta_q(B)}{\phi_p(B)} \epsilon_t = \epsilon_t + \psi_1 \epsilon_{t-1} + \psi_2 \epsilon_{t-2} + \cdots\end{equation}
+
+. . . 
+
+Fazendo $\psi_0 = 1$, $$Y_{T+h} = \displaystyle \sum_{j = 0}^{\infty} \psi_j \epsilon_{T+h-j}$$
+
+
+## Previsão
+
+
+- Vamos supor que no tempo $T$, observamos $Y_{T}, Y_{T-1}, Y_{T-2}, \cdots$ e queremos a previsão de $Y_{T+h}$ como uma combinação liner de $Y_{T}, Y_{T-1}, Y_{T-2}, \cdots$
+- Note que $Y_{T}, Y_{T-1}, Y_{T-2}, \cdots$ podem todos ser escritos como MA($\infty$)
+
+. . . 
+
+- Então, 
+
+. . . 
+
+$$\hat{Y}_{T+h} = \psi^{\ast}_l \epsilon_{T} + \psi^{\ast}_{l+1} \epsilon_{T-1} + \psi^{\ast}_{l+2} \epsilon_{T-2} +\cdots,$$ em que $\psi^{\ast}s$ precisam ser determinados.
+
+## Previsão
+
+
+O erro quadrático médio da previsão é dado por:
+
+$$\begin{align*}
+\mathbb{E}(Y_{T+h} - \hat{Y}_{T+h})^2 = \mathbb{E}( & \epsilon_{T+h} + \psi_1 \epsilon_{T+h-1} + \cdots + \psi_h \epsilon_{T} + \cdots \\
+& - \psi^{\ast}_h \epsilon_T - \psi^{\ast}_{h+1} \epsilon_{T-1} - \psi^{\ast}_{h+2} \epsilon_{T-2} - \cdots )^2 \\
+= \mathbb{E}( & \epsilon_{T+h} + \psi_1 \epsilon_{T+h-1} + \cdots + \psi_{h-1} \epsilon_{T+1} \\
+& + (\psi_h - \psi_h^{\ast})\epsilon_T + (\psi_{h+1} - \psi_{h+1}^{\ast})\epsilon_{T-1} + \cdots)^2
+\end{align*}$$
+
+
+. . . 
+
+Como $\{\epsilon_t \}$ é ruido branco, 
+
+$$\mathbb{E}(Y_{T+h} - \hat{Y}_{T+h})^2 = \sigma_{\epsilon}^2 \displaystyle \sum_{j = 0}^{h-1}\psi_j^2  + \sigma_{\epsilon}^2 \sum_{j = h}^{\infty}(\psi_j-\psi_j^{\ast})^2$$
+
+. . . 
+
+Que é minimizado quando $\psi_j = \psi_j^{\ast}$ para $j \geq h$.
+
+
+## Previsão
+
+Assim, temos que $$\hat{Y}_{T+h} = \psi_h \epsilon_{T} + \psi_{h+1} \epsilon_{T-1} + \psi_{h+2} \epsilon_{T-2}+ \cdots$$
+
+. . .
+
+Utilizando o fato de que $$\mathbb{E}(\epsilon_{T+h}|Y_{T}, Y_{T-1}, \cdots) = \begin{cases}
+  0 & \quad , se \quad h>0\\
+  \epsilon_{T+h} & \quad , se \quad h\leq 0\\
+  \end{cases}$$
+  
+  
+
+. . . 
+
+Temos, $$\mathbb{E}(Y_{T+h}|Y_{T}, Y_{T-1}, \cdots) = \psi_h \epsilon_T + \psi_{h+1} \epsilon_{T-1} + \psi_{h+2}\epsilon_{T-2} + \cdots = \hat{Y}_{T+h}$$
+
+> O menor error quadrático médio da previsão $Y_{T+h}$ é obtido quando $\hat{Y}_{T+h} = \mathbb{E}(Y_{T+h} | Y_T, T_{T-1}, \cdots) =  \psi_h \epsilon_T + \psi_{h+1} \epsilon_{T-1} + \psi_{h+2}\epsilon_{T-2} + \cdots$
+ 
+ 
+ 
+## Previsão
+
+O erro de previsão é dado por:
+
+$$e(h) = Y_{T+h}-\hat{Y}_{T+h} = \psi_0 \epsilon_{T+h} + \psi_1 \epsilon_{T+h-1} + \cdots + \psi_{h-1}\epsilon_{T+1}.$$
+
+. . . 
+
+
+A variância do erro de previsão é dada por:
+$$\mathbb{V}(e(h)) = \sigma_{\epsilon}^2 \displaystyle \sum_{j = 0}^{h-1}\psi_j^2.$$
+
+. . . 
+
+Sob normalidade, o intervalo de previsão $(1-\alpha)\times 100\%$ é dado por $$\hat{Y}_{T+h} \pm Z_{\alpha/2} \sqrt{\sigma_{\epsilon}^2\displaystyle \sum_{j = 0}^{h-1}\psi_j^2}.$$
+
+
+## Previsão
+
+A previsão de $Y_{T+h}$ que minimiza o erro quadrático médio de previsão é dada por $$\hat{Y}_{T+h} = \mathbb{E}(Y_{T+h}|Y_T, Y_{T-1}, \cdots).$$
+
+. . . 
+
+
+Note que a previsão pode ser facilmente obtida através da equação de diferenças. 
+
+$$Y_{T+h} = \phi_1 Y_{T+h-1} + \cdots + \phi_p Y_{T+h-p} + \epsilon_{T+h} + \theta_1 \epsilon_{T+h-1} + ... + \theta_q \epsilon_{T+h-q}$$
+
+. . . 
+
+Aplicando $\mathbb{E}( \cdot | Y_T, Y_{T-1}, \cdots)$ temos:
+
+$$
+\begin{align*}
+\hat{Y}_{T+h} &= \phi_1 \mathbb{E}(Y_{T+h-1}| Y_T, Y_{T-1}, \cdots) + \cdots + \phi_p \mathbb{E}(Y_{T+h-p} | Y_T, Y_{T-1}, \cdots) + \\
+&\mathbb{E}(\epsilon_{T+h}| Y_T, Y_{T-1}, \cdots) + \theta_1 \mathbb{E}(\epsilon_{T+h-1}| Y_T, Y_{T-1}, \cdots) + ... + \theta_q \mathbb{E}(\epsilon_{T+h-q}| Y_T, Y_{T-1}, \cdots)
+\end{align*}
+$$
+
+
+## Previsão
+
+
+::: {.nonincremental}
+- $\mathbb{E}(Y_{T+k}| Y_T, Y_{T-1}, \cdots) = Y_{T+k}$ se $k\leq 0$
+- $\mathbb{E}(Y_{T+k}| Y_T, Y_{T-1}, \cdots) = \hat{Y}_{T+k}$ se $k > 0$
+- $\mathbb{E}(\epsilon_{T+k}| Y_T, Y_{T-1}, \cdots) = \epsilon_{T+k}$ se $k\leq 0$
+- $\mathbb{E}(\epsilon_{T+k}| Y_T, Y_{T-1}, \cdots) = 0$ se $k > 0$
+:::
+
+## Previsão
+
+**Exemplo:** Seja o processo (estacionário e invertível) ARMA(1,1) da forma $$(1-\phi B)Y_t = (1 + \theta B) \epsilon_t, \quad \epsilon_t \sim RB(0, \sigma_{\epsilon}^2).$$
+
+Calcular $\hat{Y}_{T+h}$ e $\mathbb{V}(e(h))$
+
+. . . 
+
+
+- $Y_{T+h} = \phi Y_{T+h-1} + \epsilon_{T+h} + \theta \epsilon_{T+h-1}.$
+- $\hat{Y}_{T+1} = \phi Y_{T} +  \theta \epsilon_{T}$
+- $\hat{Y}_{T+2} = \phi \hat{Y}_{T + 1} = \phi^2 Y_{T} + \phi \theta \epsilon_{T}$
+- $\hat{Y}_{T+3} = \phi \hat{Y}_{T + 2} = \phi^3 Y_{T} + \phi^2 \theta \epsilon_{T}$
+- $\hat{Y}_{T+h} = \phi \hat{Y}_{T + h -1} = \phi^h Y_{T} + \phi^{h-1} \theta \epsilon_{T}$
+
+
+## Previsão
+
+Sabemos que $\mathbb{V}(e(h)) = \sigma_{\epsilon}^2 \displaystyle \sum_{j = 0}^{h-1} \psi_j^2$. Assim, basta sabermos quem são $\psi_0, \psi_1, ..., \psi_{h-1}$
+
+
+. . . 
+
+$$(1 - \phi B) (1 + \psi_1 B + \psi_2 B^2 + \cdots) = (1 + \theta B)$$
+- $\psi_1 = \phi + \theta$
+- $\psi_2 = \phi (\phi + \theta)$
+- $\psi_3 = \phi^2 (\phi + \theta)$
+- $\psi_h = \phi^{h-1} (\phi + \theta)$
+
+. . . 
+
+$$\mathbb{V}(e(h)) = \sigma_{\epsilon}^2 \Big( 1 + \displaystyle \sum_{j = 1}^{h-1} [\phi^{j-1} (\phi + \theta)]^2 \Big)$$
+
+
+## Previsão
+
+Lembre-se que todo processo ARMA invertível pode ser escrito como um AR($\infty$).
+
+
+$$Y_{T+h} = \epsilon_{T+h} + \displaystyle \sum_{j = 1}^{\infty} \pi_j Y_{T+h-j} \equiv \pi(B) Y_{T+h} = \epsilon_{T+h},$$ em que $\pi(B) = \dfrac{\phi(B)}{\theta(B)}.$
+
+. . . 
+
+$$\hat{Y}_{T+h} = \displaystyle \sum_{j = 1}^{\infty} \pi_j \hat{Y}_{T+h-j}.$$
+
+
+## Previsão
+
+
+- $\hat{Y}_{T+1} = \pi_1 Y_T + \pi_2 Y_{T-1} + \cdots = \displaystyle \sum_{j=1}^{\infty} \pi_j Y_{T+1-j}$
+- $\hat{Y}_{T+2} = \pi_1 \hat{Y}_{T+1} + \pi_2 Y_{T} + \cdots = \pi_1 \displaystyle \sum_{j=1}^{\infty} \pi_j Y_{T+1-j} + \sum_{j=1}^{\infty} \pi_{j+1} Y_{T+1-j} = \sum_{j=1}^{\infty} \pi_j^{(2)} Y_{T+1-j}$
+- $\vdots$
+- $\hat{Y}_{T+h} =  \sum_{j=1}^{\infty} \pi_j^{(j)} Y_{T+1-j}$
+
+. . . 
+
+
+em que $\pi_j^{(h)} = \pi_{j + h - 1} + \displaystyle \sum_{i = 1}^{h-1}\pi_i \pi_j^{(h-i)}$ e $\pi_j^{(1)} = \pi_j$.
+
+
+## Previsão
+
+**Exemplo:** Seja o processo (estacionário e invertível) ARMA(1,1) da forma $$(1-\phi B)Y_t = (1 + \theta B) \epsilon_t, \quad \epsilon_t \sim RB(0, \sigma_{\epsilon}^2).$$
+
+. . . 
+
+$$(1 - \phi B) = (1 - \pi_1 B - \pi_2 B^2 - \cdots) (1 + \theta B)$$
+
+. . . 
+
+Igualando os termos comoo no exemplo anterior, $\pi_1 = \phi + \theta$, $\pi_2 = - \theta (\phi + \theta)$, ... $\pi_j = (-\theta)^{j-1}(\phi + \theta)$.
+
+. . . 
+
+- $\hat{Y}_{T+1} = \displaystyle \sum_{j = 1}^{\infty} (\phi + \theta)(-\theta)^{j-1}Y_{T+1-j}.$
+- $\hat{Y}_{T+h} = \displaystyle \sum_{j = 1}^{\infty} (\phi + \theta)(-\theta)^{j-1}\hat{Y}_{T+h-j}.$
+
+
+## Previsão
+
+Assim, temos visto três formas de calcular $\hat{Y}_{T+h}$:
+
+- Utilizando um MA($\infty$).
+- Utilizando um AR($\infty$).
+- Utilizando as equações de diferença.
+
+
+## Previsão
+
+Atualização das previsões:
+
+- $\hat{Y}_{T + h + 1 | T} = \psi_{h+1}\epsilon_T + \psi_{h+2} \epsilon_{T-1}+ \psi_{h+3} \epsilon_{T-2} + \cdots$
+- $\hat{Y}_{T + 1 + h| T + 1} = \psi_h \epsilon_{T+1} + \psi_{h+1} \epsilon_T + \psi_{h+2} \epsilon_{T-1} + \cdots$
+
+. . . 
+
+Então, $$\hat{Y}_{T + 1 + h| T + 1} = \hat{Y}_{T + h + 1 | T} + \psi_h \epsilon_{T+1}.$$
+
+. . . 
+
+> Ou seja, a previsão de $Y_{T+h+1}$ feita no instante $T$ pode ser atualizada, após observado $Y_{T+1}$, adicionando-se um múltiplo do erro de previsão $\epsilon_{T+1} = Y_{T+1} - \hat{Y}_{T+1|T} = e(1)$
+
+
+## Referências
+
+
+::: {.nonincremental}
+
+- Brockwell, P.J & Davis, R.A. (2016). Introduction to Time Series and Forecasting, 3rd editions, Springer. Chapter 3.
+- Wei, W. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2ed, Pearson. Chapter 5.
+
+
+:::
+
+

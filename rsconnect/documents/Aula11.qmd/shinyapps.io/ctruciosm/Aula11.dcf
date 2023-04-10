@@ -1,0 +1,16 @@
+name: Aula11
+title: Aula11
+username:
+account: ctruciosm
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8640279
+bundleId: 7070643
+url: https://ctruciosm.shinyapps.io/Aula11/
+when: 1681128959.50552
+lastSyncTime: 1681128959.50559
+quarto_version: 1.2.269
+quarto_engines: knitr
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: Aula01.html|Aula01.qmd|Aula02.html|Aula02.qmd|Aula03.html|Aula03.qmd|Aula04.html|Aula04.qmd|Aula05.html|Aula05.qmd|Aula06.html|Aula06.qmd|Aula07.html|Aula07.qmd|Aula08.html|Aula08.qmd|Aula09.html|Aula09.qmd|Aula10.html|Aula10.qmd|datasets/dados_aula10.csv|datasets/global_economy_aula.csv|series_simuladas_aula10.R|Aula01_files|Aula02_files|Aula03_files|Aula04_files|Aula05_files|Aula06_files|Aula07_files|Aula08_files|Aula09_files|Aula10_files|Aula12_files

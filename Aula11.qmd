@@ -1,0 +1,529 @@
+---
+title: "Processos de Médias Móveis - MA(q)"
+subtitle: "ME607 - Séries Temporais"
+author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
+Email: "ctrucios@unicamp.br"
+institute: "Instituto de Matemática, Estatística e Computação Científica (IMECC), </br> Universidade Estadual de Campinas (UNICAMP)."
+server: shiny
+knitr:
+    opts_chunk: 
+      fig.align: 'center'
+execute:
+    message: false
+    warning: false
+format:
+    revealjs:
+        slide-number: true
+        toc: true
+        toc-depth: 1
+        toc-title: Agenda
+        self-contained: false
+        chalkboard: true
+        width: 1600
+        height: 900
+        theme: [default, styles.scss]
+        incremental: true
+        code-fold: true
+        logo: "imagens/imecc.png"
+        footer: "Carlos Trucíos (IMECC/UNICAMP)  |  ME607 - Séries Temporais  |  [ctruciosm.github.io](https://ctruciosm.github.io/)"
+        highlight-style: "a11y"
+        title-slide-attributes:
+            data-background-image: "imagens/unicamp.png"
+            data-background-size: 20%
+            data-background-position: 99% 5%
+            data-background-opacity: "1"
+editor: source
+---
+
+
+
+
+# MA(1)
+## MA(1)
+
+### Definição:
+
+Um processo estocástico $\{Y_t\}$ é dito de médias móveis de ordem 1, denotado MA(1), se seu processo gerador de dados é dado por $$Y_t = \mu + \epsilon_t + \theta \epsilon_{t-1},$$ em que $\mu$ e $\theta \text{ } (\theta \neq 0)$ são parâmetros reais e $\epsilon_t \sim RB(0, \sigma^2_{\epsilon})$. 
+
+
+. . . 
+
+- $\mathbb{E}(Y_t) = \mu$
+- $\mathbb{V}(Y_t) = (1 + \theta^2) \sigma^2_{\epsilon}$
+- $\mathbb{C}ov(Y_t, Y_{t-1}) = \sigma^2_{\epsilon} \theta$
+- $\mathbb{C}ov(Y_t, Y_{t-k}) = 0, \quad k \geq 2$
+
+
+. . . 
+
+> A média é constante, a variância é constante e a covariância não depende de $t$. Ou seja, o processo é estacionário.
+
+
+## MA(1)
+
+```{r}
+sliderInput("n", "n: ", min = 10, max = 5000, value = 1000)
+sliderInput("theta", "theta: ", min = -1.5, max = 1.5, value = 0.1)
+sliderInput("mu", "mu: ", min = -1, max = 1, value = 0.0, step = 0.2)
+plotOutput("distPlot")
+```
+
+```{r}
+#| context: server
+output$distPlot <- renderPlot({
+  ntot <- input$n + 500
+  e <- rnorm(ntot)
+  y <- c()
+  y[1] <- e[1]
+  for (i in 2:ntot) {
+    y[i] = input$mu + e[i] + input$theta * e[i - 1]
+  }
+  ts.plot(y[501:ntot])
+})
+```
+
+
+## MA(1)
+
+
+### Função de autocorrelação
+
+:::: {.columns}
+
+::: {.column width="30%"}
+
+É facil verificar que:
+
+
+$$\rho_1 = \dfrac{\theta}{1 + \theta^2},$$
+
+$k \geq 2$
+$$\rho_k = 0.$$
+
+:::
+
+::: {.column width="70%"}
+
+```{r}
+library(ggplot2)
+theta1 = c(0.1/(1 + 0.1^2), rep(0, 29))
+theta2 = c(0.3/(1 + 0.3^2), rep(0, 29))
+theta3 = c(0.5/(1 + 0.5^2), rep(0, 29))
+theta4 = c(0.8/(1 + 0.8^2), rep(0, 29))
+theta5 = c(1.1/(1 + 1.1^2), rep(0, 29))
+theta7 = c(-0.3/(1 + 0.3^2), rep(0, 29))
+theta8 = c(-0.5/(1 + 0.5^2), rep(0, 29))
+theta9 = c(-0.8/(1 + 0.8^2), rep(0, 29))
+theta10 = c(-1.1/(1 + 1.1^2), rep(0, 29))
+dados <- data.frame(theta = c(theta1, theta2, theta3, theta4, theta5, theta7, theta8, theta9, theta10),
+                    k = rep(1:30, 9),
+                    nome = c(rep("theta = 0.1", 30),
+                             rep("theta = 0.3", 30),
+                             rep("theta = 0.5", 30),
+                             rep("theta = 0.8", 30),
+                             rep("theta = 1.1", 30),
+                             rep("theta = -0.3", 30),
+                             rep("theta = -0.5", 30),
+                             rep("theta = -0.8", 30),
+                             rep("theta = -1,1", 30)))
+ggplot(dados) + geom_bar(aes(x = k, y = theta), stat = "identity", position = "identity", fill = "green4") + geom_hline(yintercept = 0, color = "red") + 
+  facet_wrap(.~nome, scales = "free_y") + ylim(c(-0.5, 0.5))
+```
+
+
+:::
+
+::::
+
+
+## MA(1)
+
+
+### Função de autocorrelação amostral
+
+
+
+::: {.panel-tabset}
+
+### Caso  1
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 1), ma = c(-0.3) ), n = 1000)
+acf(y, main = "ACF")
+```
+
+
+### Caso  2
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 1), ma = c(-0.5) ), n = 1000)
+acf(y, main = "ACF")
+```
+
+### Caso  3
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 1), ma = c(-0.8) ), n = 1000)
+acf(y, main = "ACF")
+```
+
+
+### Caso  4
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 1), ma = c(-1.1) ), n = 1000)
+acf(y, main = "ACF")
+```
+
+
+### Caso  5
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 1), ma = c(0.1) ), n = 1000)
+acf(y, main = "ACF")
+```
+
+
+### Caso  6
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 1), ma = c(0.3) ), n = 1000)
+acf(y, main = "ACF")
+```
+
+
+### Caso  7
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 1), ma = c(0.5) ), n = 1000)
+acf(y, main = "ACF")
+```
+
+
+### Caso  8
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 1), ma = c(0.8) ), n = 1000)
+acf(y, main = "ACF")
+```
+
+:::
+
+
+
+# MA(2)
+## MA(2)
+
+
+### Definição:
+
+Um processo estocástico $\{Y_t\}$ é dito de médias móveis de ordem 2, denotado MA(2), se seu processo gerador de dados é dado por $$Y_t = \mu + \epsilon_t + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2},$$ em que $\mu$, $\theta_1$ e $\theta_2$ ($\theta_1, \theta_2 \neq 0$) são parâmetros reais e $\epsilon_t \sim RB(0, \sigma^2_{\epsilon})$. 
+
+
+. . . 
+
+- $\mathbb{E}(Y_t) = \mu$
+- $\mathbb{V}(Y_t) = (1 + \theta_1^2 + \theta_2^2) \sigma^2_{\epsilon}$
+- $\mathbb{C}ov(Y_t, Y_{t-1}) = \sigma^2_{\epsilon} (\theta_1 + \theta_1 \theta_2)$
+- $\mathbb{C}ov(Y_t, Y_{t-2}) = \sigma^2_{\epsilon} \theta_2$
+- $\mathbb{C}ov(Y_t, Y_{t-k}) = 0, \quad k \geq 2$
+
+
+
+## MA(2)
+
+Pode-se verificar que:
+
+- $\rho_1 = \dfrac{\theta_1 + \theta_1 \theta_2}{1 + \theta_1^2 + \theta_2^2}$
+- $\rho_2 = \dfrac{\theta_2}{1 + \theta_1^2 + \theta_2^2}$
+- $\rho_k = 0, \quad k \geq 3.$
+
+
+
+
+
+# MA(q)
+## MA(q)
+
+### Definição:
+
+Um processo estocástico $\{Y_t\}$ é dito de médias móveis de ordem q, denotado MA(q), se seu processo gerador de dados é dado por $$Y_t = \mu + \epsilon_t + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \cdots + \theta_q \epsilon_{t-q} \equiv Y_t - \mu = (1 + \theta_1B + \cdots + \theta_qB^q)\epsilon_t$$ em que $\mu$, $\theta_1, \cdots, \theta_q$ ($\theta_1, \cdots, \theta_q \neq 0$) são parâmetros reais e $\epsilon_t \sim RB(0, \sigma^2_{\epsilon})$. 
+
+
+. . . 
+
+- $\mathbb{E}(Y_t) = \mu$
+- $\mathbb{V}(Y_t) = (1 + \theta_1^2 + \theta_2^2 + \cdots + \theta_q^2) \sigma^2_{\epsilon}$
+- $\mathbb{C}ov(Y_t, Y_{t-k}) = \sigma^2_{\epsilon} (\theta_k + \theta_{k+1}\theta_1 + \theta_{k+2}\theta_2 + \cdots + \theta_q \theta_{q-k}), \quad k = 1, \cdots, q$
+- $\rho_k = (\theta_k + \theta_{k+1}\theta_1 + \theta_{k+2}\theta_2 + \cdots + \theta_q \theta_{q-k})/(1 + \theta_1^2 + \theta_2^2 + \cdots + \theta_q^2), \quad k = 1, \cdots, q$
+- $\mathbb{C}ov(Y_t, Y_{t-k}) = 0 \quad e \quad \rho_k = 0, \quad k \geq j+1$
+
+
+
+## MA(q)
+
+
+::: {.panel-tabset}
+
+### Caso  1
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 1), ma = .9 ), n = 1000)
+acf(y, main = "ACF")
+```
+
+
+### Caso  2
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(2, 0, 0), ar = c(0.3, 0.15) ), n = 1000)
+acf(y, main = "ACF")
+```
+
+### Caso  3
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 2), ma = c(-0.3, 0.15) ), n = 1000)
+acf(y, main = "ACF")
+```
+
+
+### Caso  4
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 2), ma = c(-0.3, -0.15) ), n = 1000)
+acf(y, main = "ACF")
+```
+
+
+### Caso  5
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(1, 0, 0), ar = c(0.14) ), n = 1000)
+acf(y, main = "ACF")
+```
+
+
+### Caso  6
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 4), ma = c(0.4, 0.2, 0.15, 0.1) ), n = 1000)
+acf(y, main = "ACF")
+```
+
+
+### Caso  7
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 1), ma = c(1.2) ), n = 1000)
+acf(y, main = "ACF")
+```
+
+
+:::
+
+
+## MA(q)
+
+Processo MA(q) são úteis para descrever fenômenos nos quais acontecimentos produzem um efeito immediato que duram apenas por curtos períodos de tempo.
+
+
+
+. . . 
+
+> Assim como no caso dos AR(p), a PACF também será útil para identificarmos o processo.
+
+## Autocorrelação parcial MA(q)
+
+
+#### MA(1)
+
+$$\phi_{kk} = \dfrac{\phi_1^k(1 - \phi_2^2)}{1 - \phi_2^{k+1}}, \quad k \geq 1.$$
+
+. . . 
+
+#### MA(2)
+
+$$\phi_{11} = \rho_1, \quad \phi_{22} = \dfrac{\rho_2 - \rho_1^2}{1-\rho_1^2}, \quad \phi_{33} = \dfrac{\rho_1^3 - \rho_1 \rho_2 (2-\rho_2)}{1-\rho_2^3 - 2 \rho_1^2(1-\rho_2)}, \quad \cdots$$
+
+# $MA(\infty)$
+
+## $MA(\infty)$
+
+### Definição:
+
+Quando $q = \infty$, o processo MA(q) pode ser escrito como $$Y_t = \mu + \displaystyle \sum_{i=0}^{\infty} \psi_j \epsilon_t = \mu + \psi(L) \epsilon_t,$$ em que $\psi_0 = 1$ e $\psi(L) = (1 + \psi_1B + \psi_2B^2 + \cdots)$.
+
+Se o processo for estacionário, então $\displaystyle \sum_{i=0}^{\infty} \psi_j^2 < \infty$.
+
+
+# Invertibilidade
+## Invertibilidade
+
+- Quando estudamos os modelos AR(p), vimos que causalidade implica em escrever um AR(p) como um MA($\infty$) (o que acontece se o processo AR(p) for estacionário).
+- Invertibilidade significa escrever um MA(q) como um AR($\infty$), o que acontece apenas se certas condições são satisfetitas. 
+
+. . . 
+
+Seja o processo MA(1), $$Y_t - \mu = \underbrace{\epsilon_t + \theta \epsilon_{t-1}}_{(1 + \theta B)\epsilon_t}$$
+
+
+. . . 
+
+Se $|\theta| < 1$, $$(Y_t - \mu)(1 + \theta B)^{-1} = \epsilon_t \rightarrow (Y_t - \mu)(1 - \theta B +\theta^2 B^2 - \theta^3 B^3 + \cdots) = \epsilon_t$$
+
+. . . 
+
+
+<center>
+$\rightarrow \tilde{Y}_t = \theta \tilde{Y}_{t-1} - \theta^2 \tilde{Y}_{t-2} + \theta^3 \tilde{Y}_{t-3} +  \cdots + \epsilon_t$
+</center>
+
+
+
+# Relação entre AR(p) e MA(q)
+## Relação entre AR(p) e MA(q)
+
+Para um AR(p) estacionário, $$\begin{align*} 
+\tilde{Y}_t = \phi_1 \tilde{Y}_{t-1} + \cdots + \phi_p \tilde{Y}_{t-p}  &+ \epsilon_t \\ 
+\tilde{Y}_t - \phi_1 \tilde{Y}_{t-1} - \cdots - \phi_p \tilde{Y}_{t-p}  &= \epsilon_t \\ 
+(1 - \phi_1 B - \cdots - \phi_p B^p) \tilde{Y}_t  &= \epsilon_t \\ 
+ \phi_p(B)  \tilde{Y}_t  &= \epsilon_t \\ 
+    \tilde{Y}_t  = \dfrac{1}{\phi_p(B)} & \epsilon_t, \\ 
+    \tilde{Y}_t  = \psi(B) & \epsilon_t, \\ 
+\end{align*},$$ em que $\psi(B) = 1 + \psi_1B + \psi_2 B^2 + \cdots$, tal que $\phi_p(B)\psi(B) = 1$
+
+
+## Relação entre AR(p) e MA(q)
+
+Para um AR(1), $$\begin{align*} 
+\tilde{Y}_{t}(1 - \phi B) &= \epsilon_t \\
+\tilde{Y}_{t} &= (1 + \psi_1 B + \psi_2 B^2 + \cdots)\epsilon_t \\
+\end{align*}$$
+
+. . . 
+
+
+O que implica que $(1-\phi B)(1 + \psi_1 B + \psi_2 B^2 + \cdots) = 1$
+
+. . . 
+
+Para obtermos os $\psi$s, basta garantir que $(1-\phi B)(1 + \psi_1 B + \psi_2 B^2 + \cdots) = 1$ seja satisfeito. 
+
+
+$$1 + \psi_1 B + \psi_2 B^2 + \cdots - \phi B - \phi \psi_1 B^2 + \phi \psi_2 B^3 = 1$$
+
+
+- $(\psi_1 - \phi) = 0 \rightarrow \psi_1 = \phi$.
+- $(\psi_2 - \phi \psi_1) = 0 \rightarrow \psi_2 = \phi^2$
+- $\cdots \rightarrow \psi_k = \phi^k, \quad k \geq 2$
+
+
+
+## Relação entre AR(p) e MA(q)
+
+Para um AR(2), $$\begin{align*} 
+\tilde{Y}_{t}(1 - \phi_1 B - \phi_2 B^2) &= \epsilon_t \\
+\tilde{Y}_{t} &= (1 + \psi_1 B + \psi_2 B^2 + \cdots)\epsilon_t \\
+\end{align*}$$
+
+
+. . . 
+
+
+O que implica que $(1-\phi_1 B - \phi_2 B^2)(1 + \psi_1 B + \psi_2 B^2 + \cdots) = 1$
+
+. . . 
+
+Para obtermos os $\psi$s, basta garantir que $(1-\phi_1 B - \phi_2 B^2)(1 + \psi_1 B + \psi_2 B^2 + \cdots) = 1$ seja satisfeito.
+
+
+$$1 + \psi_1 B + \psi_2 B^2 + \cdots - \phi_1 B - \phi_1 \psi_1 B^2 - \phi_1 \psi_2 B^3 - \cdots - \phi_2 B^2- \phi_2 \psi_1 B^3 - \cdots = 1$$
+
+- $(\psi_1 - \phi_1) = 0 \rightarrow \psi_1 = \phi_1$
+- $(\psi_2 - \psi_1 \phi_1 - \phi_2) = 0 \rightarrow \psi_2 = \psi_1 \phi_1 + \phi_2$
+- $(\psi_3 - \psi_2 \phi_1 - \psi_1 \phi_2) = 0 \rightarrow \psi_3 = \psi_2 \phi_1 + \psi_1 \phi_2$
+- $\cdots \rightarrow \psi_k = \psi_{k-1}\phi_1 + \psi_{k-2}\phi_2, \quad k \geq 2$
+
+
+
+## Relação entre AR(p) e MA(q)
+
+Para um processo MA(q) invertível, $$\begin{align*} 
+\tilde{Y}_t &= \underbrace{\epsilon_t + \theta_1 \epsilon_{t-1} + \cdots + \theta_q \epsilon_{t-q}}_{(1 + \theta_1 B + \theta_2 B^2 + \cdots + \theta_q B^q) \epsilon_t} \\ 
+\tilde{Y}_t &= \theta_q(B) \epsilon_t \\ 
+\pi(B) \tilde{Y}_t &= \epsilon_t \\
+\end{align*},$$ em que $\pi(B) = 1 + \pi_1B + \pi_2 B^2 + \cdots$, tal que $\theta_q(B)\pi(B) = 1$
+
+
+. . . 
+
+Para obter os valores dos $\pi$s, basta proceder em forma semelhante ao feito para ao processo AR(p).
+
+
+
+## Relação entre AR(p) e MA(q)
+
+
+Para um MA(2),  $$\begin{align*} 
+\tilde{Y}_{t} = (1 + \theta_1 B + \theta_2 B^2) &\epsilon_t \\
+\tilde{Y}_{t}  (1 + \pi_1 B + \pi_2 B^2 + \cdots ) =  & \epsilon_t \\
+\end{align*}$$
+
+
+. . . 
+
+
+O que implica que $(1 + \theta_1 B + \theta_2 B^2)(1 + \pi_1 B + \pi_2 B^2 + \cdots) = 1$
+
+. . . 
+
+
+Para obtermos os $\pi$s, basta garantir que $(1 + \theta_1 B + \theta_2 B^2)(1 + \pi_1 B + \pi_2 B^2 + \cdots) = 1$ seja satisfeito.
+
+
+$$1 + \pi_1 B + \pi_2 B^2 + \cdots +  \theta_1 B + \theta_1 \pi_1 B^2 + \theta_1 \pi_2 B^3 + \cdots \theta_2 B^2 + \theta_2 \pi_1 B^3 + \theta_2 \pi_2 B^4 + \cdots = 1$$
+
+
+- $(\pi_1 + \theta_1 ) = 0 \rightarrow \pi_1 = - \theta_1$
+- $(\pi_2 + \theta_1 \pi_1 + \theta_2) = 0 \rightarrow \pi_2 = - \pi_1 \theta_1 - \theta_2$
+- $\cdots \rightarrow \pi_k = - \pi_{k-1}\theta_1 - \pi_{k-2}\theta_2, \quad k \geq 3$
+
+
+
+## Relação entre AR(p) e MA(q)
+
+> Todo processo estacionário AR(p) (p < $\infty$) pode ser escrito como um MA($\infty$) e todo processo MA(q) invertível (q < $\infty$) pode ser escrito como um AR($\infty$).
+
+
+
+## Referências
+
+
+::: {.nonincremental}
+
+- Bueno, R. D. L. D. S. (2018). Econometria de séries temporais. Capítulo 2.
+- [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 9.
+- Huang, C., & Petukhina, A. (2022). Applied Time Series Analysis and Forecasting with Python. Springer Nature. Chapter 3.
+- Peña, D. (2005). Análisis de series temporales. Alianza. Capítulo 4.
+- Shumway, R. H., & Stoffer, D. S. (2019). Time series: a data analysis approach using R. Chapman and Hall/CRC. Chapter 4.
+- Wei, W. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2ed, Pearson. Chapter 3.
+
+
+:::
+

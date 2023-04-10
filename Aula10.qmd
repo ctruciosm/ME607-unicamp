@@ -64,7 +64,7 @@ Diagnóstico do modelo!
 
 . . . 
 
-> Na formulação do modelo, assumiu-se que os erros são ruido branco. O mesmo deve acontecer com os resíduos estimados!
+> Na formulação do modelo, assumiu-se que os erros são ruido branco. Se o modelo for adequado, os resíduos deverão estar próximos de erros e, por tanto, deverão ser aproximadamente um ruido branco.
 
 
 ## Diagnóstico
@@ -160,6 +160,22 @@ augment(fit) |> features(.innov, ljung_box, lag = 10, dof = 3)
 :::
 
 
+## Diagnóstico
+
+Em particular, deveriamos ter que, aproximadamente $$\hat{\rho}_k \sim N(0, 1/n).$$
+
+
+. . . 
+
+Contudo, $\mathbb{V}(\hat{\rho}_k)$ pode ser bem menor do que $1/n$. Por exemplo, Box, Jenkins e Reinsel (1994) provam que, para um AR(1), $$\mathbb{V}(\hat{\rho}_k) \approx \dfrac{1}{n}[1 - \phi^{2(k-1)}(1-\phi^2)].$$
+
+-  Para $k$ grande, $\approx \dfrac{1}{n}$ mas para $k$ pequeno, a variância pode ser bem menor.
+
+. . . 
+
+> De qualquer modo, a comparação com $\pm 2/\sqrt{n}$ fornece uma indicação geral da possível quebra de comportamento ruído branco.
+
+
 
 ## Diagnóstico
 
@@ -247,7 +263,7 @@ augment(fit) |> features(.innov, stat_arch_lm, lag = 3)
 ## Previsão
 
 
-Seja o processo AR(1), $$Y_t = c + \phi Y_{t-1} + \epsilon_t, \quad t = 1, \cdots T$$
+Seja o processo AR(1), $$Y_t = c + \phi Y_{t-1} + \epsilon_t, \quad t =  \cdots T$$
 
 . . . 
 
@@ -269,7 +285,7 @@ Escolheremos $\hat{Y}_{T+h|T}$ a forma a minimizar o valor esperado do erro (de 
 ## Previsão
 
 
-$$Y_t = c + \phi Y_{t-1} + \epsilon_t, \quad t = 1, \cdots T$$
+$$Y_t = c + \phi Y_{t-1} + \epsilon_t, \quad t =  \cdots T$$
 
 
 :::: {.columns}
