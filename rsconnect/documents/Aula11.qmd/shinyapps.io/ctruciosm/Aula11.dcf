@@ -5,10 +5,10 @@ account: ctruciosm
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 8640279
-bundleId: 7082342
+bundleId: 7082392
 url: https://ctruciosm.shinyapps.io/Aula11/
-when: 1681344558.5946
-lastSyncTime: 1681344558.59462
+when: 1681345449.28824
+lastSyncTime: 1681345449.28825
 quarto_version: 1.2.269
 quarto_engines: knitr
 asMultiple: FALSE
