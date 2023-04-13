@@ -438,7 +438,7 @@ pacf(y, main = "PACF")
 
 ```{r}
 #| echo: true
-y <- arima.sim(model = list(order = c(0, 0, 4), ma = c(0.4, 0.2, 0.15, 0.1) ), n = 1000)
+y <- arima.sim(model = list(order = c(0, 0, 2), ma = c(0.4, 0.2) ), n = 1000)
 par(mfrow = c(1, 2))   
 acf(y, main = "ACF")
 pacf(y, main = "PACF")
