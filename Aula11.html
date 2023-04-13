@@ -796,19 +796,155 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 </section>
 <section id="maq-3" class="slide level2">
 <h2>MA(q)</h2>
-<p>Processo MA(q) são úteis para descrever fenômenos nos quais acontecimentos produzem um efeito immediato que duram apenas por curtos períodos de tempo.</p>
-<div class="fragment">
-<blockquote>
-<p>Assim como no caso dos AR(p), a PACF também será útil para identificarmos o processo.</p>
-</blockquote>
-</div>
+<ul>
+<li class="fragment"><p>Nas aulas anteriores estudamos os processos AR(p), processos que se caracterizam por ter muitos coeficientes de autocorrelação diferentes de zero.</p></li>
+<li class="fragment"><p>Estes processos tem memoria longa (pois o valor atual esta correlacionado com todos os anteriores). Isto implica que podemos escrever o processo AR(p) como uma função linear de todas as inovações.</p></li>
+<li class="fragment"><p>Processos AR(p) não conseguem representam séries de memória muito curta (casos em que o valor atual está apenas correlacionado com poucos valores anteriores).</p></li>
+<li class="fragment"><p>Processo MA(q) são úteis para descrever fenômenos nos quais acontecimentos produzem um efeito immediato que duram apenas por curtos períodos de tempo (séries de memória curta).</p></li>
+</ul>
 </section>
 <section id="autocorrelação-parcial-maq" class="slide level2">
 <h2>Autocorrelação parcial MA(q)</h2>
 <h4 id="ma1-5">MA(1)</h4>
-<p><span class="math display">\[\phi_{kk} = \dfrac{\phi_1^k(1 - \phi_2^2)}{1 - \phi_2^{k+1}}, \quad k \geq 1.\]</span></p>
+<p><span class="math display">\[\phi_{kk} = \dfrac{\theta_1^k(1 - \theta_1^2)}{1 - \theta_1^{2(k+1)}}, \quad k \geq 1.\]</span></p>
 <h4 id="ma2-3">MA(2)</h4>
 <p><span class="math display">\[\phi_{11} = \rho_1, \quad \phi_{22} = \dfrac{\rho_2 - \rho_1^2}{1-\rho_1^2}, \quad \phi_{33} = \dfrac{\rho_1^3 - \rho_1 \rho_2 (2-\rho_2)}{1-\rho_2^3 - 2 \rho_1^2(1-\rho_2)}, \quad \cdots\]</span></p>
+<h4 id="maq-4">MA(q)</h4>
+<p>Em geral, a PACF para um MA(q) tem o comportamento de uma mixtura de decaimentos exponenciais ou de ondas senoidais amortecidas.</p>
+</section>
+<section id="autocorrelação-parcial-maq-1" class="slide level2">
+<h2>Autocorrelação parcial MA(q)</h2>
+<div class="panel-tabset">
+<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Caso 1</a></li><li><a href="#tabset-3-2">Caso 2</a></li><li><a href="#tabset-3-3">Caso 3</a></li><li><a href="#tabset-3-4">Caso 4</a></li><li><a href="#tabset-3-5">Caso 5</a></li><li><a href="#tabset-3-6">Caso 6</a></li><li><a href="#tabset-3-7">Caso 7</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1">
+<div class="cell" data-layout-align="center">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>y <span class="ot">&lt;-</span> <span class="fu">arima.sim</span>(<span class="at">model =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ma =</span> .<span class="dv">9</span> ), <span class="at">n =</span> <span class="dv">1000</span>)</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))   </span>
+<span id="cb16-3"><a href="#cb16-3"></a><span class="fu">acf</span>(y, <span class="at">main =</span> <span class="st">"ACF"</span>)</span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="fu">pacf</span>(y, <span class="at">main =</span> <span class="st">"PACF"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="Aula11_files/figure-revealjs/unnamed-chunk-19-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-2">
+<div class="cell" data-layout-align="center">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>y <span class="ot">&lt;-</span> <span class="fu">arima.sim</span>(<span class="at">model =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">ar =</span> <span class="fu">c</span>(<span class="fl">0.3</span>, <span class="fl">0.15</span>) ), <span class="at">n =</span> <span class="dv">1000</span>)</span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))   </span>
+<span id="cb17-3"><a href="#cb17-3"></a><span class="fu">acf</span>(y, <span class="at">main =</span> <span class="st">"ACF"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4"></a><span class="fu">pacf</span>(y, <span class="at">main =</span> <span class="st">"PACF"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="Aula11_files/figure-revealjs/unnamed-chunk-20-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-3">
+<div class="cell" data-layout-align="center">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>y <span class="ot">&lt;-</span> <span class="fu">arima.sim</span>(<span class="at">model =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ma =</span> <span class="sc">-</span><span class="fl">0.4</span>), <span class="at">n =</span> <span class="dv">1000</span>)</span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))   </span>
+<span id="cb18-3"><a href="#cb18-3"></a><span class="fu">acf</span>(y, <span class="at">main =</span> <span class="st">"ACF"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4"></a><span class="fu">pacf</span>(y, <span class="at">main =</span> <span class="st">"PACF"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="Aula11_files/figure-revealjs/unnamed-chunk-21-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-4">
+<div class="cell" data-layout-align="center">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>y <span class="ot">&lt;-</span> <span class="fu">arima.sim</span>(<span class="at">model =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>), <span class="at">ma =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.3</span>, <span class="sc">-</span><span class="fl">0.15</span>) ), <span class="at">n =</span> <span class="dv">1000</span>)</span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))   </span>
+<span id="cb19-3"><a href="#cb19-3"></a><span class="fu">acf</span>(y, <span class="at">main =</span> <span class="st">"ACF"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4"></a><span class="fu">pacf</span>(y, <span class="at">main =</span> <span class="st">"PACF"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="Aula11_files/figure-revealjs/unnamed-chunk-22-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-5">
+<div class="cell" data-layout-align="center">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>y <span class="ot">&lt;-</span> <span class="fu">arima.sim</span>(<span class="at">model =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">ar =</span> <span class="fu">c</span>(<span class="fl">0.14</span>) ), <span class="at">n =</span> <span class="dv">1000</span>)</span>
+<span id="cb20-2"><a href="#cb20-2"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))   </span>
+<span id="cb20-3"><a href="#cb20-3"></a><span class="fu">acf</span>(y, <span class="at">main =</span> <span class="st">"ACF"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4"></a><span class="fu">pacf</span>(y, <span class="at">main =</span> <span class="st">"PACF"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="Aula11_files/figure-revealjs/unnamed-chunk-23-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-6">
+<div class="cell" data-layout-align="center">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1"></a>y <span class="ot">&lt;-</span> <span class="fu">arima.sim</span>(<span class="at">model =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">4</span>), <span class="at">ma =</span> <span class="fu">c</span>(<span class="fl">0.4</span>, <span class="fl">0.2</span>, <span class="fl">0.15</span>, <span class="fl">0.1</span>) ), <span class="at">n =</span> <span class="dv">1000</span>)</span>
+<span id="cb21-2"><a href="#cb21-2"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))   </span>
+<span id="cb21-3"><a href="#cb21-3"></a><span class="fu">acf</span>(y, <span class="at">main =</span> <span class="st">"ACF"</span>)</span>
+<span id="cb21-4"><a href="#cb21-4"></a><span class="fu">pacf</span>(y, <span class="at">main =</span> <span class="st">"PACF"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="Aula11_files/figure-revealjs/unnamed-chunk-24-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-3-7">
+<div class="cell" data-layout-align="center">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>y <span class="ot">&lt;-</span> <span class="fu">arima.sim</span>(<span class="at">model =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="at">ma =</span> <span class="fu">c</span>(<span class="fl">1.2</span>) ), <span class="at">n =</span> <span class="dv">1000</span>)</span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))   </span>
+<span id="cb22-3"><a href="#cb22-3"></a><span class="fu">acf</span>(y, <span class="at">main =</span> <span class="st">"ACF"</span>)</span>
+<span id="cb22-4"><a href="#cb22-4"></a><span class="fu">pacf</span>(y, <span class="at">main =</span> <span class="st">"PACF"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="Aula11_files/figure-revealjs/unnamed-chunk-25-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </section></section>
 <section>
 <section id="mainfty" class="title-slide slide level1 center">

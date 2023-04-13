@@ -340,26 +340,126 @@ acf(y, main = "ACF")
 
 ## MA(q)
 
-Processo MA(q) são úteis para descrever fenômenos nos quais acontecimentos produzem um efeito immediato que duram apenas por curtos períodos de tempo.
+
+- Nas aulas anteriores estudamos os processos AR(p), processos que se caracterizam por ter muitos coeficientes de autocorrelação diferentes de zero.
+
+- Estes processos tem memoria longa (pois o valor atual esta correlacionado com todos os anteriores). Isto implica que podemos escrever o processo AR(p) como uma função linear de todas as inovações.
+
+- Processos AR(p) não conseguem representam séries de memória muito curta (casos em que o valor atual está apenas correlacionado com poucos valores anteriores).
+
+- Processo MA(q) são úteis para descrever fenômenos nos quais acontecimentos produzem um efeito immediato que duram apenas por curtos períodos de tempo (séries de memória curta).
 
 
 
-. . . 
-
-> Assim como no caso dos AR(p), a PACF também será útil para identificarmos o processo.
 
 ## Autocorrelação parcial MA(q)
 
 
 #### MA(1)
 
-$$\phi_{kk} = \dfrac{\phi_1^k(1 - \phi_2^2)}{1 - \phi_2^{k+1}}, \quad k \geq 1.$$
+$$\phi_{kk} = \dfrac{\theta_1^k(1 - \theta_1^2)}{1 - \theta_1^{2(k+1)}}, \quad k \geq 1.$$
 
 . . . 
 
 #### MA(2)
 
 $$\phi_{11} = \rho_1, \quad \phi_{22} = \dfrac{\rho_2 - \rho_1^2}{1-\rho_1^2}, \quad \phi_{33} = \dfrac{\rho_1^3 - \rho_1 \rho_2 (2-\rho_2)}{1-\rho_2^3 - 2 \rho_1^2(1-\rho_2)}, \quad \cdots$$
+
+. . . 
+
+
+#### MA(q)
+
+Em geral, a PACF para um MA(q) tem o comportamento de uma mixtura de decaimentos exponenciais ou de ondas senoidais amortecidas.
+
+
+
+## Autocorrelação parcial MA(q)
+
+
+
+::: {.panel-tabset}
+
+### Caso  1
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 1), ma = .9 ), n = 1000)
+par(mfrow = c(1, 2))   
+acf(y, main = "ACF")
+pacf(y, main = "PACF")
+```
+
+
+### Caso  2
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(2, 0, 0), ar = c(0.3, 0.15) ), n = 1000)
+par(mfrow = c(1, 2))   
+acf(y, main = "ACF")
+pacf(y, main = "PACF")
+```
+
+### Caso  3
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 1), ma = -0.4), n = 1000)
+par(mfrow = c(1, 2))   
+acf(y, main = "ACF")
+pacf(y, main = "PACF")
+```
+
+
+### Caso  4
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 2), ma = c(-0.3, -0.15) ), n = 1000)
+par(mfrow = c(1, 2))   
+acf(y, main = "ACF")
+pacf(y, main = "PACF")
+```
+
+
+### Caso  5
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(1, 0, 0), ar = c(0.14) ), n = 1000)
+par(mfrow = c(1, 2))   
+acf(y, main = "ACF")
+pacf(y, main = "PACF")
+```
+
+
+### Caso  6
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 4), ma = c(0.4, 0.2, 0.15, 0.1) ), n = 1000)
+par(mfrow = c(1, 2))   
+acf(y, main = "ACF")
+pacf(y, main = "PACF")
+```
+
+
+### Caso  7
+
+```{r}
+#| echo: true
+y <- arima.sim(model = list(order = c(0, 0, 1), ma = c(1.2) ), n = 1000)
+par(mfrow = c(1, 2))   
+acf(y, main = "ACF")
+pacf(y, main = "PACF")
+```
+
+
+:::
+
+
+
 
 # $MA(\infty)$
 

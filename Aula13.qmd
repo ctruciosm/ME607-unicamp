@@ -1,0 +1,67 @@
+---
+title: "Processos autoregressivos de média moveis - ARMA(p,q): Parte II"
+subtitle: "ME607 - Séries Temporais"
+author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
+Email: "ctrucios@unicamp.br"
+institute: "Instituto de Matemática, Estatística e Computação Científica (IMECC), </br> Universidade Estadual de Campinas (UNICAMP)."
+knitr:
+    opts_chunk: 
+      fig.align: 'center'
+execute:
+    message: false
+    warning: false
+format:
+    revealjs:
+        slide-number: true
+        toc: true
+        toc-depth: 1
+        toc-title: Agenda
+        self-contained: false
+        chalkboard: true
+        width: 1600
+        height: 900
+        theme: [default, styles.scss]
+        incremental: true
+        code-fold: true
+        logo: "imagens/imecc.png"
+        footer: "Carlos Trucíos (IMECC/UNICAMP)  |  ME607 - Séries Temporais  |  [ctruciosm.github.io](https://ctruciosm.github.io/)"
+        highlight-style: "a11y"
+        title-slide-attributes:
+            data-background-image: "imagens/unicamp.png"
+            data-background-size: 20%
+            data-background-position: 99% 5%
+            data-background-opacity: "1"
+editor: source
+---
+
+
+# Introdução
+## Introdução
+- Já aprendimos como utilizar o MM e o método de máxima verosimilhança conditional para um AR(p).
+- Estas mesmas ideias podem ser utilizaras para estimação em processos ARMA(p,q)
+- Aprenderemos outros métodos de estimação
+- Aprenderemos como fazer previsões na prática
+- Outros assuntos relacionados com processos ARMA(p,q) serão também discutidos
+
+# Estimação
+# Estimação
+
+
+
+# Previsão
+# Previsão
+
+# Etc
+
+## Referências
+
+
+::: {.nonincremental}
+
+- Brockwell, P.J & Davis, R.A. (2016). Introduction to Time Series and Forecasting, 3rd editions, Springer. Chapter 3.
+- Wei, W. (2005). Time Series Analysis: Univariate and Multivariate Methods, 2ed, Pearson. Chapter 5.
+
+
+:::
+
+
