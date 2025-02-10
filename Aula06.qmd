@@ -100,14 +100,16 @@ knitr::kable(dados)
 
 ## Regressores úteis
 
-#### Dias de negociação
+<h4>Dias de negociação</h4>
 
 Dependo do que queremos prever, o numero de dias úteis (ou dias de negociação) pode influenciar em, por exemplo, o volume de vendas mensal. 
 
 - Incluir uma variável com o número de dias úteis no mês pode ser útil para nosso modelo.
 - Outra alternativa é incluir o número de cada dia da semana em que houve negociação. Por exemplo:
 
+
 . . . 
+
 
 <center>
 
@@ -126,7 +128,7 @@ Dependo do que queremos prever, o numero de dias úteis (ou dias de negociação
 
 ## Regressores úteis
 
-#### Variáveis defasadas
+<h4>Variáveis defasadas</h4>
 
 Podemos pensar que, por exemplo, o número de vendas depende dos gastos em publicidade. Contudo, às vezes os gastos em publicidade do mês anterior poderiam ter um efeito nas vendas do mês atual. Nesse sentido, incluir variáveis defasadas pode ajudar a melhorar o modelo.
 
@@ -147,7 +149,7 @@ Podemos pensar que, por exemplo, o número de vendas depende dos gastos em publi
 
 ## Regressores úteis
 
-#### Páscoa
+<h4>Páscoa</h4>
 
 A páscoa não acontece todo ano no mesmo periodo, páscoa pode afetar diferentes negócios (turismo, por exemplo). Incluir no modelo uma variável que tome conta desse fator pode ser interessante. Nestes casos podemos:
 
@@ -158,13 +160,14 @@ A páscoa não acontece todo ano no mesmo periodo, páscoa pode afetar diferente
 ## Regressores úteis
 
 
-#### Séries de Fourier
+<h4>Séries de Fourier</h4>
 
 - É uma alternativa ao uso de variáveis dummy em dados sazonais.
 - Para um período sazonal $m$ temos:
 
 
 . . . 
+
 
 <center>
 
@@ -185,7 +188,118 @@ A páscoa não acontece todo ano no mesmo periodo, páscoa pode afetar diferente
 
 # Tendência + Sazonalidade
 
+
 ## Tendência + Sazonalidade
+
+
+
+::: {.callout-warning icon=false}
+### Lembrando
+A decomposição de séries temporais pode ser definida como 
+
+$$\underbrace{Y_t = T_t + S_t + R_t}_{\text{Modelo aditivo}} \quad ou \quad \underbrace{Y_t = T_t \times S_t \times R_t}_{\text{Modelo  multiplicativo}}$$
+
+:::
+
+. . . 
+
+
+Fazendo algumas modificações, podemos transformar a equação acima em um modelo de regressão da forma
+
+$$Y_t = \beta_0 + \beta_1 T_t + \beta_2 S_t + \epsilon_t$$
+
+. . . 
+
+$$\text{ou} \quad \log(Y_t) = \beta_0 + \beta_1 \log(T_t) + \beta_2 \log(S_t) + \epsilon_t$$
+
+Bastando apenas saber quem utilizarmos como $T_t$ e quem como $S_t$.
+
+## Tendência + Sazonalidade
+
+- Já temos aprendido como lidar com $T_t$:
+    * Tendência Linear: $y_t = \alpha_0 + \alpha_1 t + e_t$,
+    * Tendência Quadrática: $y_t = \alpha_0 + \alpha_1 t + \alpha_2 t^2 + e_t$,
+    * Tendência Cúbica: $y_t = \alpha_0 + \alpha_1 t + \alpha_2 t^2 +  \alpha_3 t^3 + e_t$.
+    * etc.
+- Para $S_t$ podemos:
+    *   Utilizar variáveis **dummy**
+    *   Utilizar regressores de **Fourier**
+
+
+## Tendência + Sazonalidade
+
+
+::: {.panel-tabset}
+
+## Dados
+
+```{r}
+#| echo: true
+library(TSstudio)
+library(lubridate)
+library(ggplot2)
+ts_info(USgas)
+ts_plot(USgas,
+  title = "US Monthly Natural Gas consumption",
+  Ytitle = "Billion Cubic Feet",
+  Xtitle = "Year")
+```
+
+
+## FE
+
+#### Features engineering | Data Wrangling 
+
+```{r}
+#| echo: true
+USgas_df <- ts_to_prophet(USgas)
+head(USgas_df)
+USgas_df$trend <- 1:nrow(USgas_df)
+USgas_df$seasonal <- factor(month(USgas_df$ds, label = T), ordered = FALSE)
+head(USgas_df)
+```
+
+
+## Modelling
+
+```{r}
+#| echo: true
+modelo <- lm(y ~ seasonal + trend + I(trend^2), data = USgas_df)
+summary(modelo)
+```
+
+## Plot
+
+```{r}
+#| echo: true
+USgas_df$yhat <- predict(modelo, newdata = USgas_df)
+
+ggplot(USgas_df) +
+  geom_line(aes(x = ds, y = y), color = "black") +
+  geom_line(aes(x = ds, y = yhat), color = "red") +
+  ylab("Billion Cubic Feet") +
+  xlab("Year") +
+  ggtitle("Observed and fitted USgas values")
+    
+```
+
+
+## tslm
+
+```{r}
+#| echo: true
+library(forecast)
+modelo_tslm <- tslm(USgas ~ season + trend + I(trend^2))
+summary(modelo_tslm)    
+```
+
+:::
+
+
+
+## Tendência + Sazonalidade
+
+<h4>Produção trimestral de cerveja na Australia</h4>
 
 ```{r fig.height=4, fig.width=15}
 #| echo: true
@@ -673,4 +787,23 @@ Quando trabalhamos com um modelo com splines, podemos passar no argumento `knots
 ## Referências
 
 -   [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 7.
+-   Krispin, R. (2019). Hands-On Time Series Analysis with R: Perform time series analysis and forecasting using R. Packt Publishing Ltd. Chapter 9
+
+
+## Hands-On:
+
+- Uma das vantagens de utilizar modelos de regressão num contexto de séries temporais, é sua flexibilidade para lidar com modelos complexos.
+- Por exemplo, no seguinte exercícios, trabalharemos com multiplos períodos sazonais.
+- A série `UKgrid` do pacote `UKgrid`, contém dados da demanda nacional de energia de 30 em 30 minutos no Reino Unido (`ND`).
+    *   Com o aprendido até agora, construir um modelo para prever as próximas 365 observações (poucos mais de 7 dias) 
+
+
+## Hands-On:
+
+```{r}
+#| echo: true
+library(UKgrid)
+glimpse(UKgrid)
+```
+
 

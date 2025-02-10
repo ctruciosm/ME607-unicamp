@@ -1,0 +1,934 @@
+---
+title: "Sazonalidade"
+subtitle: "ME607 - Séries Temporais"
+author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
+Email: "ctrucios@unicamp.br"
+institute: "Instituto de Matemática, Estatística e Computação Científica (IMECC), </br> Universidade Estadual de Campinas (UNICAMP)."
+knitr:
+    opts_chunk: 
+      fig.align: 'center'
+execute:
+    message: false
+    warning: false
+format:
+    revealjs:
+        slide-number: true
+        toc: true
+        toc-depth: 1
+        toc-title: Agenda
+        self-contained: false
+        chalkboard: true
+        width: 1600
+        height: 900
+        theme: [default, styles.scss]
+        incremental: true
+        code-fold: true
+        logo: "imagens/imecc.png"
+        footer: "Carlos Trucíos (IMECC/UNICAMP)  |  ME607 - Séries Temporais  |  [ctruciosm.github.io](https://ctruciosm.github.io/)"
+        highlight-style: "a11y"
+        title-slide-attributes:
+            data-background-image: "imagens/unicamp.png"
+            data-background-size: 20%
+            data-background-position: 99% 5%
+            data-background-opacity: "1"
+editor: source
+---
+
+# Introdução
+
+## Introdução 
+
+- Sazonalidade, *quando existente*, desempenha um papel importante na modelagem e previsão da série temporal.
+- Por isso, focar em métodos de identificação de padrões sazonais é de vital importância.
+- Nesta aula, focaremos em:
+    *   Padrões de sazonalidade simples e múltiplos
+    *   Métodos descritivos para identificar padrões de sazonalidade
+    *   Ferramentas de visualização de dados para explorar e identificar padrões de sazonalidade
+    *   Periodograma
+
+
+
+# Sazonalidade
+
+## Sazonalidade
+
+
+
+<center>
+[Existe uma forte relação entre a frequência da série e seu padrão sazonal.]{style="color:red;"}
+</center>
+
+
+. . . 
+
+
+::: {.callout-warning icon = false}
+### Período
+
+Unidade regular e repetitiva de tempo que divide a série temporal em subconjuntos consecutivos e igualmente longos (por exemplo, para séries mensais, um período completo seria um ano).
+
+
+:::
+
+
+. . . 
+
+
+
+::: {.callout-important icon = false}
+### Frequência
+É o tamanho ou número de unidades do período da série. Por exemplo:
+
+::: {.nonincremental}
+- Para séries trimestrais, a frequência é 4.
+- Para séries mensais, a frequência é 12
+:::
+:::
+
+. . . 
+
+
+- É de se esperer que em dados mensais, o padrão sazonal se repita de 12 em 12 meses.
+- É de se esperar que em dados trimestrais, o padrão sazonal se repita de 4 em 4 trimestres.
+- É de se esperar que em dados diários, o padrão sazonal se repita de 7 em 7 dias
+
+
+
+## Sazonalidade
+
+- Em muitos casos os padrões sazonais são únicos, mas eles **não precisam** ser únicos. 
+- De fato, o período sazonal pode ser dividido em:
+    *     Padrão sazonal único: quando existe apenas um único padrão sazonal.
+    *     Padrão sazonal múltiple: quando existe mais do que um único padrão sazonal
+
+
+. . . 
+
+
+<center>
+[**Consegue imaginar em quais casos poderiamos ter múltiplos padrões sazonais?**]{style="color:violet;"}
+</center>
+
+
+- Usualmente, múltiples padrões sazonais acontecem em dados de alta frequêcia (dados diários, de hora em hora, de 30 em 30 minutos, etc.). Por exemplo:
+    *       Consumo de energia elétrica
+    *       Demanda de transporte público
+    *       Vendas de varejo
+
+
+. . . 
+
+<center>
+[**Observação:** em econometria e finanças, dados de alta frequência referem-se, geralmente, a dados X-minutos em X-minutos ou tick-by-tick apenas.]{style="color:grey;"}
+</center>
+
+
+## Sazonalidade
+
+
+::: {.callout-tip icon = false}
+### Dica de ouro
+
+<center>
+Séries temporais em baixa frequência, quando existente, costumam ter um padrão sazonal **único**. Já séries temporais de alta frequência, quando existente, costumam ter **múltiplos** padrões sazonais
+</center>
+
+:::
+
+
+# Identificação de padrões sazonais
+
+## Identificação de padrões sazonais
+
+
+- Identificar o(s) padrão (ões) sazonal(is) é de vital importância no processo de modelagem e previsão da série. 
+- A identificação nos ajudará na escolha do modelo a ser utilizado.
+- Uma forma de idenfiticar o padrão sazonal é atraves de estatísticas descritivas.
+
+. . . 
+
+
+::: {.callout-important icon = false}
+### Estatisticas descritivas para identificar padrões sazonais
+
+Além do gráfico da série temporal, calcular medidas resumo para cada unidade de frequência da série ajuda na identificação. Por exemplo, se a frequência for 12 (dados mensais), calcular a média e desvio padrão por mês.
+
+::: 
+
+
+## Identificação de padrões sazonais
+
+
+
+
+::: {.panel-tabset}
+
+## Dados I
+
+```{r}
+#| echo: true
+library(TSstudio)
+library(dplyr)
+library(plotly)
+data(USgas)
+ts_info(USgas)
+```
+
+## Dados II
+
+```{r}
+#| echo: true
+glimpse(USgas)
+```
+
+## Dados III
+
+```{r}
+#| echo: true
+USgas
+```
+
+
+## Gráfico I
+
+```{r}
+#| echo: true
+ts_plot(USgas, title = "US Monthly Natural Gas consumption", Ytitle = "Billion Cubic Feet", Xtitle = "Year", Xgrid = TRUE, Ygrid = TRUE)
+```
+
+
+## Estatísticas
+
+```{r}
+#| echo: true
+USgas_df <- data.frame(year = floor(time(USgas)), month = cycle(USgas), USgas = as.numeric(USgas))
+USgas_df$month <- factor(month.abb[USgas_df$month], levels = month.abb)
+USgas_summary <- USgas_df |> group_by(month) |> summarise(media = mean(USgas), sd = sd(USgas))
+USgas_summary 
+```
+
+
+## Gráfico II
+
+```{r}
+#| echo: true
+plot_ly (data = USgas_summary, x = ~month, y = ~media, type = "bar", name = "Mean") |> 
+  layout (title = "USgas - Monthly Average", yaxis = list(title = "Mean", range = c(1500, 3000)))
+```
+
+
+:::
+
+
+## Identificação de padrões sazonais
+
+Se trabalharmos com séries temporais de alta frequência, o mesmo processo deve ser feito para cada frequência potencinal da série. Por exemplo:
+
+
+. . . 
+
+
+
+::: {.panel-tabset}
+
+## Dados I
+
+```{r}
+#| echo: true
+library(UKgrid)
+UKgrid <- extract_grid(type = "xts", columns = "ND", aggregate = "hourly", na.rm = TRUE)
+ts_plot(UKgrid, title = "National Hourly Demand UK Grid", Ytitle = "Megawatts", Xtitle = "Year", Xgrid = TRUE, Ygrid = TRUE)
+```
+
+
+## PPS
+
+PPS: **P**ossíveis **P**adrões **S**azonais
+
+
+- Como a série é de hora em hora, suspeitamos de padrões sazonais nos níveis
+    *       dia (dividido em horas)
+    *       Semana
+    *       Mês
+- Observação: Nas maiores granularidades (por exemplo, horas), um alto desvio padrão para determinados períodos, pode indicar a existência de mais um padrão sazonal. Essa alta variabilidade pode significar que o valor de interesse de distribui de forma diferente, em diferentes periodicidades.
+
+
+
+## Estatísticas
+
+```{r}
+#| echo: true
+library(lubridate)
+library(xts)
+UKgrid_df <- data.frame(time = index(UKgrid), UKgrid = as.numeric(UKgrid)) |> 
+  mutate(hour = hour(time), 
+         weekday = wday(time, label = TRUE, abbr = TRUE),
+         month = factor(month.abb[month(time)], levels = month.abb))
+
+UKgrid_hour <- UKgrid_df |> group_by(hour) |> summarise(media = mean(UKgrid, na.rm = TRUE), std = sd(UKgrid, na.rm = TRUE))
+UKgrid_hour
+```
+
+
+## Gráfico I
+
+```{r}
+#| echo: true
+plot_ly(UKgrid_hour) |>  
+  add_lines(x = ~ hour, y = ~media, name = "Mean") %>%
+  add_lines(x = ~ hour, y = ~std, name = "Standard Deviation", yaxis = "y2",
+    line = list(color = "red", dash = "dash", width = 3)) %>%
+  layout(title = "The UK Grid National Demand - Hourly Average vs. Standard Deviation", 
+    yaxis = list(title = "Mean"),
+    yaxis2 = list(overlaying = "y",
+      side = "right",
+      title = "Standard Deviation"),
+    xaxis = list(title="Hour of the day"),
+    legend = list(x = 0.05, y = 0.9),
+    margin = list(l = 50, r = 50))
+```
+
+
+
+## Gráficos II
+
+```{r}
+#| echo: true
+UKgrid_df |> 
+  filter(hour == 3 | hour == 10) |> 
+  group_by(hour, weekday) |> summarise(media = mean(UKgrid, na.rm = TRUE), std = sd(UKgrid, na.rm = TRUE)) |> 
+  plot_ly (x = ~weekday, y = ~media, type ="bar", color = ~factor(hour)) %>%
+  layout(title = "The Hourly Average Demand by Weekday",
+    yaxis = list(title = "Mean"),
+    xaxis = list(title = "Weekday"))
+```
+
+
+
+
+## Gráficos III
+
+```{r}
+#| echo: true
+UKgrid_df |> group_by(hour, weekday) |> summarise(media = mean(UKgrid, na.rm = TRUE), std = sd(UKgrid, na.rm = TRUE)) |> 
+  plot_ly (x = ~weekday, y = ~media, type ="bar", color = ~factor(hour)) %>%
+  layout(title = "The Hourly Average Demand by Weekday",
+    yaxis = list(title = "Mean"),
+    xaxis = list(title = "Weekday"))
+```
+
+
+## Gráfico IV
+
+```{r}
+#| echo: true
+UKgrid_df |> 
+  filter(hour == 3 | hour == 9 | hour == 15) |> 
+  group_by(hour, month) |> summarise(media = mean(UKgrid, na.rm = TRUE), std = sd(UKgrid, na.rm = TRUE)) |> 
+  plot_ly (x = ~month, y = ~media, type ="bar", color = ~factor(hour)) %>%
+  layout(title = "The Hourly Average Demand by Month",
+    yaxis = list(title = "Mean"),
+    xaxis = list(title = "Month"))
+```
+
+
+::: 
+
+
+## Identificação de padrões sazonais
+
+<center>
+Além das estatísticas descritivas aplicadas em cada unidade de frequência, um gráfico de densidade por cada unidade de frequência pode ser bastante útil tambem.
+</center>
+
+
+. . . 
+
+::: {.panel-tabset}
+
+## Gráfico I
+
+```{r}
+#| echo: true
+library(ggplot2)
+ggplot(USgas_df, aes(x = USgas)) +
+  geom_density(aes(fill = month)) +
+  ggtitle("USgas - Kernel Density Estimates by Month") +
+  facet_grid(rows = vars(as.factor(month)))
+```
+
+
+
+## Gráfico II
+
+```{r}
+#| echo: true
+ts_plot(USgas)
+```
+
+
+## Obs
+
+
+- Existe uma tendência na série. 
+- Precisamos remove-la antes de analisar a sazonaldiade.
+
+
+## Gráfico III
+
+```{r}
+#| echo: true
+USgas_df$USgas_detrend <- USgas_df$USgas - decompose(USgas)$trend
+
+ggplot(USgas_df, aes(x = USgas_detrend )) +
+  geom_density(aes(fill = month)) +
+  ggtitle("USgas - Kernel Density Estimates by Month") +
+  facet_grid(rows = vars(as.factor(month)))
+```
+
+:::
+
+
+## Observação
+
+- A remoção da tendência da série acentua o efeito sazonal.
+- No caso do exemplo, o padrão sazonal foi bastante claro (mesmo antes de remover a tendência).
+- Porém, em alguns casos, o padrão sazonal pode ser dificil de identificar se não removemos primeiro a tendência.
+- A recomendação é **remover a tendência da série sempre que a tendência for não linear ou quando houver uma distribuição com cauda longa**.
+- Quando a distribuição na maioria das unidades de frequência (cada mes, cada dia, cada hora) é plana com uma cauda longa, pode ser um indicativo de múltiplos padrões sazonais na série. 
+
+
+## Identificação de padrões sazonais
+
+
+::: {.panel-tabset}
+
+## Gráfico I
+
+```{r}
+#| echo: true
+UKgrid_df$hour <- as.factor(UKgrid_df$hour)
+ggplot(UKgrid_df, aes(x = UKgrid)) +
+  geom_density(aes(fill = hour)) +
+  ggtitle("UKgrid - Kernel Density Estimates by Hour of the day") +
+  facet_grid(rows = vars(as.factor(hour)))
+```
+
+
+## Obs
+
+- Como já tinhamos visto, a distribuição da demanda de energia durante a madrugada é relativamente estável (por isso a densidade não é plana e nem tem caudas pessadas).
+- Contudo, a distribuição da demanda de energia durante o dia tem um comportamento diferente: densidade plana e com caudas longas! O que pode indicar multiplos períodos sazonais.
+- Para visualizar istp, se escolhermos algumas horas do dia e graficarmos a distirbuição da demanda de energia por dia da semana, deveriamos notar que, nas horas referentes à noite/madrugada os gráficos se sobrepoem. Já nas horas referentes ao dia, gráficos distinguiveis devem ser observados entre dias úteis e finais de semana.
+
+## Gráfico II
+
+```{r}
+#| echo: true
+UKgrid_df$weekday <- as.factor(UKgrid_df$weekday)
+UKgrid_df %>% dplyr::filter(hour == 0) %>%
+  ggplot(aes(x = UKgrid)) +
+  geom_density(aes(fill = as.factor(weekday))) +
+  ggtitle("UKgrid - Kernel Density Estimates of Hour = 00hrs by day of the week") +
+  facet_grid(rows = vars(as.factor(weekday)))
+```
+
+
+## Gráfico III
+
+```{r}
+#| echo: true
+UKgrid_df$weekday <- as.factor(UKgrid_df$weekday)
+UKgrid_df %>% dplyr::filter(hour == 10) %>%
+  ggplot(aes(x = UKgrid)) +
+  geom_density(aes(fill = as.factor(weekday))) +
+  ggtitle("UKgrid - Kernel Density Estimates of Hour = 10hrs by day of the week") +
+  facet_grid(rows = vars(as.factor(weekday)))
+```
+
+
+:::
+
+
+# Ferramentas úteis no R
+
+## Ferramentas úteis no R
+
+
+::: {.panel-tabset}
+
+## USgas
+
+```{r}
+#| echo: true
+USgas
+```
+
+
+## ggseasonplot
+
+
+```{r}
+#| echo: true
+library(forecast)
+ggseasonplot(USgas, year.labels = TRUE, continuous=TRUE)
+```
+
+
+## polar
+
+```{r}
+#| echo: true
+ggseasonplot(USgas, polar = TRUE)
+```
+
+
+## ts_seasonal
+
+```{r}
+#| echo: true
+library(TSstudio)
+ts_seasonal(USgas, type ="normal")
+```
+
+## cycle
+
+```{r}
+#| echo: true
+library(TSstudio)
+ts_seasonal(USgas, type ="cycle")
+```
+
+## box
+
+```{r}
+#| echo: true
+ts_seasonal(USgas, type ="box")
+```
+
+## ts_heatmap
+
+```{r}
+#| echo: true
+ts_heatmap(USgas)
+```
+
+
+
+::: 
+
+
+## Ferramentas úteis no R
+
+
+::: {.panel-tabset}
+
+## UKgrid
+
+```{r}
+#| echo: true
+UKgrid
+```
+
+## ts_quantile
+
+
+```{r}
+#| echo: true
+ts_quantile(UKgrid)
+```
+
+
+## ts_quantile
+
+
+```{r}
+#| echo: true
+ts_quantile(UKgrid, period = "weekdays")
+```
+
+## ts_quantile
+
+
+```{r}
+#| echo: true
+ts_quantile(UKgrid, period = "monthly")
+```
+
+
+
+:::
+
+
+# Periodograma
+
+
+## Representação espectral
+
+
+::: {.callout-important}
+### Definição
+
+A representação espectral de uma série temporal estacionária  $\{Z_t\}$  consiste na decomposição da série em uma soma de componentes sinusoidais, cujos coeficientes são aleatórios e não correlacionados. Juntamente com essa decomposição, ocorre uma decomposição correspondente da função de autocovariância de  $\{Z_t\}$ também em termos de sinusoides.
+:::
+
+
+- A análise do processo estacionário através da representaão espectral é conhecido como **análise no dominio da frequência.**
+- É equivalente ao **dominio do tempo** baseado na função de autocovariância mas fornece uma forma alternativa de ver o processo que, em alguns casos, pode ser bastante útil.
+
+
+
+## Espectro
+
+
+::: {.callout-tip}
+### Função de densidade espectral
+Seja $\{Z_t, t \in  \mathbb{Z} \}$ um processo estocástico estacionário com média zero e função de autocovariância tal que $$\sum_{\tau = -\infty}^{\infty} |\gamma(\tau)| < \infty, \quad \text{(condição de independência assintótica)}.$$
+
+A função de densidade espectral (ou espectro) de $Z_t$ é definido por $$f(\lambda) = \dfrac{1}{2\pi} \sum_{\tau = -\infty}^{\infty} \gamma(\tau) e^{-i\lambda \tau}, -\infty < \lambda < \infty  \quad \text{(transformada de Fourier de $\gamma(\tau)$)},$$
+em que $e^{i \lambda} = \cos \lambda + i\sin \lambda \quad$ e $\quad i = \sqrt{-1}$.
+:::
+
+
+. . . 
+
+\vspace{1cm}
+
+<center>
+[Como $\cos(\cdot)$ e $\sin(\cdot)$ tem período $2 \pi$, $f(\lambda)$ também tem período $2 \pi$ e basta focar nossa atenção no intervalo $[-\pi, \pi].$]{style="color:red;"}
+</center>
+
+## Espectro
+
+
+::: {.callout-note}
+### Propriedades:
+-   Limitado
+-   Não negativo
+-   Uniformemente contínuo
+-   Par
+-   Periódico de período $2 \pi$
+-   $\gamma(\tau) = \int_{-\pi}^{\pi} e^{i\lambda \tau} f(\lambda) d\lambda$
+:::
+
+
+. . . 
+
+
+<aside>
+**Observação:** Embora tenhamos definido a função de densidade espectral sob a suposição de independência assintótica, mesmo se esta não for verificada pode existir uma densidade espectral correspondente definida da seguinte forma.
+</aside>
+
+## Espectro
+
+
+::: {.callout-important icon = false}
+### Definição
+Uma função $f$ é o espectro de um processo estacionário $\{Z_t, t \in  \mathbb{Z} \}$ com função de autocovariância $\gamma(\cdot)$ se:
+
+i.    $f(\lambda) \geq 0$ para todo $\lambda \in [- \pi, \pi]$
+ii.   $\gamma(\tau) = \displaystyle \int_{-\pi}^{\pi} e^{i\lambda \tau} f(\lambda) d\lambda$ para todo $\tau \in \mathbb{Z}$
+
+:::
+
+. . . 
+
+
+::: {.callout-tip icon = false}
+### Proposição
+Uma função real $f$ definida no intervalo $[- \pi, \pi]$ é o espectro de um processo estacionário se e somente se:
+
+i.    $f(\lambda) = f(- \lambda)$
+ii.    $f(\lambda) \geq 0$
+iii.   $\displaystyle \int_{-\pi}^{\pi} f(\lambda) d\lambda < \infty$
+
+:::
+
+
+## Espectro
+
+
+::: {.callout-warning icon = false}
+### Corolario
+Uma função absolutamente somável $\gamma(\tau)$ é a função de autocovariância de um processo estacionário, se e somente se, ela é par e $$f(\lambda) = \dfrac{1}{2 \pi} \sum_{\tau = - \infty}^{\infty} \gamma(\tau) e^{-i\tau \lambda} \geq 0, \quad \forall \lambda \in [- \pi, \pi],$$ em cujo caso $f(\cdot)$ é o espectro de $\gamma(\cdot)$.
+
+:::
+
+
+## Espectro
+
+$$\gamma(\tau) = \int_{-\pi}^{\pi} e^{i\lambda \tau} f(\lambda) d\lambda  \quad \tau \in \mathbb{Z}.$$
+
+
+. . . 
+
+
+- Se $\tau = 0$, $\gamma(0) = \mathbb{V}(Z_t) = \int_{-\pi}^{\pi} f(\lambda) d\lambda$
+- Desta forma, o espectro $f(\lambda)$ pode ser interpretado como uma decomposição da variância do processo.
+- Ademais, $f(\lambda) d\lambda$ é a contribuição à variância atribuida à componente do processo com frequência no intervalo $(\lambda, \lambda + d\lambda)$.
+- Assim, um pico no espectro indica uma contribuição importante à variância do processo da frequência no intervalo relacionado ao pico.
+
+
+
+
+## Espectro: exemplos
+
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+**DGP1:** $$Z_t \sim RB(0, \sigma^2)$$
+
+-   $\gamma(0) = \sigma^2, \quad \tau = 0$
+-   $\gamma(\tau) = 0, \quad |\tau| > 0$
+-   $f(\lambda) = \dfrac{1}{2\pi}\gamma(0) = \dfrac{\sigma^2}{2\pi}.$
+:::
+
+::: {.column width="50%"}
+**DGP2:** $$Z_t = \dfrac{1}{3}(a_{t-1} + a_t + a_{t+1}), \quad a_t \sim RB(0, \sigma^2)$$
+
+-   $\gamma(\tau) = 
+      \begin{cases}
+          3 \sigma^2/9, & \tau = 0 \\
+          2 \sigma^2/9, & \tau = \pm 1\\
+          \sigma^2/9,   & \tau = \pm 2 \\
+          0,            & |\tau| > 2
+      \end{cases}$
+-   $f(\lambda) = \dfrac{\sigma^2}{2\pi} \Big(\dfrac{2 \cos 2\lambda + 4 \cos \lambda + 3}{9}\Big).$
+:::
+
+::::
+
+
+## Espectro: exemplos
+
+**DGP3:** $$Z_t = \phi Z_{t-1} + a_t, \quad a_t \sim RB(0, \sigma^2)$$
+
+-   $\gamma(\tau) = 
+      \begin{cases}
+          \dfrac{\sigma^2}{1 - \phi^2}, & \tau = 0 \\
+          \dfrac{\sigma^2}{1 - \phi^2} \phi^{|\tau|}, & |\tau| \leq  1\\
+      \end{cases}$
+-   $f(\lambda) = \dfrac{\sigma^2}{2\pi (1 + \phi^2 - 2\phi \cos \lambda)}$
+
+
+. . . 
+
+
+<center>
+[Em todos os casos consideramos $-\pi \leq \lambda \leq \pi.$]{style="color:red;"}
+</center>
+
+
+## Espectro: exemplos
+
+
+::: {.panel-tabset}
+
+## DGP1
+```{r}
+#| echo: true
+library(ggplot2)
+lambda <- seq(-5, 5, by = 0.01)
+f <- ifelse(abs(lambda) < pi, 1/(2 * pi), 0)
+dgp1 <- data.frame(x = lambda, y = f)
+ggplot(dgp1) + geom_line(aes(x, y))
+```
+
+
+
+## DGP2
+
+```{r}
+#| echo: true
+library(ggplot2)
+lambda <- seq(-5, 5, by = 0.01)
+f <- ifelse(abs(lambda) < pi, (2 * cos(2 * lambda) + 4 * cos(lambda) + 3) / (9 * 2 * pi), 0)
+dgp1 <- data.frame(x = lambda, y = f)
+ggplot(dgp1) + geom_line(aes(x, y))
+```
+
+
+## DGP3
+
+```{r}
+#| echo: true
+library(ggplot2)
+lambda <- seq(-5, 5, by = 0.01)
+phi <- 0.7
+f <- ifelse(abs(lambda) < pi, 1 / (2 * pi * (1 + phi^2 - 2 * phi * cos (lambda))), 0)
+dgp1 <- data.frame(x = lambda, y = f)
+ggplot(dgp1) + geom_line(aes(x, y))
+```
+
+
+:::
+
+
+## Periodograma
+
+
+Se $\{Z_t, t = 1, \cdots, N\}$ for uma série temporal estacionária com função de covariância autocovariância $\gamma(\cdot)$ e densidade espectral $f(\cdot)$, então:
+
+- assim como a função de covariância amostral $\hat{\gamma}(\cdot)$ é um análogo amostral de $\gamma(\cdot)$, 
+- o periodograma $I^{(N)}(\cdot)$ é um análogo amostral de $2 \pi f(\cdot)$.
+
+
+. . .
+
+
+::: {.callout-warning icon = false}
+### Transformada Discreta de Fourier (TDF)
+
+Seja $\{Z_t, t = 1, \cdots, N\}$ uma realização de um processo estocástico. Então, a TDF é dada por $$d_j^{(N)} = \dfrac{1}{\sqrt{N}} \sum_{t = 1}^N Z_t e^{-i 2 \pi j t / N}, \quad j = 0, \cdots, N-1$$
+
+- $\mathbb{E}[d_j^{(N)}] = 0$
+- $\mathbb{V}[d_j^{(N)}] = \mathbb{E} |d_j^{(N)}|^2 \approx 2 \pi f(\omega_j)$ em que $\omega_j = \dfrac{2 \pi j}{N}.$
+
+:::
+
+
+
+## Periodograma
+
+
+
+Isto sugere que, dada uma realização $\{Z_t, t = 1, \cdots, N\}$, um estimador para $2 \pi f(\omega_j)$ é $$I_j^{(N)} = |d_j^{(N)}|^2 = \dfrac{1}{N} \big | \sum_{t = 1}^N Z_t e^{-i \omega_j t}  \big |^2,$$
+
+em que $\omega_j = \dfrac{2 \pi j}{N},$ $j = 0, \cdots, N-1$ são chamadas de **frequências de Fourier**. 
+
+. . . 
+
+::: {.callout-warning icon = false}
+### Periodograma
+
+Seja $\{Z_t, t = 1, \cdots, N\}$ uma realização de um processo estocástico estacionário. Definimos o **periodograma** como $$I^{(N)}_j = |d_j^{N}|^2, \quad j = 0, \cdots, N - 1$$
+
+
+:::
+
+
+
+
+## Periodograma
+
+
+::: {.callout-note icon = false}
+### Propriedades
+
+
+::: {.nonincremental}
+1.   $I_j^{(N)}$ é assintoticamente não viesado (mas não é consistente).
+2.   $I_j^{(N)} = \displaystyle \sum_{|h| < N} \hat{\gamma}_Z(h)e^{-i 2 \pi j h/ N}$
+3.   $\displaystyle \sum_{t = 1}^N (Z_t - \bar{Z})^2 = \sum_{k = 0}^{N - 1} I_k^{(N)}$
+:::
+
+:::
+
+. . . 
+
+- A primeira propriedade nos da algumas caracteristicas do periodograma (estimador do espectro)
+- A segunda propriedade fornece uma forma alternativa, através das covariâncias amostrais, de calcular o periodograma para diversas frequências
+- A última propriedade nos diz que $I_k^{(N)}$ é a contribuição da frequência $2 \pi k / N$ à soma de quadrados da série temporal (centrada).
+
+
+## Periodograma
+
+::: {.panel-tabset}
+
+## R Code
+
+$$I^{(N)}(\lambda) = |d^{(N)}(\lambda)|^2 = \dfrac{1}{N} \big | \sum_{t = 1}^N Z_t e^{-i \lambda t}  \big |^2, \quad \lambda \in \{\frac{2 \pi j}{N}: j = 0, \cdots, N - 1 \}$$
+
+Podemos utilizar a função `periodogram()` do pacote `TSA` ou alternativamente, utilizar uma implementação própria.
+
+```{r}
+#| echo: true
+periodograma <- function(z) {
+  n <- length(z)
+  per <- Mod(fft(z))^2 / n
+  return(per)
+}
+```
+
+
+
+
+## Exemplo I
+
+
+```{r}
+#| echo: true
+library(datasets)
+library(TSA)
+par(mfrow = c(1, 2))
+ts.plot(AirPassengers)
+periodogram(AirPassengers)
+```
+
+
+## Exemplo II
+
+
+- Freqüentemente, existem tendências presentes na série e estas devem ser eliminadas antes de calcular o periodograma. 
+- O motivo é que as tendências introduzem componentes de frequência extremamente baixa no periodograma, o que dificulta identificar frequências mais altas. 
+- Por essa razão, é recomendado remover a tendência antes de fazer o periodograma.
+
+
+## Exemplo III
+
+
+```{r}
+#| echo: true
+par(mfrow = c(1, 2))
+periodogram(na.omit(AirPassengers - decompose(AirPassengers)$trend))
+ts.plot(periodograma(na.omit(AirPassengers - decompose(AirPassengers)$trend)))
+```
+
+
+## Exemplo IV
+
+
+- É dificil verificar em qual lugar exatamente acontece o pico.
+- Para determinar isto, precisamos ver as frequências. 
+- Veremos que essa frequência corresponde a `1/0.081481481 = 12.27273`
+
+
+```{r}
+#| echo: true
+perio <- periodogram(na.omit(AirPassengers - decompose(AirPassengers)$trend), plot = FALSE)
+cbind(perio$freq, perio$spec)
+```
+
+
+## Exemplo V
+
+Utilizando a função própria, o pico acontece em `1 / 0.083333333 = 12` 
+
+
+```{r}
+#| echo: true
+exemplo <- data.frame(freq = 0:131/132, periodograma = periodograma(na.omit(AirPassengers - decompose(AirPassengers)$trend)))
+exemplo
+```
+
+:::
+
+
+## Periodograma
+
+
+- Note que, por padrão, a função `periodogram()` calcula o periodograma para as primeiras $N/2$ frequências. Apenas $N/2$ são suficientes pois depois os valores se repetem (veja o periodograma feito com nossa próoria função)
+- Ademais, os valores do periodograma obtidos pela função `periodogram()` e pela nossa função `periodograma()`, não são os mesmos.
+- `periodogram()` utiliza uma versão padronizada do periodograma. Isto é opcional pois, embora os numeros sejam diferentes, o mesmo padrão será observado.
+
+
+
+
+## Referências
+
+- Krispin, R. (2019). Hands-On Time Series Analysis with R: Perform time series analysis and forecasting using R. Packt Publishing Ltd. Chapter 6.
+- Morettin, P. e Toloi, C. (2006). Análise de Séries Temporais. Blucher. Cap 16.
+- Shumway, R. H., Stoffer, D. S., & Stoffer, D. S. (2017). Time Series Analysis and Its Applications. Springer, 4ed. Chapter 4
+- Brockwell, P. J., & Davis, R. A. (2016). Introduction to Time Series and Forecasting. Springer. 3ed. Chapter 4

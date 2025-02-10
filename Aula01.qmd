@@ -1,6 +1,7 @@
 ---
 title: "Introdução e conceitos básicos"
 subtitle: "ME607 - Séries Temporais"
+lang: "pt"
 author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
 institute: "Instituto de Matemática, Estatística e Computação Científica (IMECC), </br> Universidade Estadual de Campinas (UNICAMP)."
 knitr:
@@ -47,14 +48,77 @@ O interesse em fazer previsão existe em muitas situações: prever a demanda de
 
 A previsibilidade de um evento depende de vários fatores, entre eles:
 
--   Quantos dados estão disponíveis.
--   Que tanto conhecemos os fatores que contribuen para fazer a previsão.
--   Que tão semelhante é o futuro do passado.
--   Se a previsão afeta o que estamos tentanto prever.
+1.   Quantos dados estão disponíveis.
+2.   Que tanto conhecemos os fatores que contribuen para fazer a previsão.
+3.   Que tão semelhante é o futuro do passado.
+4.   Se a previsão afeta o que estamos tentanto prever.
 
 . . .
 
-**Poderia dar algum exemplo em que todos/alguns desses fatores são satisfeitos?**
+<center>
+
+[**Poderia dar algum exemplo em que todos/alguns desses fatores são satisfeitos?**]{style="color:red;"}
+
+</center>
+
+
+## Introdução
+
+
+#### Caso 1:  Demanda residencial de eletricidade (curto prazo)
+
+
+- Geralmente, há vários anos de dados sobre a demanda por eletricidade disponíveis e muitas décadas de dados sobre as condições climáticas.
+- Temos uma boa ideia dos fatores contribuintes: a demanda por eletricidade é impulsionada em grande parte pelas temperaturas, com efeitos menores para variações de calendário, como feriados e condições econômicas.
+- Para previsões de curto prazo (até algumas semanas), é seguro assumir que o comportamento da demanda será semelhante ao que foi visto no passado.
+- Para a maioria dos usuários residenciais, o preço da eletricidade não depende da demanda e, portanto, as previsões de demanda têm pouco ou nenhum efeito no comportamento do consumidor.
+
+
+
+## Introdução
+
+
+#### Caso 2: Taxas da câmbio
+
+- Muitos dados disponíveis: geralmente temos um histórico de dados contendo décadas de informação.
+- Temos uma compreensão limitada dos fatores que afetam as taxas de câmbio
+- O futuro pode muito bem ser diferente do passado se houver uma crise financeira ou política em um dos países
+- As previsões da taxa de câmbio têm um efeito direto nas próprias taxas: se houver previsões bem divulgadas de que a taxa de câmbio aumentará, então as pessoas ajustarão imediatamente o preço que estão dispostas a pagar afetando exatamente o que estamos tentando prever.
+
+
+
+## Introdução
+
+
+<center>
+![](imagens/duvida2.png){width=25%}
+</center>
+
+
+. . . 
+
+
+<center>
+<h3>
+[Em qual dos casos (1 ou 2), ]{style="color:red;"}
+</h3>
+</center>
+<center>
+<h3>
+[vocês acham que conseguiremos construir]{style="color:red;"}
+</h3>
+</center>
+<center>
+<h3>
+[um bom modelo de previsão?]{style="color:red;"}
+</h3>
+</center>
+
+<center>
+[(Justifique sua resposta)]{style="color:red;"}
+</center>
+
+
 
 ## Introdução
 
@@ -102,9 +166,15 @@ Em qualquer projeto envolvendo previsão precisamos determinar qual é nosso int
 
 # Séries temporais: *Overview*
 
+
 ## Séries temporais: *Overview*
 
 **Séries temporal:** a grosso modo, todo processo que é observado sequencialmente ao longo do tempo é uma série temporal.
+
+. . . 
+
+Quando as observações são igualmente espaçadas (diário, semanal, mensal, etc) dizemos que a série temporal é regular. Caso contrário, é chamada de irregular.
+
 
 . . .
 
@@ -133,6 +203,140 @@ p1
 ```
 :::
 :::
+
+
+## Séries temporais: *Overview*
+
+```{r}
+#| echo: false
+#| messages: false
+#| warning: false
+library(plotly)
+library(dplyr)
+library(TSstudio)
+library(UKgrid)
+
+data(USgas)
+data(USVSales)
+data(USUnRate)
+data(UKgrid)
+
+UKgrid <- extract_grid(type = "xts",columns = "ND", aggregate = "hourly", na.rm = TRUE)
+
+```
+
+
+<center>
+```{r}
+#| echo: false
+#| messages: false
+#| warning: false
+ts_plot(USgas, line.mode = "lines+markers") %>% 
+  layout(title = "Monthly Natural Gas Consumption",
+         yaxis = list(title = "Billions Cubic Feet"))
+```
+</center>
+
+
+
+## Séries temporais: *Overview*
+
+
+<center>
+```{r}
+#| echo: false
+#| messages: false
+#| warning: false
+
+ts_plot(USVSales, color = "green", line.mode = "lines+markers") %>% 
+  layout(title = "Monthly Total Vehicle Sales",
+         yaxis = list(title = "Thousands of Units"))
+
+```
+</center>
+
+## Séries temporais: *Overview*
+
+
+<center>
+```{r}
+#| echo: false
+#| messages: false
+#| warning: false
+
+ts_plot(USUnRate, color = "red", line.mode = "lines+markers") %>% 
+  layout(title = "Monthly US Unemployment Rate",
+         yaxis = list(title = "Percent"))
+
+```
+</center>
+
+
+## Séries temporais: *Overview*
+
+
+<center>
+```{r}
+#| echo: false
+#| messages: false
+#| warning: false
+
+ts_plot(UKgrid, title = "National Hourly Demand UK Grid", 
+        Ytitle = "Megawatts", Xgrid = TRUE, Ygrid = TRUE) 
+
+```
+</center>
+
+
+. . . 
+
+
+
+<center>
+[**Nesta disciplina, aprenderemos como analisar séries temporais como as vistas anteriormente, ou seja, séries temporais regulares.**]{style="color:red;"}
+</center>
+
+
+
+## Séries temporais: *Overview*
+
+:::{.callout-note}
+### Análise de Séries Temporais
+É o processo de extrair _insights_ (relevantes) a partir de dados de séries temporais, explorando a estrutura e as características da série, bem como identificando padrões que podem ser utilizados para prever valores/eventos futuros da série.
+:::
+
+. . . 
+
+
+Este processo, pode ser resumido nos seguintes 4 passos:
+
+
+- **Coleta de dados:** extração de dados de diferentes fontes (csv, sql, txt, xlsx, etc)
+- **Preparação de dados:** limpeza, transformação, agregação e reformatação de dados brutos (não estruturados)
+- **Análise descritiva:** EDA (Tabelas, Gráficos, estatísticas resumo) para extrair _insights_ dos dados
+- **Análise preditiva:** aplicação de métodos estatísticos para prever eventos futuros
+
+
+## Séries temporais: *Overview*
+
+:::{.callout-important}
+### Observação
+Alguns autores também incluem na _preparação de dados_ os métodos para lidar com dados faltantes e outliers. Contudo, nos dias de hoje existem métodos mais complexos que lidam com estes problemas sem precisar preencher dados faltantes ou remover outliers. Ver, por exemplo:
+
+
+::: {.nonincremental}
+- Cascone, M. H., & Hotta, L. K. (2019). Quasi-maximum likelihood estimation of GARCH models in the presence of missing values. Journal of Statistical Computation and Simulation, 89(2), 292--314.
+- Wee, D. C., Chen, F., & Dunsmuir, W. T. (2023). Estimating GARCH (1, 1) in the presence of missing data. The Annals of Applied Statistics, 17(3), 2596-2618.
+- Abbara, O., & Zevallos, M. (2022). Stochastic volatility with missing data: Assessing the effects of holidays. Communications in Statistics: Case Studies, Data Analysis and Applications, 8(3), 423-433.
+- Hotta, L. K., & Trucíos, C. (2018). Inference in (M) GARCH models in the presence of additive outliers: specification, estimation, and prediction. Advances in Mathematics and Applications: Celebrating 50 years of the Institute of Mathematics, Statistics and Scientific Computing, University of Campinas, 179-202.
+- Trucíos, C., Hotta, L. K., & Ruiz, E. (2017). Robust bootstrap forecast densities for GARCH returns and volatilities. Journal of Statistical Computation and Simulation, 87(16), 3152-3174.
+- etc
+:::
+:::
+
+
+
+
 
 ## Séries temporais: *Overview*
 
@@ -235,7 +439,7 @@ ggplot(figura_dados) +
 
 -   **Função de médias:** para cada instante $t$, $\mu_t = \mathbb{E}(Y_t).$
 -   **Função de variâncias:** para cada instante $t$, $\sigma_t^2 = \mathbb{V}(Y_t).$
--   **Função de autocovariância e autocorrelação:** para dois instantes quaquer ($t$ e $t+h$), as funções de autocovariância e autocorrelação são dadas por: $$\gamma(t,t+h) = \mathbb{Cov}(Y_t, Y_{t+h}) = \mathbb{E}[(Y_t  - \mu_t)(Y_{t+h}-\mu_{t+h})] \quad \text{e}$$ $$\rho(t,t+h) = \mathbb{Cor}(Y_t, Y_{t+h}) = \dfrac{\mathbb{Cov}(Y_t, Y_{t+h})}{\sigma_t \sigma_{t+h}}$$
+-   **Função de autocovariância e autocorrelação:** para dois instantes quaisquer ($t$ e $t+h$), as funções de autocovariância e autocorrelação são dadas por: $$\gamma(t,t+h) = \mathbb{Cov}(Y_t, Y_{t+h}) = \mathbb{E}[(Y_t  - \mu_t)(Y_{t+h}-\mu_{t+h})] \quad \text{e}$$ $$\rho(t,t+h) = \mathbb{Cor}(Y_t, Y_{t+h}) = \dfrac{\mathbb{Cov}(Y_t, Y_{t+h})}{\sigma_t \sigma_{t+h}}$$
 
 . . .
 
@@ -244,19 +448,22 @@ ggplot(figura_dados) +
 
 ## Conceitos básicos
 
-#### Processo estritamente estacionário
+### Processo estritamente estacionário
 
 Um processo estocástico $\{Y_t\}_{t = -\infty}^{\infty}$ é dito estritamente estacionário se todas as distribuições finito dimensionais permanecem as mesmas sob translações do tempo, ou seja, $$F_{y_{t_1}, \cdots, y_{t_k}}(x_1, \cdots, x_k) = F_{y_{t_1 + h}, \cdots, y_{t_k + h}}(x_1, \cdots, x_k), \quad \forall h$$
 
-. . .
 
-#### Processo (fracamente) estacionário
+
+## Conceitos básicos
+
+### Processo (fracamente) estacionário
 
 Um proceso estocástico $\{Y_t\}_{t = -\infty}^{\infty}$ é dito fracamente estacionário (estacionário de segunda ordem ou simplesmente estacionário) se:
 
 -   $\mathbb{E}(Y_t^2) < \infty, \quad \forall t$
 -   $\mathbb{E}(Y_t) = \mu_t = \mu, \quad \forall t$
 -   $\mathbb{Cov}(Y_t, Y_{t+h})$ depende somente de $h$ e não de $t$.
+
 
 ## Conceitos básicos
 

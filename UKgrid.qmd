@@ -1,0 +1,167 @@
+---
+title: "Laboratório: UKgrid"
+lang: "PT"
+author: "Carlos Trucíos"
+format: html
+editor: source
+description: "Utilizaremos o conjunto de dados `UKgrid` do pacote `UKgrid` do **R** para ilustrar como podemos utilizar o modelo de regressão linear para lidar com problemas de multiplos períodos sazonais. Nosso objetivo é fazer previsão para os próximos dias"
+---
+
+## Pacotes 
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+library(UKgrid)
+library(TSstudio)
+library(dplyr)
+library(forecast)
+library(lubridate)
+library(plotly)
+```
+
+
+## Dados
+
+```{r}
+#| echo: true
+data("UKgrid")
+glimpse(UKgrid)
+```
+
+
+```{r}
+#| echo: true
+UKdaily <- extract_grid(type = "data.frame", columns = "ND", aggregate = "daily")
+head(UKdaily)
+```
+
+
+```{r}
+#| echo: true
+ts_plot(UKdaily, title = "Demanda Nacional Diária de Energia no Reino Unido", Ytitle = "MW", Xtitle = "Ano")
+```
+
+
+## EDA
+
+- Tendência?
+- Sazonalidade?
+    * Qual o período sazonal?
+    * exisem outros possíveis períodos sazonais?
+    
+    
+
+  
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+ts_heatmap(UKdaily[which(year(UKdaily$TIMESTAMP) >= 2015),],
+title = "Mapa de calor da demanda nacional diária (detrended) de energia no Reino Unido")
+```
+
+    
+    
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+UKdaily_df <- UKdaily |> 
+  mutate(weekday = wday(TIMESTAMP, label = TRUE),
+         month = month(TIMESTAMP, label = TRUE),
+         lag365 = dplyr::lag(ND, 365))
+UKdaily_summarise <- UKdaily_df |> group_by(weekday, month) |> 
+  summarise(Media = mean(ND, na.rm = TRUE))
+plot_ly(data = UKdaily_summarise, x = ~month, y = ~Media, type =
+"bar",color = ~weekday) |> 
+  layout(title = "Demanda média diária de energia por mês")
+```
+
+
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+str(UKdaily_df)
+```
+
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+start_date <- min(UKdaily_df$TIMESTAMP)
+start <- c(year(start_date), yday(start_date))
+UK_ts <- ts(UKdaily_df$ND, start = start, frequency = 365)
+acf(UK_ts, lag.max = 365*6)
+```
+
+## Modelo
+
+Apenas para poder comparar observados  e estimado, vamos dividir a série:
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+h <- 365
+UKpartitions <- ts_split(UK_ts, sample.out = h)
+train_ts <- UKpartitions$train
+test_ts <- UKpartitions$test
+train_df <- UKdaily_df[1:(nrow(UKdaily_df) - h), ]
+test_df <- UKdaily_df[(nrow(UKdaily_df) - h + 1):nrow(UKdaily_df), ]
+```
+
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+modelo_tslm <- tslm(train_ts ~ season + trend + weekday + month , data = train_df)
+fore <- forecast(modelo_tslm, h = h, newdata = test_df)
+```
+
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+test_forecast(actual = UK_ts, forecast.obj = fore, test = test_ts)
+accuracy(fore , test_ts)
+```
+
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+modelo_tslm_2 <- tslm(train_ts ~ trend + weekday + month , data = train_df)
+fore_2 <- forecast(modelo_tslm_2, h = h, newdata = test_df)
+accuracy(fore_2 , test_ts)
+```
+
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+modelo_tslm_3 <- tslm(train_ts ~ season + trend + weekday + month + lag365, data = train_df)
+fore_3 <- forecast(modelo_tslm_3, h = h, newdata = test_df)
+accuracy(fore_3 , test_ts)
+```
+
+
+
+## Modelo para produçãp
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+modelo_final <- tslm(UK_ts ~ season + trend + weekday + month + lag365, data = UKdaily_df)
+checkresiduals(modelo_final, plot = TRUE)
+```
+
+> O modelo não captura apropriadamente a dinâmica dos dados. Algumas alternativas são incluir variáveis exógenas ou, após utilizar o modelo de regressão, modelar os resíduos por um modelo da ARIMA

@@ -38,14 +38,40 @@ editor: source
 
 ## Introdução 
 
-- Aprenderemos métodos para extrair essas componentes da séries observada. Isto é feito com fins descritivos (entender a série) mas também para melhorar a acurácia das previsões.
+- Um dos elementos essenciais na análise de séries temporais, é o processo de decomposição da série temporal em seus componentes: a tendência, a sazonalidade e a componente aleatória.
+- Isto é feito com fins descritivos (entender a série) mas também para melhorar a acurácia das previsões.
+- Os tópicos vistos aqui servem também como uma introdução a temas mais avançados de análise de séries temporais.
+- Na aula de hoje veremos os conceitos de:
+    *     Médias Móveis
+    *   Decomposição clássica
+    *   Outros métodos de decomposição
 
 
-- **Tendência:** Componente a longo prazo e indica um aumento/diminuição.
 
-- **Sazonalidade:** Oscilações que se produzem e repetem em curtos períodos de tempo (semanal, mensal, trimestral,...)
+## Introdução 
 
-- **Aleatoriedade:** A parte que não é explicada pelas componentes anteriores.
+
+::: {.callout-important}
+### Componentes de uma série temporal:
+
+- **Tendência ($T_t$):** Componente a longo prazo e indica um aumento/diminuição.
+
+- **Sazonalidade ($S_t$):** Oscilações que se produzem e repetem em curtos períodos de tempo (semanal, mensal, trimestral,...)
+
+- **Aleatoriedade ($R_t$):** A parte que não é explicada pelas componentes anteriores.
+
+- **Ciclo ($C_t$):** Alguns autores incluem esta componente mas aqui não será utilizada e esta estará embutida na tendência (tendência-ciclo).
+
+:::
+
+
+. . . 
+
+
+- [Identificar ciclos precisa de um histórico de dados muito grande. Ademais, os ciclos não precisam ser do mesmo tamanho. Na prática, utilizar apenas $T_t$ (tendência-ciclo) é suficiente]{style="color:violet;"}
+- [Não necessariamente todas as componentes estarão na série]{style="color:red;"}
+- [Séries podem ter multiples períodos sazonais]{style="color:green;"}
+
 
 
 
@@ -54,33 +80,60 @@ editor: source
 ## Transformações e ajustes
 
 - Quando formos decompor a série, é conveniente primeiro transformar/ajustar a série antes de fazer a decomposição.
-- Estes tipo de transformações podem ser to tipo **(a)** ajustes calendârio, **(b)** ajustes populacionais, **(c)** ajustes pela inflação e **(d)** transformações matemáticas.
-- O objetivo destas transformações é remover fontes conhecidas de variação e/ou fazer os padrões mais consistentes ao longo da série toda.
-
+- Estas transformações podem ser do tipo:
+    *   **(a)** ajustes calendârio, 
+    *   **(b)** ajustes populacionais, 
+    *   **(c)** ajustes pela inflação e 
+    *   **(d)** transformações matemáticas.
+- O objetivo das transformações é remover fontes conhecidas de variação e/ou fazer os padrões mais consistentes ao longo da série toda.
 
 
 
 ## Transformações e ajustes
 
-#### Ajustes calendário
+
+::: {.callout-note}
+### Ajustes calendário
 
 Quando trabalhamos com dados sazonais, primeiro removemos o _efeito calendário_. Ex: quando trabalhamos com dados mensais é importante levar em consideração o número de dias úteis (ou dias calendário) dentro de cada mês. Isto pode ser feito utilizando a média diária em lugar do total mensal.
+:::
 
 
-#### Ajustes populacionais
+. . . 
+
+
+
+::: {.callout-note}
+### Ajustes populacionais
 
 Qualquer série temporal que esteja afetada população pode ser transformada em séries _per capita_ (ou por milhões de habitantes).
+:::
 
-#### Ajustes de inflação
+
+. . . 
+
+
+::: {.callout-note}
+### Ajustes de inflação
 
 Dados que são afetados pelo valor do dinheiro devem ser ajustados pela inflação antes de serem analisados.
+:::
+
+
+. . . 
+
+
+::: {.callout-note}
+### Transformações matemáticas
+
+Existem diversas e dependem do tipo de dado utilizado e da finalidade a ser alcançada. 
+:::
 
 
 ## Transformações e ajustes
 
 #### Transformações matemáticas
 
-- Se os dados apresentam variações que aumentam ou diminuem com o nível da série, transformações matemáticas podem ser utilizadas.
 - **Transformação logaritmica:** $\log(\cdot)$ são interessantes pois são interpretáveis. Mudanças nos valores em log são mudanças (em porcentagem) na escala original.
 - **Transformação potência:** $y_t^p$, valores de $p$ usuais são 1/2 ou 1/3.
 - **Transformação Box-Cox:** $$\begin{equation}
@@ -113,7 +166,7 @@ $$\underbrace{y_t = T_t + S_t + R_t}_{Decomposição \quad aditiva} \quad ou \qu
 
 . . . 
 
-> Se a magnitude das variações sazonais não varia com o nível, então utilizamos uma decomposição aditiva. Caso contrário, uma decomposição multiplicativa.
+> Se a magnitude das oscilações não varia com o nível, então utilizamos uma decomposição aditiva. Caso contrário, uma decomposição multiplicativa.
 
 
 
@@ -138,7 +191,7 @@ p1 + p2
 
 . . . 
 
-> Se a magnitude das variações sazonais não varia com o nível, então utilizamos uma decomposição aditiva. Caso contrário, uma decomposição multiplicativa.
+> Se a magnitude das oscilações não varia com o nível, então utilizamos uma decomposição aditiva. Caso contrário, uma decomposição multiplicativa.
 
 . . .
 
@@ -176,7 +229,7 @@ dcmp |> components() |> autoplot() + labs(x = "Tempo", title = "Decomposição")
 
 #### Série sazonalmente ajustada
 
-Se a componente sazonal é removida da série, dizemos que a serié é sazonalmente ajustada. Esta série sazonalmente ajustada é dada (dependendo se utilizarmos uma decomposição aditiva ou multiplicativa) por $$y_t - S_t \quad ou \quad y_t/S_t$$
+Se a componente sazonal é removida da série, dizemos que a serié é sazonalmente ajustada. Esta série (sazonalmente ajustada) é dada, dependendo se utilizarmos uma decomposição aditiva ou multiplicativa, por: $$y_t - S_t \quad ou \quad y_t/S_t$$
 
 ```{r}
 #| echo: false
@@ -188,31 +241,99 @@ dcmp |> components() |> as_tsibble() |> autoplot() +
 ```
 
 
-# Decomposição clássica
 
-## Decomposição clássica
+## Médias Móveis (1920s)
 
-Antes de entrarmos em detalhes a respeito de como é feita a decomposição, veremos alguns métodos clássicos para estimar $T_t$.
+- Médias móveis (MA - Moving Average) é um método simples para suavizar a série temporal.
+- Consiste em calcular a média de cada observação com as observações adjacentes (passadas, futuras ou mesmo uma combinação de ambas).
+- Além de suavizar a série temporal, MA pode ser utilizado para redução do ruido, estimação da tendência e, com algumas modificações, como modelo de previsão.
+
+. . . 
+
+
+::: {.callout-important}
+### Elementos
+
+MA tem dois principais elementos:
+
+- **Janela deslizante**: É uma função que _desliza_ pela série em ordem cronológica para extrair subconjuntos sequenciais (pode ser uni ou bidirecional).
+- **Função de média:** Trata-se de uma média (simples ou ponderada) que é aplicada em cada subconjunto da janela deslizante.
+:::
+
+
+
+## Médias Móveis (1920s)
+
+Seja $m = 2k+1$, a média movel (simples), dita de ordem $m$ (ou $m$-MM), é dada por:
+
 
 . . . 
 
 
-#### Médias Móveis (1920s)
+:::: {.columns}
 
-É um dos métodos mais clássicos para estimar $T_t$. Estimamos $T_t$ por
+::: {.column width="50%"}
+#### One-Sided (Unidirecional)
 
-$$\hat{T}_t = \dfrac{1}{m}\displaystyle \sum_{i=-k}^k y_{t+i},$$em que $m = 2k+1$ e a média movel é dita de ordem $m$ (ou $m$-MM)
+
+$$\hat{y}_t = \dfrac{1}{m}\displaystyle \sum_{i= - m + 1}^0 y_{t + i}.$$
+
+
+
+:::
+
+::: {.column width="50%"}
+#### Two-Sided (Bidirecional)
+
+
+$$\hat{y}_t = \dfrac{1}{m}\displaystyle \sum_{i=-k}^k y_{t+i}.$$
+
+:::
+
+::::
+
+
 
 . . . 
 
-- A MM `suaviza` a série original e captura os principais movimentos da série 
-- O valor de $m$ determina quão suavizada será a série.
+Considerando $m = 5$, calcular as MM (uni e bidirecionais) da seguinte série temporal:
+
+$$y_1, y_2, y_3, y_4, y_5, y_6, y_7, y_8, y_9, y_{10}, \cdots, y_{999}, y_{1000}$$
 
 
-## Decomposição clássica
+
+. . . 
+
+
+::: {.callout-tip}
+### Para pensar
+<center>
+Se estivéssemos num contexto de previsão, qual dos dois (unidirecinal ou bidirecional) seria uma abordagem mais apropriada? Por que? 
+</center>
+:::
+
+
+
+
+## Médias Móveis (1920s)
+
+
 
 
 ::: {.panel-tabset}
+
+
+
+### 3-MM
+
+```{r}
+#| echo: true
+global_economy |> 
+  filter(Country == "Brazil") |> 
+  mutate(`3-MM` = slider::slide_dbl(Exports, mean, .before = 1, .after = 1, .complete = TRUE)) |> 
+  autoplot(Exports) + geom_line(aes(y = `3-MM`), colour = "red") +
+  labs(y = "% do PIB", title = "Brasil: exportação", x = "Ano")
+```
 
 
 ### 5-MM
@@ -253,14 +374,30 @@ global_economy |>
 
 :::
 
-## Decomposição clássica
 
-- A definição de MM utilizada permite que, para $m$ ímpar, existe uma simetria.
-- O que fazer se quisermos manter a simetria mas utilizar $m$ par?
+
+## Médias Móveis (1920s)
+
+
+<center>
+
+[O valor de $m$ determina quão suavizada será a série. Um valor de $m$ pequeno, é geralmente utilizado para dimunuir um pouco o ruido (pequenas oscilações devidas à aleatoriedade). O restante das oscilações é devido, geralmente, a pdrões sazonais ou tendência-ciclo da série.]{style="color:violet;"}
+</center>
+
 
 . . . 
 
-#### Médias Móveis das Médias Móveis
+
+
+
+- A definição de MM utilizada permite que, para $m$ ímpar, exista uma simetria.
+- O que fazer se quisermos manter a simetria mas utilizar $m$ par?
+    * Utilizamos **Médias Móveis das Médias Móveis ($2 \times m - MM$)**
+
+
+
+## Médias Móveis (1920s)
+
 
 
 ```{r}
@@ -277,26 +414,44 @@ beer_ma
 
 . . . 
 
-**Mas o que estamos fazendo de fato?**
+
+<center>
+[**Mas o que estamos fazendo, de fato, ao utilizarmos $2 \times m - MM$?**]{style="color:red;"}
+</center>
 
 
-## Decomposição clássica
+## Médias Móveis (1920s)
 
-Um conceito ainda mais geral que envolve ambos os casos desscritos anteriormente é o de médias móveis ponderadas.
+
+Para melhor entende $2 \times m - MM$, introduziremos um conceito ainda mais geral, que envolve ambos os casos descritos anteriormente, o de médias móveis ponderadas.
 
 
 . . . 
 
-#### Médias Móveis Ponderadas
 
-$$\hat{T}_t = \displaystyle \sum_{j = -k}^k a_k y_{t+j},$$ em que $\displaystyle \sum_{j = -k}^k a_k = 1$ e $a_j = a_{-j}$.
 
-. . . 
+::: {.callout-important}
+### Médias Móveis Ponderadas
+
+$$\hat{y}_t = \displaystyle \sum_{j = -k}^k a_k y_{t+j},$$ em que $\displaystyle \sum_{j = -k}^k a_k = 1$ e $a_j = a_{-j}$.
 
 - Note que para $m = 2k + 1$ e $a_{-k} = \cdots = a_{k} = \dfrac{1}{m}$, temos $m$-MM.
-- $2 \times m - MM$ é obtido fazendo $a_{-k+1} = \cdots = a_{k-1} = 1/m$ e $a_{-k} = a_k = 1/2m$ ($a_i = 1/m$ exceto nos extremos, em que $a_i = 1/2m$).
+- $2 \times m - MM$ é obtido fazendo $a_{-k+1} = \cdots = a_{k-1} = 1/m$ e $a_{-k} = a_k = 1/2m$ (ou seja, $a_i = 1/m$ exceto nos extremos, em cujo caso $a_i = 1/2m$).
 
 
+:::
+
+
+## Médias Móveis (1920s)
+
+
+- MM bidirecionais são geralmente utilizadas quando suavização é o principal objetivo.
+- Em geral, ao utilizarmos MM bidirecionais, utilizamos MM **centradas** (ou seja, o mesmo número de observações à direita e à esquerda da observação no ponto $t$).
+- MM **centradas** são geralmente o padrão, mas MM **não centradas** também podem ser utilizadas.
+- Em geral, tentamos que as MM sejam tão centradas quanto possíveis (por usso utilizamos $2 \times m - MM$)
+
+
+# Decomposição clássica
 
 ## Decomposição clássica
 
@@ -492,7 +647,7 @@ O **método clássico de decomposição** possui algumas limitações que fazem 
 
 . . . 
 
-> Outros métodos de decomposição como **X-11**, **SEATS** (Seasonal Extraction in ARIMA Time Series) e **STL** (Seasonal and Trend decomposition using Loess), resolvem alguns dos pontos mencionados anteriormente.
+> Outros métodos de decomposição como **X-11**, **SEATS** (Seasonal Extraction in ARIMA Time Series), **STL** (Seasonal and Trend decomposition using Loess) e **Prophet ** resolvem alguns dos pontos mencionados anteriormente.
 
 
 
@@ -504,9 +659,9 @@ O **método clássico de decomposição** possui algumas limitações que fazem 
 ### X11
 
 - Desenvolvido pelo US Census Bureau.
-- Baseado no modelo clássico, mas inclui outras etapas para superar as limitações do método original (a componente de tendência está disponível para todas as observações, a componente sazonal pode variar suavemente, etc).
+- Baseado no modelo clássico, mas inclui outras etapas para superar as limitações do método original (a componente de tendência está disponível para todas as observações, a componente sazonal pode variar suavemente, lidam com dias úteis e feriados, etc).
 - Existem versões tanto para o modelo aditivo quanto para o multiplicativo.
-- É robusto a outliers.
+- É robusto a outliers e funciona bem com mudanças de regime (no nível).
 - Mais detalhes desta metodologia podem ser encontrados em Dagum & Bianconcini (2016)
 - Desenhando para dados mensais e quatrimestrais.
 - No **R** o _default_ é uma decomposição multiplicativa.
@@ -607,6 +762,7 @@ STL (Seasonal and Trend decomposition using Loess) ^[Loess é um método para es
 - Pode ser robusto a observações atípicas (se especificarmos uma decomposição robusta). 
 - Útil para modelos **aditivos**
 - Se quisermos aplicar o método em modelos multiplicativos, podemos aplicar um $\log(\cdot)$.
+- Não lida (automaticamente) com dias uteis e/ou feriados.
 
 
 ### Código
@@ -656,10 +812,13 @@ Para fazer previsão da série original, fazemos previsão da componente sazonal
 
 
 
+
+
+
 ## Referências
 
 -   [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 3.
 - [Brockwell, P.J & Davis, R.A. (2016). Introduction to Time Series and Forecasting, 3rd editions, Springer](https://link.springer.com/book/10.1007/978-3-319-29854-2). Section 1.5
 - Cleveland, R. B., Cleveland, W. S., McRae, J. E., & Terpenning, I. J. (1990). STL: A seasonal-trend decomposition procedure based on loess. Journal of Official Statistics, 6(1), 3–33. http://bit.ly/stl1990
-- Dagum, E. B., & Bianconcini, S. (2016). Seasonal adjustment methods and real time trend-cycle estimation. Berlin/Heidelberg, Germany: Springer International Publishing.
-
+- [Dagum, E. B., & Bianconcini, S. (2016). Seasonal adjustment methods and real time trend-cycle estimation. Berlin/Heidelberg, Germany: Springer International Publishing.](https://link.springer.com/book/10.1007/978-3-319-31822-6)
+- Krispin, R. (2019). Hands-On Time Series Analysis with R: Perform time series analysis and forecasting using R. Packt Publishing Ltd. Chapter 5.

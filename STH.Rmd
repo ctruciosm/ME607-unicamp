@@ -1,0 +1,492 @@
+---
+title: "Séries Temporais Hierárquicas e Agrupadas"
+output: html_notebook
+---
+
+## Motivação
+
+### Case 1:
+
+Você começou a trabalhar no ministério de turismo e relações exteriores da Austrália e sua primeira tarefa é fazer a previsão do número de viajantes que chegarão ao País no próximo trimestre (mas também querem saber a previsão por estado e região, se for possível).
+
+
+![Australia dividida por estados](imagens/australia.png)
+
+O conjunto de dados a ser análisado já está disponível na empresa e é carregado no **R** com o nome `tourism`
+
+```{r, warning=FALSE, message=FALSE}
+library(fpp3)
+library(patchwork)
+glimpse(tourism)
+```
+
+
+O ministério não considera importante separar o motivo da viagen. Assim você precisa agregar os dados por região e estado.
+
+```{r}
+tourism_hts <- tourism |>
+  aggregate_key(State / Region, Trips = sum(Trips))
+tourism_hts
+```
+
+
+> Observação: a função `aggregate_key()` tem uma nomenclatura de `pai/filho`.
+
+
+
+```{r}
+tourism_hts |>
+  filter(is_aggregated(Region)) |>
+  autoplot(Trips) +
+  labs(y = "Trips ('000)",
+       title = "Chegadas na Austrália: nacional e por estados.") +
+  facet_wrap(vars(State), scales = "free_y", ncol = 3) +
+  theme(legend.position = "none")
+```
+
+Por curiosidade, você resolve ver qual é o comportamento das regiões dentro de cada estado.
+
+
+```{r}
+tourism_hts |>
+  filter(!is_aggregated(Region)) |>
+  autoplot(Trips) +
+  labs(y = "Trips ('000)",
+       title = "Chegadas na Austrália: nacional e por estados.") +
+  facet_wrap(vars(State), scales = "free_y", ncol = 3) +
+  theme(legend.position = "none")
+```
+
+
+Este tipo de dados de séries temporais são conhecidos como séries temporis hierárquicas, pois possuem uma hierarquia.
+
+
+![](imagens/serie_hierarquica.png)
+
+
+
+Se $y_t$ denotar o número de chegadas na Austrália no tempo $t$, e $y_{j,t}$ denotar o número de chegadas para o estados/região da Austrália no tempo $t$. Teriamos que
+
+$$y_t = \underbrace{y_{AA, t} + y_{AB, t} + y_{AC, t}}_{y_{A, t}} + \underbrace{y_{BA, t} + y_{BB, t}}_{y_{B, t}}$$
+
+### Case 2:
+
+Você começa a trabalhar no judiciário da Austrália e sua primeira tarefa é fazer uma previsão do total (mas também, se for possível, por sexo, situação legal, estado) de presos para o próximo trimestre. Os dados estão disponível no seguinte [link](https://OTexts.com/fpp3/extrafiles/prison_population.csv)
+
+```{r, warning=FALSE, message=FALSE}
+prison <- readr::read_csv("https://OTexts.com/fpp3/extrafiles/prison_population.csv")
+glimpse(prison)
+```
+
+```{r}
+prison$Date[c(1, 2, 85, 86, 469, 470)]
+```
+
+```{r}
+prison <- prison |> 
+  mutate(Quarter = yearquarter(Date)) |>
+  select(-Date)  |>
+  as_tsibble(key = c(Gender, Legal, State, Indigenous),
+             index = Quarter) |>
+  relocate(Quarter)
+glimpse(prison)
+```
+
+Veja que, neste caso, as séries não são aninhadas (poderiamos dividir a série por Genero, por estado, por situação legal). **Não existe uma única forma de criar as hierarquias.**
+
+```{r}
+prison_gts <- prison |>
+  aggregate_key(Gender * Legal * State, Count = sum(Count)/1e3)
+glimpse(prison_gts)
+```
+
+> Observação: a sintaxe `Gender * Legal * State` indica que não existe uma hierarquia mas que são níveis cruzados.
+
+```{r}
+p1 <- prison_gts |>
+  filter(!is_aggregated(Gender), is_aggregated(Legal),
+         is_aggregated(State)) |>
+  autoplot(Count) +
+  theme(legend.position = "none") + 
+  labs(y = "Número de pressos ('000)") + ggtitle("Gender")
+p2 <- prison_gts |>
+  filter(is_aggregated(Gender), !is_aggregated(Legal),
+         is_aggregated(State)) |>
+  autoplot(Count) +
+  theme(legend.position = "none") + 
+  labs(y = "Número de pressos ('000)") + ggtitle("Legal")
+p3 <- prison_gts |>
+  filter(is_aggregated(Gender), is_aggregated(Legal),
+         !is_aggregated(State)) |>
+  autoplot(Count) +
+  theme(legend.position = "none") + 
+  labs(y = "Número de pressos ('000)") + ggtitle("State")
+p4 <- prison_gts |>
+  filter(is_aggregated(Gender), is_aggregated(Legal),
+         is_aggregated(State)) |>
+  autoplot(Count) +
+  theme(legend.position = "none") + 
+  labs(y = "Número de pressos ('000)") + ggtitle("Total")
+p4 / (p1 + p2 + p3)
+```
+
+
+Este tipo de dados de séries temporais são conhecidos como séries temporais agrupadas (não podem ser desagregadas de uma única forma).
+
+
+![](imagens/series_agrupadas.png)
+
+Utilizando a mesma notação definida anteriormente, 
+
+$$y_t = y_{A, t} + y_{B, t} \quad ou \quad y_t = y_{X, t} + y_{Y, t}$$
+
+$$y_t = \underbrace{y_{AX, t} + y_{AY, t}}_{y_{A,t}}  + \underbrace{y_{BX, t} + y_{BY, t}}_{y_{B,t}}\quad ou \quad y_t = \underbrace{y_{AX, t} + y_{BX, t}}_{y_{X,t}}+ \underbrace{y_{AY, t} + y_{BY, t}}_{y_{Y, t}}$$
+
+
+> É possível também que seja possível desagregar se forma mista (algumas níveis são desagregados hierarquicamente mas existem outros que são cruzados)
+
+
+```{r}
+tourism_full <- tourism |>
+  aggregate_key((State/Region) * Purpose, Trips = sum(Trips))
+glimpse(tourism_full)
+```
+
+
+```{r}
+tourism_full |>
+  filter(!is_aggregated(Purpose), is_aggregated(State)) |>
+  autoplot(Trips) +
+  labs(y = "Trips ('000)",
+       title = "Australian tourism: purpose") +
+  facet_wrap(vars(Purpose), scales = "free_y", ncol = 2) +
+  theme(legend.position = "none")
+```
+
+
+```{r}
+tourism_full |>
+  filter(!is_aggregated(Purpose), !is_aggregated(State), is_aggregated(Region)) |>
+  autoplot(Trips) +
+  labs(y = "Trips ('000)",
+       title = "Australian tourism: purpose") +
+  facet_wrap(vars(State), scales = "free_y", ncol = 3) +
+  theme(legend.position = "none")
+```
+
+
+**Como podemos lidar com esse tipo de dados de séries temporais?**
+
+
+## Abordagens de nível único
+
+Isto implica selecionar um nível de agregação e gerar previsões para cada uma das séries nesse nível. Estas previsões são agregados para níveis mais altos, ou desagregados para níveis mais baixos (desta forma obtemos previsões coerentes para o resto da estrutura). 
+
+Este tipo de modelagem pode ser feito de cima para abaixo (top-down)ou de baixo para cima (bottom-up).
+
+### De baixo pra cima
+
+Fazer previsão para cada uma das séries no nível mais baixo e depois ir somando as previsões para os níveis subsequantes até chegar ao nível mais alto (total).
+
+
+Pense na série de turismo. Vamos supor que previsões por regiões não são interessantes e apenas utilizar estados.
+
+```{r}
+tourism_states <- tourism |>
+  aggregate_key(State, Trips = sum(Trips))
+glimpse(tourism_states)
+```
+
+
+
+```{r}
+fcasts_state <- tourism_states |>
+  filter(!is_aggregated(State)) |>
+  model(ets = ETS(Trips)) |>
+  forecast(h = 5)
+fcasts_state
+```
+
+
+
+```{r}
+fcasts_national <- fcasts_state |>
+  summarise(value = sum(Trips), .mean = mean(value))
+fcasts_national
+```
+
+
+
+Em geral, se tivermos vários níveis, podemos utilizar
+
+```{r}
+tourism_states |>
+  model(ets = ETS(Trips)) |>
+  reconcile(bu = bottom_up(ets)) |>
+  forecast(h = 5)
+```
+
+
+
+
+> A vantagem desta abordagem é que estamos utilizando o nível mais baixo da séries (ou seja, nenhuma informação é perdida pela agregação). Por outro lado, o nível mais baixo da série pode ser dificil de modelar.
+
+
+
+### De cima pra baixo
+
+Consiste em fazer a previsão para o nível mais alto (o total) e depois desagregar a série para os níveis mais baixos.
+
+Sejam $p_1, \cdots, p_m$ as proporções de desagragação nos níveis mais baixos, ou seja, como a previsão do total será desagregada nos níveis mais baixos. Por exemplo, na seguinte hierarquia
+
+![](imagens/serie_hierarquica.png)
+
+
+
+$$y_{AA, t} = p_{AA}y_t, \quad y_{AB, t} = p_{AB}y_t, \quad y_{AC, t} = p_{AC}y_t, \quad y_{BA, t} = p_{BA}y_t, \quad y_{BB, t} = p_{BB}y_t.$$
+
+Uma vez que as previsões dos níveis mais baixos são obtidas, basta agregar elas para obter previsões coerentes nos níveis intermediários.
+
+**Como calcular as proporções?**
+
+#### Média das proporções históricas
+
+$$p_j = \dfrac{1}{T} \displaystyle \sum_{t = 1}^T \dfrac{y_{j,t}}{y_t}$$
+
+#### Proporção da média histórica
+
+$$p_j = \dfrac{\displaystyle \sum_{t = 1}^T \dfrac{y_{j,t}}{T}}{\displaystyle \sum_{t = 1}^T \dfrac{y_t}{T}}$$
+
+
+
+
+Ambos os métodos consideram que a proporção de desagregação é constante ao longo do tempo, o que em alguns casos pode estar longe da realidade. Para contornar este problema, a proposta de [Athanasopoulos et al. 2009](https://www.sciencedirect.com/science/article/abs/pii/S0169207008000691) pode ser utilizada. 
+
+Para ilustrar como o método funciona, pense em uma série com apenas um nível de hierarquia:
+
+1. Faça a previsão $h$ passos à frente para cada umas das séries (estás previsões serão apenas utilizadas para calcular a proporção de desagregação).
+2. Calculamos a proporção de cada previsão $h$ passos à frente no nível inferior w.r.t o agregado de todas as previsões nesse nível.
+3. Essas proporções serão chamadas de proporções de previsão e são as que serão utilizadas para desagregar a série no nível mais baixo.
+
+
+Em geral, para uma série com $K$-níveis hierárquicos, obtemos as proporções de previsão como $$p_j = \displaystyle \prod_{l = 1}^{K} \dfrac{\hat{y}_{j,h}^{(l)}}{\hat{S}_{j,h}^{(l+1)}},$$ em que $\hat{y}_{j,h}^{(l)}$ é a previsão $h$ passos à frente das séries no nível $l$ e $\hat{S}_{j, h}^{(l+1)}$ é a previsão agregada (do nó $j$) $h$ passos à frente da série no nível superior ($l + 1$).
+ 
+
+
+> **A vantagem do método de "cima pra baixo" é que produz boas previsões para os níveis agregados, principalmente quando temos poucas observações nos níveis mais baixos. A desvantagem é que perdemos as particularidades das séries individuais nos níveis mais baixos e produz previsões coeherentes viesadas.**
+
+
+Todos esses métodos estão implementados no R:
+
+| Método       |    R            |
+|:------------:|:---------------:|
+| Média das proporções históricias |   `top_down(method = "average_proportions")`          |
+| Proporção das médias históricias |   `top_down(method = "proportion_averages")`          |
+| Proporção das previsões |   `top_down(method = "forecast_proportions")`          |
+
+
+## Forecast Reconciliation.
+
+Pense nas equações que definem as séries hierárquicas
+
+![](imagens/serie_hierarquica.png)
+
+
+$$y_t = \underbrace{y_{AA, t} + y_{AB, t} + y_{AC, t}}_{y_{A, t}} + \underbrace{y_{BA, t} + y_{BB, t}}_{y_{B, t}}.$$
+
+
+Podemos reescrever todas as relações através de uma forma matricial:
+
+
+
+
+
+
+$$\underbrace{\begin{bmatrix}
+    y_t \\
+    y_{A,t}\\
+    y_{B,t} \\
+    y_{AA, t} \\
+    y_{AB, t} \\
+    y_{AC, t} \\
+    y_{BA, t} \\
+    y_{BB, t} 
+\end{bmatrix}}_{\textbf{y}_t} = \underbrace{\begin{bmatrix}
+    1 & 1 & 1 & 1 & 1 \\
+    1 & 1 & 1 & 0 & 0 \\
+    0 & 0 & 0 & 1 & 1 \\
+    1 & 0 & 0 & 0 & 0 \\
+    0 & 1 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 0 & 1 
+\end{bmatrix}}_{\textbf{S}} \times \underbrace{\begin{bmatrix}
+    y_{AA, t} \\
+    y_{AB, t} \\
+    y_{AC, t} \\
+    y_{BA, t} \\
+    y_{BB, t} 
+\end{bmatrix}}_{\textbf{b}_t}$$
+
+
+De forma semelhante, podemos reescrever as equações que definem as séries agrupadas como
+
+![](imagens/series_agrupadas.png)
+
+
+
+$$\underbrace{\begin{bmatrix}
+    y_t \\
+    y_{A,t}\\
+    y_{B,t} \\
+    y_{X,t}\\
+    y_{Y,t} \\
+    y_{AX, t} \\
+    y_{AY, t} \\
+    y_{AC, t} \\
+    y_{BX, t} \\
+    y_{BY, t} 
+\end{bmatrix}}_{\textbf{y}_t} = \underbrace{\begin{bmatrix}
+    1 & 1 & 1 & 1 \\
+    1 & 1 & 0 & 0 \\
+    0 & 0 & 1 & 1 \\
+    1 & 0 & 1 & 0  \\
+    0 & 1 & 0 & 1 \\
+    1 & 0 & 0 & 0\\
+    0 & 1 & 0 & 0\\
+    0 & 0 & 1 & 0\\
+    0 & 0 & 0 & 1\\
+\end{bmatrix}}_{\textbf{S}} \times \underbrace{\begin{bmatrix}
+    y_{AX, t} \\
+    y_{AY, t} \\
+    y_{BX, t} \\
+    y_{BY, t}  
+\end{bmatrix}}_{\textbf{b}_t}$$
+
+Esta notação matricial permite que utilizemos uma única notação para séries hierárquicas ou agrupadas.
+
+
+Suponha que você faz a previsão para todas as séries ignorando as restrições de agregação (ou seja, as previsões não são coerentes). 
+
+Então, todas as previsões coerentes podem ser obtidas através de 
+
+$$\tilde{\textbf{y}}_{t+h} = \textbf{S} \textbf{G} \hat{\textbf{y}}_{t+h},$$ 
+
+
+- $\textbf{G}:$ mapeia as previsões no nível inferior
+- $\textbf{S}:$ faz a agregação nos próximos níveis para produzir previsões coerentes.
+
+A matriz $\textbf{G}$ é definida segundo o tipo de abordagem (de cima pra baixo ou de baixo pra cima). Se a abordagem for de baixo pra cima, por exemplo, definimos, para o caso do nosso exemplo,
+
+
+$$\textbf{G} = \begin{bmatrix}
+    0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
+    0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+\end{bmatrix}$$
+
+Se a abordagem for de cima pra baixo, $$\textbf{G} = \begin{bmatrix}
+    p_1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    p_2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    p_3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    p_4 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+    p_5 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+\end{bmatrix}$$
+
+Assim, pre-multiplicando as previsões base por $\textbf{SG}$, temos um conjunto de previsões coerentes.
+
+
+> Até aqui, os métodos descritos apenas consideram previsões de um único nível para depois agregar ou desagregar e obter as previsões para todos os outros níveis. Contudo, em geral, poderiamos utilizar outras matrizes $\textbf{G}$ e então combinar $\textbf{SG}$ para obter todas as previsões coerentes. De fato, podemos obter uma matriz $\textbf{G}$ ótima para termos previsões mais acuradas.
+
+## O método MinT (Minimum Trace)
+
+[Wickramasuriya et al. 2019](https://www.tandfonline.com/doi/abs/10.1080/01621459.2018.1448825?journalCode=uasa20) propuseram um método para obter a matriz $\textbf{G}$ de forma que a variância das previsões coerentes seja mínima.
+
+
+Suponha que para obter previsões coerentes utilizamos $$\tilde{\textbf{y}}_{t+h} = \textbf{SG} \hat{\textbf{y}}_{t+h}.$$
+
+1. Gostariamos que as previsões sejam não viesadas. Se as previsões base são não viesadas, então $\tilde{\textbf{y}}_{t+h}$ serão não viesadas se $\textbf{SGS} = \textbf{S}$ (nas abordagem de cima pra baixo, isto nunca acotece. Ou seja, essa abordagem sempre fornecerá previsões viesadas).
+2. Precisamos calcular a variância da previsão. A matriz de covariância do erro da previsão $h$ passos à frente é dada por $$\textbf{V}_h = \mathbb{V}(\textbf{y}_{t+h} - \tilde{\textbf{y}}_{t+h}) = \textbf{SGW}_h\textbf{G'S'},$$ em que $\textbf{W}_h = \mathbb{V}(\textbf{y}_{t+h} - \hat{\textbf{y}}_{t+h}).$
+3. O objetivo é encontrar $\textbf{G}$ de forma que o erro de previsão das previsões coerentes seja mínima. Estes erros de previsão estão na diagonal da matriz $\textbf{V}_h$ e soma desses erros é o traço de $\textbf{V}_h$.
+
+
+[Wickramasuriya et al. 2019](https://www.tandfonline.com/doi/abs/10.1080/01621459.2018.1448825?journalCode=uasa20) mostram que a matriz $\textbf{G}$ que minimiza o traço de $\textbf{V}_h$ sujeita à restrição de que $\textbf{SGS} = \textbf{S}$ é dada por $$\textbf{G} = (\textbf{S}' \textbf{W}_{h}^{-1}\textbf{S})^{-1}\textbf{S}'\textbf{W}_h^{-1}.$$
+
+Assim, a previsão ótima é dado por $$\tilde{\textbf{y}}_{t+h} = \textbf{SG}\hat{\textbf{y}}_{t+h} = \textbf{S}(\textbf{S}' \textbf{W}_{h}^{-1}\textbf{S})^{-1}\textbf{S}'\textbf{W}_h^{-1}\hat{\textbf{y}}_{t+h}.$$
+
+Note que para poder utilizar a fórmula anterior na prática, precismos conhecer $\textbf{W}_{h}$. Existem várias formas de fornecer uma aproximação desta matriz, entre elas:
+
+1. $\textbf{W}_h = k_h \textbf{I}$ com $k_h > 0$. Note que, fazendo $\textbf{X} = \textbf{S}$ e $\textbf{y} = \hat{\textbf{y}}$ temos o estimador MQO clássico do modelo de regressão. `method = "ols"`.
+2. $\textbf{W}_h = k_h diag(\widehat{\textbf{W}}_1)$ com $k_h > 0$ e $$\widehat{\textbf{W}}_1 = \dfrac{1}{T}\displaystyle \sum_{t = 1}^T \textbf{e}_t \textbf{e}_t',$$ em que $\textbf{e}_t$ é um vetor de resíduos dos modelos que geraram as previsões base. Esta especificação pondera as previsões base utilizando a variância dos resíduos, sendo conhecido como mínimos quadrados ponderados utilizando a variância. `method = "wls_var"`.
+3. $\textbf{W}_h = k_h \Lambda$ com $k_h > 0$, $\Lambda = diag(\textbf{S1})$ e $\textbf{1}$ é um vetor de uns de tamanho $m$ (número de séries no nível mais baixo). Note que $\Lambda$ contém o número de variâncias do erro contribuindo para cada nó. Assim, este estimador depende da estrutura de agregação e não dos dados, sendo chamado de _structural scaling_. `method = "wls_struct"`.
+4. $\textbf{W}_h = k_h \textbf{W}_1$ com $k_h > 0$. A unica suposição deste estimador é que o erro da matriz de covaiância é proporcional um do outro. Podemos utilizar a mariz de covariância amostral (`method = "mint_cov"`) ou, quando $m$ for grande, estimadores _shrinkage_ (`method = "mint_shrink"`).
+
+
+
+## Exemplo
+
+
+```{r}
+tourism_full <- tourism |>
+  aggregate_key((State/Region) * Purpose, Trips = sum(Trips))
+```
+
+
+```{r}
+fit <- tourism_full |>
+  filter(year(Quarter) <= 2015) |>
+  model(base = ETS(Trips)) |>
+  reconcile(
+    bu = bottom_up(base),
+    ols = min_trace(base, method = "ols"),
+    var = min_trace(base, method = "wls_var"),
+    stru = min_trace(base, method = "wls_struct"),
+    mint_shr = min_trace(base, method = "mint_shrink")
+  )
+```
+
+
+```{r}
+fore <- fit |> forecast(h = 8)
+```
+
+
+```{r}
+fore |>
+  filter(is_aggregated(Region), is_aggregated(Purpose)) |>
+  autoplot(
+    tourism_full |> filter(year(Quarter) >= 2010),
+    level = NULL) +
+  facet_wrap(vars(State), scales = "free_y")
+```
+
+
+```{r}
+fore |>
+  filter(is_aggregated(State), !is_aggregated(Purpose)) |>
+  autoplot(
+    tourism_full |> filter(year(Quarter) >= 2010),
+    level = NULL) +
+  facet_wrap(vars(Purpose), scales = "free_y")
+```
+
+```{r}
+fore |>
+  filter(is_aggregated(State), is_aggregated(Purpose)) |>
+  accuracy(data = tourism_full,
+           measures = list(rmse = RMSE, mase = MASE)) |>
+  group_by(.model) |>
+  summarise(rmse = mean(rmse), mase = mean(mase))
+```
+
+```{r}
+fore |>
+  filter(is_aggregated(State), !is_aggregated(Purpose)) |>
+  accuracy(data = tourism_full,
+           measures = list(rmse = RMSE, mase = MASE)) |>
+  group_by(.model) |>
+  summarise(rmse = mean(rmse), mase = mean(mase))
+```
+
+

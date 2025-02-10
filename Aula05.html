@@ -5,9 +5,9 @@
 <script src="Aula05_files/libs/quarto-html/popper.min.js"></script>
 <script src="Aula05_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="Aula05_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="Aula05_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="Aula05_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.2.269">
+<link href="Aula05_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="Aula05_files/libs/quarto-html/quarto-syntax-highlighting-3e476e15ae565c222d94875412ae43a1.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.6.39">
 
   <meta name="author" content="Prof.&nbsp;Carlos Trucíos  ctrucios@unicamp.br">
   <title>Modelos de regressão em dados de séries temporais</title>
@@ -25,11 +25,12 @@
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
       width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
     pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span { line-height: 1.25; }
     pre > code.sourceCode > span:empty { height: 1.2em; }
     .sourceCode { overflow: visible; }
     code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -40,7 +41,7 @@
     }
     @media print {
     pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
     }
     pre.numberSource code
       { counter-reset: source-line 0; }
@@ -93,210 +94,13 @@
     code span.vs { color: #008000; } /* VerbatimString */
     code span.wa { color: #696969; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="Aula05_files/libs/revealjs/dist/theme/quarto.css" id="theme">
+  <link rel="stylesheet" href="Aula05_files/libs/revealjs/dist/theme/quarto-312e06f9632ef9de479b377823fa59dd.css">
   <link href="Aula05_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="Aula05_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="Aula05_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
   <link href="Aula05_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
   <link href="Aula05_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
   <link href="Aula05_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
-  <style type="text/css">
-
-  .callout {
-    margin-top: 1em;
-    margin-bottom: 1em;  
-    border-radius: .25rem;
-  }
-
-  .callout.callout-style-simple { 
-    padding: 0em 0.5em;
-    border-left: solid #acacac .3rem;
-    border-right: solid 1px silver;
-    border-top: solid 1px silver;
-    border-bottom: solid 1px silver;
-    display: flex;
-  }
-
-  .callout.callout-style-default {
-    border-left: solid #acacac .3rem;
-    border-right: solid 1px silver;
-    border-top: solid 1px silver;
-    border-bottom: solid 1px silver;
-  }
-
-  .callout .callout-body-container {
-    flex-grow: 1;
-  }
-
-  .callout.callout-style-simple .callout-body {
-    font-size: 1rem;
-    font-weight: 400;
-  }
-
-  .callout.callout-style-default .callout-body {
-    font-size: 0.9rem;
-    font-weight: 400;
-  }
-
-  .callout.callout-captioned.callout-style-simple .callout-body {
-    margin-top: 0.2em;
-  }
-
-  .callout:not(.callout-captioned) .callout-body {
-      display: flex;
-  }
-
-  .callout:not(.no-icon).callout-captioned.callout-style-simple .callout-content {
-    padding-left: 1.6em;
-  }
-
-  .callout.callout-captioned .callout-header {
-    padding-top: 0.2em;
-    margin-bottom: -0.2em;
-  }
-
-  .callout.callout-captioned .callout-caption  p {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-  }
-    
-  .callout.callout-captioned.callout-style-simple .callout-content  p {
-    margin-top: 0;
-  }
-
-  .callout.callout-captioned.callout-style-default .callout-content  p {
-    margin-top: 0.7em;
-  }
-
-  .callout.callout-style-simple div.callout-caption {
-    border-bottom: none;
-    font-size: .9rem;
-    font-weight: 600;
-    opacity: 75%;
-  }
-
-  .callout.callout-style-default  div.callout-caption {
-    border-bottom: none;
-    font-weight: 600;
-    opacity: 85%;
-    font-size: 0.9rem;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-  }
-
-  .callout.callout-style-default div.callout-content {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-  }
-
-  .callout.callout-style-simple .callout-icon::before {
-    height: 1rem;
-    width: 1rem;
-    display: inline-block;
-    content: "";
-    background-repeat: no-repeat;
-    background-size: 1rem 1rem;
-  }
-
-  .callout.callout-style-default .callout-icon::before {
-    height: 0.9rem;
-    width: 0.9rem;
-    display: inline-block;
-    content: "";
-    background-repeat: no-repeat;
-    background-size: 0.9rem 0.9rem;
-  }
-
-  .callout-caption {
-    display: flex
-  }
-    
-  .callout-icon::before {
-    margin-top: 1rem;
-    padding-right: .5rem;
-  }
-
-  .callout.no-icon::before {
-    display: none !important;
-  }
-
-  .callout.callout-captioned .callout-body > .callout-content > :last-child {
-    margin-bottom: 0.5rem;
-  }
-
-  .callout.callout-captioned .callout-icon::before {
-    margin-top: .5rem;
-    padding-right: .5rem;
-  }
-
-  .callout:not(.callout-captioned) .callout-icon::before {
-    margin-top: 1rem;
-    padding-right: .5rem;
-  }
-
-  /* Callout Types */
-
-  div.callout-note {
-    border-left-color: #4582ec !important;
-  }
-
-  div.callout-note .callout-icon::before {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
-  }
-
-  div.callout-note.callout-style-default .callout-caption {
-    background-color: #dae6fb
-  }
-
-  div.callout-important {
-    border-left-color: #d9534f !important;
-  }
-
-  div.callout-important .callout-icon::before {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
-  }
-
-  div.callout-important.callout-style-default .callout-caption {
-    background-color: #f7dddc
-  }
-
-  div.callout-warning {
-    border-left-color: #f0ad4e !important;
-  }
-
-  div.callout-warning .callout-icon::before {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
-  }
-
-  div.callout-warning.callout-style-default .callout-caption {
-    background-color: #fcefdc
-  }
-
-  div.callout-tip {
-    border-left-color: #02b875 !important;
-  }
-
-  div.callout-tip .callout-icon::before {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
-  }
-
-  div.callout-tip.callout-style-default .callout-caption {
-    background-color: #ccf1e3
-  }
-
-  div.callout-caution {
-    border-left-color: #fd7e14 !important;
-  }
-
-  div.callout-caution .callout-icon::before {
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
-  }
-
-  div.callout-caution.callout-style-default .callout-caption {
-    background-color: #ffe5d0
-  }
-
-  </style>
   <style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
@@ -458,11 +262,11 @@ $ Unemployment &lt;dbl&gt; 0.9, 0.5, 0.5, 0.7, -0.1, -0.1, 0.1, 0.0, -0.2, -0.1,
 <section id="introdução-3" class="slide level2">
 <h2>Introdução</h2>
 <div class="cell" data-layout-align="center">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>us_change <span class="sc">|&gt;</span> </span>
-<span id="cb2-2"><a href="#cb2-2"></a>  <span class="fu">model</span>(<span class="fu">TSLM</span>(Consumption <span class="sc">~</span> Income <span class="sc">+</span> Production <span class="sc">+</span> Savings <span class="sc">+</span> Unemployment)) <span class="sc">|&gt;</span> </span>
-<span id="cb2-3"><a href="#cb2-3"></a>  <span class="fu">report</span>()  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>us_change <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a href=""></a>  <span class="fu">model</span>(<span class="fu">TSLM</span>(Consumption <span class="sc">~</span> Income <span class="sc">+</span> Production <span class="sc">+</span> Savings <span class="sc">+</span> Unemployment)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href=""></a>  <span class="fu">report</span>()  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: Consumption 
@@ -523,7 +327,7 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 <li class="fragment"><strong>HST2</strong>: Não existe colinearidade perfeita entre as variáveis independêntes e nenhuma das variáveis independentes é constante.</li>
 <li class="fragment"><strong>HST3</strong>: <span class="math inline">\(E(e_t|X) = 0\)</span>, <span class="math inline">\(t = 1, \ldots, n\)</span> (implica que <span class="math inline">\(e_t\)</span> é não correlacionado com as v. explicativas em todos os períodos de tempo)</li>
 <li class="fragment"><strong>HST4</strong>: Homocedasticidade, <span class="math inline">\(V(e_t|X) = V(e_t) = \sigma^2\)</span>, <span class="math inline">\(t=1, \ldots, n\)</span></li>
-<li class="fragment"><strong>HST5</strong>: <span class="math inline">\(Corr(e_t, e_s | X) = 0\)</span>, <span class="math inline">\(\forall t\neq s\)</span> (sem correlação serial)</li>
+<li class="fragment"><strong>HST5</strong>: <span class="math inline">\(Corr(e_t, e_s | X) = 0\)</span>, <span class="math inline">\(\forall  t\neq s\)</span> (sem correlação serial)</li>
 <li class="fragment"><strong>HST6</strong>: Os erros <span class="math inline">\(e_t\)</span> são independentes de <span class="math inline">\(X\)</span> e <span class="math inline">\(e_t \sim N(0, \sigma^2)\)</span></li>
 </ul>
 </section>
@@ -535,9 +339,8 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 <li class="fragment">Sob HST1–HST5, <span class="math inline">\(\hat{\beta}\)</span> é BLUE (melhor estimador linear não viesado)</li>
 <li class="fragment">HST6, nos permite fazer inferência.</li>
 </ul>
-<div class="fragment">
+<p>. . .</p>
 <p><strong>Demostração:</strong></p>
-</div>
 </section>
 <section id="modelo-de-regressão-em-dados-de-séries-temporais-4" class="slide level2">
 <h2>Modelo de regressão em dados de séries temporais</h2>
@@ -549,8 +352,7 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 <li class="fragment">Verificadas as novas suposições, é só aplicar regressão como sempre?</li>
 <li class="fragment">Sim, mas deve verificar as suposições!. É muito comúm encontrarmos <strong>falsos achados</strong> quando trabalhamos com modelos de regressão em dados de séries temporais.</li>
 </ul>
-</div>
-</div>
+</div></div>
 </section>
 <section id="modelo-de-regressão-em-dados-de-séries-temporais-5" class="slide level2">
 <h2>Modelo de regressão em dados de séries temporais</h2>
@@ -559,11 +361,11 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 <div class="tab-content">
 <div id="tabset-1-1">
 <div class="cell" data-layout-align="center">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>modelo <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">model</span>(<span class="fu">TSLM</span>(Consumption <span class="sc">~</span> Income <span class="sc">+</span> Production <span class="sc">+</span> Savings <span class="sc">+</span> Unemployment))</span>
-<span id="cb4-3"><a href="#cb4-3"></a><span class="fu">report</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>modelo <span class="ot">&lt;-</span> us_change <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href=""></a>  <span class="fu">model</span>(<span class="fu">TSLM</span>(Consumption <span class="sc">~</span> Income <span class="sc">+</span> Production <span class="sc">+</span> Savings <span class="sc">+</span> Unemployment))</span>
+<span id="cb4-3"><a href=""></a><span class="fu">report</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: Consumption 
@@ -591,18 +393,18 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 </div>
 <div id="tabset-1-2">
 <div class="cell" data-layout-align="center">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb6-2"><a href="#cb6-2"></a><span class="fu">augment</span>(modelo) <span class="sc">|&gt;</span> <span class="fu">select</span>(Quarter, Consumption, .fitted) <span class="sc">|&gt;</span> </span>
-<span id="cb6-3"><a href="#cb6-3"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"Consumption"</span>, <span class="st">".fitted"</span>), <span class="at">values_to =</span> <span class="st">"values"</span>, <span class="at">names_to =</span> <span class="st">"serie"</span>) <span class="sc">|&gt;</span>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> Quarter, <span class="at">y =</span> values, <span class="at">color =</span> serie)) <span class="sc">+</span> </span>
-<span id="cb6-5"><a href="#cb6-5"></a>  <span class="fu">ggtitle</span>(<span class="st">"Variação percentual nas despesas de consumo USA. Período 1970.Q1 -- 2019.Q2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb6-2"><a href=""></a><span class="fu">augment</span>(modelo) <span class="sc">|&gt;</span> <span class="fu">select</span>(Quarter, Consumption, .fitted) <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href=""></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"Consumption"</span>, <span class="st">".fitted"</span>), <span class="at">values_to =</span> <span class="st">"values"</span>, <span class="at">names_to =</span> <span class="st">"serie"</span>) <span class="sc">|&gt;</span>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb6-4"><a href=""></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> Quarter, <span class="at">y =</span> values, <span class="at">color =</span> serie)) <span class="sc">+</span> </span>
+<span id="cb6-5"><a href=""></a>  <span class="fu">ggtitle</span>(<span class="st">"Variação percentual nas despesas de consumo USA. Período 1970.Q1 -- 2019.Q2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-4-1.png" width="960"></p>
+<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
@@ -610,14 +412,14 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 </div>
 <div id="tabset-1-3">
 <div class="cell" data-layout-align="center">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>modelo <span class="sc">|&gt;</span> <span class="fu">gg_tsresiduals</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>modelo <span class="sc">|&gt;</span> <span class="fu">gg_tsresiduals</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-5-1.png" width="960"></p>
+<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
@@ -625,47 +427,44 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 </div>
 <div id="tabset-1-4">
 <div class="cell" data-layout-align="center">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Quantos parâmetros foram estimados?</span></span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="fu">tidy</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="co"># Quantos parâmetros foram estimados?</span></span>
+<span id="cb8-2"><a href=""></a><span class="fu">tidy</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 6
-  .model                                  term  estim…¹ std.e…² stati…³  p.value
-  &lt;chr&gt;                                   &lt;chr&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;
-1 TSLM(Consumption ~ Income + Production… (Int…  0.253  0.0345     7.34 5.71e-12
-2 TSLM(Consumption ~ Income + Production… Inco…  0.741  0.0401    18.5  1.65e-44
-3 TSLM(Consumption ~ Income + Production… Prod…  0.0472 0.0231     2.04 4.29e- 2
-4 TSLM(Consumption ~ Income + Production… Savi… -0.0529 0.00292  -18.1  2.03e-43
-5 TSLM(Consumption ~ Income + Production… Unem… -0.175  0.0955    -1.83 6.89e- 2
-# … with abbreviated variable names ¹​estimate, ²​std.error, ³​statistic</code></pre>
+  .model                             term  estimate std.error statistic  p.value
+  &lt;chr&gt;                              &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 TSLM(Consumption ~ Income + Produ… (Int…   0.253    0.0345       7.34 5.71e-12
+2 TSLM(Consumption ~ Income + Produ… Inco…   0.741    0.0401      18.5  1.65e-44
+3 TSLM(Consumption ~ Income + Produ… Prod…   0.0472   0.0231       2.04 4.29e- 2
+4 TSLM(Consumption ~ Income + Produ… Savi…  -0.0529   0.00292    -18.1  2.03e-43
+5 TSLM(Consumption ~ Income + Produ… Unem…  -0.175    0.0955      -1.83 6.89e- 2</code></pre>
 </div>
 </div>
 </div>
 <div id="tabset-1-5">
 <div class="cell" data-layout-align="center">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="fu">augment</span>(modelo) <span class="sc">|&gt;</span> <span class="fu">features</span>(.innov, box_pierce, <span class="at">lag =</span> <span class="dv">8</span>, <span class="at">dof =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">augment</span>(modelo) <span class="sc">|&gt;</span> <span class="fu">features</span>(.innov, box_pierce, <span class="at">lag =</span> <span class="dv">8</span>, <span class="at">dof =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
-  .model                                                         bp_stat bp_pv…¹
-  &lt;chr&gt;                                                            &lt;dbl&gt;   &lt;dbl&gt;
-1 TSLM(Consumption ~ Income + Production + Savings + Unemployme…    16.5 8.79e-4
-# … with abbreviated variable name ¹​bp_pvalue</code></pre>
+  .model                                                       bp_stat bp_pvalue
+  &lt;chr&gt;                                                          &lt;dbl&gt;     &lt;dbl&gt;
+1 TSLM(Consumption ~ Income + Production + Savings + Unemploy…    16.5  0.000879</code></pre>
 </div>
-<details>
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="fu">augment</span>(modelo) <span class="sc">|&gt;</span> <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">8</span>, <span class="at">dof =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">augment</span>(modelo) <span class="sc">|&gt;</span> <span class="fu">features</span>(.innov, ljung_box, <span class="at">lag =</span> <span class="dv">8</span>, <span class="at">dof =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
-  .model                                                         lb_stat lb_pv…¹
-  &lt;chr&gt;                                                            &lt;dbl&gt;   &lt;dbl&gt;
-1 TSLM(Consumption ~ Income + Production + Savings + Unemployme…    17.1 6.71e-4
-# … with abbreviated variable name ¹​lb_pvalue</code></pre>
+  .model                                                       lb_stat lb_pvalue
+  &lt;chr&gt;                                                          &lt;dbl&gt;     &lt;dbl&gt;
+1 TSLM(Consumption ~ Income + Production + Savings + Unemploy…    17.1  0.000671</code></pre>
 </div>
 </div>
 <p>. . .</p>
@@ -692,9 +491,8 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 <li><span class="math inline">\(\mathbb{Cov}(Y_t, Y_{t+h})\)</span> depende somente de <span class="math inline">\(h\)</span> e não de <span class="math inline">\(t\)</span>.</li>
 </ul>
 </div>
-<div class="fragment">
+<p>. . .</p>
 <p>Na maioria das vezes, ao ajustar um modelo de regressão em série não estacionárias encontraremos <span class="math inline">\(R^2\)</span> alto e <span class="math inline">\(\beta\)</span>s significativos (parecendo termos encontrado um “bom” modelo). Contudo, esta descoberta é espúria (falsa).</p>
-</div>
 </div>
 </section>
 <section id="regressões-espúrias-2" class="slide level2">
@@ -703,39 +501,38 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell" data-layout-align="center">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">library</span>(fpp3)</span>
-<span id="cb14-2"><a href="#cb14-2"></a>aus_airpassengers <span class="sc">%&gt;%</span> </span>
-<span id="cb14-3"><a href="#cb14-3"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb14-4"><a href="#cb14-4"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> Passengers)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Passageiros"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">library</span>(fpp3)</span>
+<span id="cb14-2"><a href=""></a>aus_airpassengers <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href=""></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb14-4"><a href=""></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> Passengers)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Passageiros"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-8-1.png" width="960"></p>
+<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell" data-layout-align="center">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>guinea_rice <span class="sc">%&gt;%</span> </span>
-<span id="cb15-2"><a href="#cb15-2"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb15-3"><a href="#cb15-3"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> Production)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Produção de arroz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>guinea_rice <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href=""></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb15-3"><a href=""></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> Year, <span class="at">y =</span> Production)) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"Produção de arroz"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-9-1.png" width="960"></p>
+<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
-</div>
-</div>
+</div></div>
 <div class="fragment">
 <p>As séries não tem nenhuma relação, a não ser que ambas são não estacionárias.</p>
 </div>
@@ -746,11 +543,11 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell" data-layout-align="center">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>rice_passengers <span class="ot">&lt;-</span> guinea_rice <span class="sc">|&gt;</span> <span class="fu">left_join</span>(aus_airpassengers, <span class="at">by =</span> <span class="st">"Year"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2"></a>modelo <span class="ot">&lt;-</span> rice_passengers <span class="sc">|&gt;</span> <span class="fu">model</span>(<span class="at">tslm =</span> <span class="fu">TSLM</span>(Passengers <span class="sc">~</span> Production)) </span>
-<span id="cb16-3"><a href="#cb16-3"></a><span class="fu">report</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a>rice_passengers <span class="ot">&lt;-</span> guinea_rice <span class="sc">|&gt;</span> <span class="fu">left_join</span>(aus_airpassengers, <span class="at">by =</span> <span class="st">"Year"</span>)</span>
+<span id="cb16-2"><a href=""></a>modelo <span class="ot">&lt;-</span> rice_passengers <span class="sc">|&gt;</span> <span class="fu">model</span>(<span class="at">tslm =</span> <span class="fu">TSLM</span>(Passengers <span class="sc">~</span> Production)) </span>
+<span id="cb16-3"><a href=""></a><span class="fu">report</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: Passengers 
@@ -774,20 +571,19 @@ F-statistic: 908.1 on 1 and 40 DF, p-value: &lt; 2.22e-16</code></pre>
 </div>
 </div><div class="column" style="width:50%;">
 <div class="cell" data-layout-align="center">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>modelo <span class="sc">|&gt;</span> <span class="fu">gg_tsresiduals</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>modelo <span class="sc">|&gt;</span> <span class="fu">gg_tsresiduals</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-11-1.png" width="960"></p>
+<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
-</div>
-</div>
+</div></div>
 <div class="fragment">
 <p>Aparentemente, temos um achado!! a cada unidade de aumento na produção de arroz na Guiné, o número de passageiros na Austrália aumenta em 40 unidades 🤣</p>
 </div>
@@ -826,7 +622,7 @@ F-statistic: 908.1 on 1 and 40 DF, p-value: &lt; 2.22e-16</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-12-1.png" width="1344"></p>
+<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center" width="1344"></p>
 </figure>
 </div>
 </div>
@@ -837,7 +633,7 @@ F-statistic: 908.1 on 1 and 40 DF, p-value: &lt; 2.22e-16</code></pre>
 <h2>Regressões espúrias</h2>
 <p>Às vezes, olhando para o gráfico da série temporal, não é facil de verificar se a série é não estacionária.</p>
 
-<img data-src="Aula05_files/figure-revealjs/unnamed-chunk-13-1.png" width="1344" class="r-stretch quarto-figure-center"><div class="fragment">
+<img data-src="Aula05_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"><div class="fragment">
 <p><strong>Gráfico alternativo: função de autocorrelação (correlograma):</strong> Se as autocorrelações forem significativas e cairem devagar 🐢 , a série é não estacionária.</p>
 </div>
 </section>
@@ -849,7 +645,7 @@ F-statistic: 908.1 on 1 and 40 DF, p-value: &lt; 2.22e-16</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-14-1.png" width="960"></p>
+<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
@@ -859,13 +655,12 @@ F-statistic: 908.1 on 1 and 40 DF, p-value: &lt; 2.22e-16</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-15-1.png" width="960"></p>
+<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
-</div>
-</div>
+</div></div>
 <blockquote>
 <p>Se as autocorrelações forem <strong>significativas</strong> e cairem <strong>devagar</strong>, a série é não estacionária.</p>
 </blockquote>
@@ -891,7 +686,31 @@ F-statistic: 908.1 on 1 and 40 DF, p-value: &lt; 2.22e-16</code></pre>
 </section>
 <section id="séries-com-tendência-e-modelos-de-regressão-1" class="slide level2">
 <h2>Séries com tendência e modelos de regressão</h2>
-<h3 id="alternativa-1">Alternativa 1:</h3>
+<div class="callout callout-warning no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Lembrando</strong></p>
+</div>
+<div class="callout-content">
+<p>A decomposição de séries temporais pode ser definida como</p>
+<p><span class="math display">\[\underbrace{Y_t = T_t + S_t + R_t}_{\text{Modelo aditivo}} \quad ou \quad \underbrace{Y_t = T_t \times S_t \times R_t}_{Modelo multiplicativo}\]</span></p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>Fazendo algumas modificações, podemos transformar a equação acima em um modelo de regressão da forma</p>
+<p><span class="math display">\[Y_t = \beta_0 + \beta_1 T_t + \beta_2 S_t + \epsilon_t\]</span></p>
+</div>
+<div class="fragment">
+<p><span class="math display">\[\text{ou} \quad \log(Y_t) = \beta_0 + \beta_1 \log(T_t) + \beta_2 \log(S_t) + \epsilon_t\]</span></p>
+<p>Bastando apenas saber quem utilizarmos como <span class="math inline">\(T_t\)</span> e quem como <span class="math inline">\(S_t\)</span>.</p>
+</div>
+</section>
+<section id="séries-com-tendência-e-modelos-de-regressão-2" class="slide level2">
+<h2>Séries com tendência e modelos de regressão</h2>
+<h3>
+Alternativa 1:
+</h3>
 <p>Quando as séries têm alguma tendência (linear, quadrática, cúbica, exponencial, etc), podemos incluir algumas variaveis explicativas no modelo que nos ajudarão a capturar o comportamento da tendência e fugir das regressões espúrias.</p>
 <ul>
 <li class="fragment">Tendência Linear: <span class="math inline">\(y_t = \alpha_0 + \alpha_1t + e_t\)</span></li>
@@ -905,7 +724,7 @@ F-statistic: 908.1 on 1 and 40 DF, p-value: &lt; 2.22e-16</code></pre>
 </blockquote>
 </div>
 </section>
-<section id="séries-com-tendência-e-modelos-de-regressão-2" class="slide level2">
+<section id="séries-com-tendência-e-modelos-de-regressão-3" class="slide level2">
 <h2>Séries com tendência e modelos de regressão</h2>
 <center>
 O que será que acontece com o exemplo da regressão do número de passageiros na Austrália e a produção de arroz da Giné?
@@ -916,11 +735,11 @@ O que será que acontece com o exemplo da regressão do número de passageiros n
 </ul>
 <div class="fragment">
 <div class="cell" data-layout-align="center">
-<details>
+<details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>modelo <span class="ot">&lt;-</span> rice_passengers <span class="sc">|&gt;</span> </span>
-<span id="cb19-2"><a href="#cb19-2"></a>  <span class="fu">model</span>(<span class="at">tslm =</span> <span class="fu">TSLM</span>(Passengers <span class="sc">~</span> Production <span class="sc">+</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">I</span>(<span class="fu">trend</span>()<span class="sc">^</span><span class="dv">2</span>))) </span>
-<span id="cb19-3"><a href="#cb19-3"></a><span class="fu">report</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>modelo <span class="ot">&lt;-</span> rice_passengers <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a href=""></a>  <span class="fu">model</span>(<span class="at">tslm =</span> <span class="fu">TSLM</span>(Passengers <span class="sc">~</span> Production <span class="sc">+</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">I</span>(<span class="fu">trend</span>()<span class="sc">^</span><span class="dv">2</span>))) </span>
+<span id="cb19-3"><a href=""></a><span class="fu">report</span>(modelo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Series: Passengers 
@@ -946,7 +765,7 @@ F-statistic: 815.6 on 3 and 38 DF, p-value: &lt; 2.22e-16</code></pre>
 </div>
 </div>
 </section>
-<section id="séries-com-tendência-e-modelos-de-regressão-3" class="slide level2">
+<section id="séries-com-tendência-e-modelos-de-regressão-4" class="slide level2">
 <h2>Séries com tendência e modelos de regressão</h2>
 <ul>
 <li class="fragment">Ao remover o efeito da tendência, <code>Production</code> não é mais estatísticamente significativa, o que faz muito mais sentido 🏄‍♀️ 🏄‍♀️.</li>
@@ -957,14 +776,14 @@ F-statistic: 815.6 on 3 and 38 DF, p-value: &lt; 2.22e-16</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-17-1.png" width="960"></p>
+<p><img data-src="Aula05_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="séries-com-tendência-e-modelos-de-regressão-4" class="slide level2">
+<section id="séries-com-tendência-e-modelos-de-regressão-5" class="slide level2">
 <h2>Séries com tendência e modelos de regressão</h2>
 <blockquote>
 <p><strong>Cuidado</strong>, quando trabalharmos com séries temporais não estacionárias, não devemos olhar para o <span class="math inline">\(R^2\)</span>.</p>
@@ -985,17 +804,20 @@ F-statistic: 815.6 on 3 and 38 DF, p-value: &lt; 2.22e-16</code></pre>
 <h2>Referências</h2>
 <ul>
 <li class="fragment"><a href="https://otexts.com/fpp3/">Hyndman, R.J., &amp; Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.</a>. Chapter 7.</li>
+<li class="fragment">Krispin, R. (2019). Hands-On Time Series Analysis with R: Perform time series analysis and forecasting using R. Packt Publishing Ltd.&nbsp;Chapter 9</li>
 <li class="fragment">Wooldridge, Jeffrey M. (2016). <em>Introdução à Econometria: Uma abordagem moderna</em>. Cengage Learning. – <strong>Cap 10</strong></li>
-<li class="fragment">Wooldridge, J. M. (1991). A note on computing r-squared and adjusted r-squared for trending and seasonal data. Economics Letters, 36(1), 49-54.</li>
-<li class="fragment">Trucíos, C. (2021, Feb.&nbsp;28). Carlos Trucíos: Teorema de Gauss-Markov. Retrieved from https://ctruciosm.github.io/posts/2021-02-28-teorema-de-gauss-markov/</li>
+<li class="fragment"><a href="https://www.sciencedirect.com/science/article/abs/pii/016517659190054O">Wooldridge, J. M. (1991). A note on computing r-squared and adjusted r-squared for trending and seasonal data. Economics Letters, 36(1), 49-54.</a></li>
+<li class="fragment">Trucíos, C. (2021, Feb.&nbsp;28). Carlos Trucíos: Teorema de Gauss-Markov. Retrieved from https://ctruciosm.github.io/posts/2021-02-28-teorema-de-gauss-markov/ .</li>
 </ul>
 
-<img src="imagens/imecc.png" class="slide-logo r-stretch"><div class="footer footer-default">
-<p>Carlos Trucíos (IMECC/UNICAMP) | ME607 - Séries Temporais | <a href="https://ctruciosm.github.io/">ctruciosm.github.io</a></p>
-</div>
 </section></section>
     </div>
-  </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="imagens/imecc.png" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>Carlos Trucíos (IMECC/UNICAMP) | ME607 - Séries Temporais | <a href="https://ctruciosm.github.io/">ctruciosm.github.io</a></p>
+</div>
+</div></div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
   <script src="Aula05_files/libs/revealjs/dist/reveal.js"></script>
@@ -1021,12 +843,12 @@ F-statistic: 815.6 on 3 and 38 DF, p-value: &lt; 2.22e-16</code></pre>
       Reveal.initialize({
 'controlsAuto': true,
 'previewLinksAuto': false,
-'smaller': false,
 'pdfSeparateFragments': false,
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'chalkboard': {"buttons":true},
 'smaller': false,
  
@@ -1181,7 +1003,7 @@ F-statistic: 815.6 on 3 and 38 DF, p-value: &lt; 2.22e-16</code></pre>
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -1269,12 +1091,15 @@ F-statistic: 815.6 on 3 and 38 DF, p-value: &lt; 2.22e-16</code></pre>
       tabsets.forEach(function(tabset) {
         const tabby = new Tabby('#' + tabset.id);
       });
-      const clipboard = new window.ClipboardJS('.code-copy-button', {
-        target: function(trigger) {
-          return trigger.previousElementSibling;
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
         }
-      });
-      clipboard.on('success', function(e) {
+        return false;
+      }
+      const onCopySuccess = function(e) {
         // button target
         const button = e.trigger;
         // don't keep focus
@@ -1306,11 +1131,48 @@ F-statistic: 815.6 on 3 and 38 DF, p-value: &lt; 2.22e-16</code></pre>
         }, 1000);
         // clear code selection
         e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
       });
-      function tippyHover(el, contentFn) {
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
         const config = {
           allowHTML: true,
-          content: contentFn,
           maxWidth: 500,
           delay: 100,
           arrow: false,
@@ -1319,9 +1181,18 @@ F-statistic: 815.6 on 3 and 38 DF, p-value: &lt; 2.22e-16</code></pre>
           },
           interactive: true,
           interactiveBorder: 10,
-          theme: 'quarto-reveal',
-          placement: 'bottom-start'
+          theme: 'light-border',
+          placement: 'bottom-start',
         };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
           config['offset'] = [0,0];
           config['maxWidth'] = 700;
         window.tippy(el, config); 
@@ -1335,7 +1206,11 @@ F-statistic: 815.6 on 3 and 38 DF, p-value: &lt; 2.22e-16</code></pre>
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
-          return note.innerHTML;
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
         });
       }
       const findCites = (el) => {

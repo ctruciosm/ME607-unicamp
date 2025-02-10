@@ -156,7 +156,7 @@ A função de autocorrelação parcial de um processo ARMA(p,q) é definida pela
 :::
 
 
-com $\phi_{kk}$ sendo o último elemento de $$\Gamma^{-1}_h \times [\gamma(1), \gamma(2), \cdots, \gamma(k)]',$$ em que $\Gamma_h = [\gamma(i-j)]_{i,j = 1}^{h}$
+com $\phi_{kk}$ sendo o último elemento de $$\Gamma^{-1}_k \times [\gamma(1), \gamma(2), \cdots, \gamma(k)]',$$ em que $\Gamma_k = [\gamma(i-j)]_{i,j = 1}^{k}$
 
 
 # Raízes do polinômio

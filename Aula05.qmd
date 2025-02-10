@@ -215,6 +215,7 @@ augment(modelo) |> features(.innov, ljung_box, lag = 8, dof = 5)
 
 . . . 
 
+
 Por quê 8 e 5?
 
 :::
@@ -429,7 +430,31 @@ Em alguns casos, existem alternativas simples para continuar utilizando modelos 
 
 ## Séries com tendência e modelos de regressão
 
-### Alternativa 1:
+
+::: {.callout-warning icon=false}
+### Lembrando
+A decomposição de séries temporais pode ser definida como 
+
+$$\underbrace{Y_t = T_t + S_t + R_t}_{\text{Modelo aditivo}} \quad ou \quad \underbrace{Y_t = T_t \times S_t \times R_t}_{Modelo multiplicativo}$$
+
+:::
+
+. . . 
+
+
+Fazendo algumas modificações, podemos transformar a equação acima em um modelo de regressão da forma
+
+$$Y_t = \beta_0 + \beta_1 T_t + \beta_2 S_t + \epsilon_t$$
+
+. . . 
+
+$$\text{ou} \quad \log(Y_t) = \beta_0 + \beta_1 \log(T_t) + \beta_2 \log(S_t) + \epsilon_t$$
+
+Bastando apenas saber quem utilizarmos como $T_t$ e quem como $S_t$.
+
+## Séries com tendência e modelos de regressão
+
+<h3>Alternativa 1:</h3>
 
 Quando as séries têm alguma tendência (linear, quadrática, cúbica, exponencial, etc), podemos incluir algumas variaveis explicativas no modelo que nos ajudarão a capturar o comportamento da tendência e fugir das regressões espúrias.
 
@@ -439,7 +464,9 @@ Quando as séries têm alguma tendência (linear, quadrática, cúbica, exponenc
 - Tendência Cúbica: $y_t = \alpha_0 + \alpha_1t + \alpha_2 t^2 + \alpha_3 t^3+e_t$
 - Tendência Exponencial: $\log(y_t) = \alpha_0 + \alpha_1t + e_t$  ( $y_t > 0$)
 
+
 . . . 
+
 
 > Incluir $t$, $t^2$, $t^3$, ... no modelo, atuará como um **removedor de tendência**
 
@@ -502,6 +529,8 @@ Se quisermos utilizar o $R^2$ precisamos fazer alguns ajustes. Ver o artigo do [
 ## Referências
 
 -   [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 7.
+- Krispin, R. (2019). Hands-On Time Series Analysis with R: Perform time series analysis and forecasting using R. Packt Publishing Ltd. Chapter 9
 - Wooldridge, Jeffrey M. (2016). *Introdução à Econometria: Uma abordagem moderna*. Cengage Learning. -- **Cap 10**
-- Wooldridge, J. M. (1991). A note on computing r-squared and adjusted r-squared for trending and seasonal data. Economics Letters, 36(1), 49-54.
+- [Wooldridge, J. M. (1991). A note on computing r-squared and adjusted r-squared for trending and seasonal data. Economics Letters, 36(1), 49-54.](https://www.sciencedirect.com/science/article/abs/pii/016517659190054O)
 - Trucíos, C. (2021, Feb. 28). Carlos Trucíos: Teorema de Gauss-Markov. Retrieved from https://ctruciosm.github.io/posts/2021-02-28-teorema-de-gauss-markov/
+.
