@@ -1,5 +1,6 @@
 ---
 title: "Suavização Exponencial"
+land: "PT"
 subtitle: "ME607 - Séries Temporais"
 author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
 Email: "ctrucios@unicamp.br"
@@ -45,12 +46,93 @@ editor: source
 
 
 
+# Médias Móveis
+## Médias Móveis Simples
+
+::: {.callout-warning icon=false}
+### Médias Móveis
+
+**Com fins de suavização** (como utilizado no capítulo de decomposição): 
+
+$$\hat{Y}_t = \dfrac{Y_{t - \frac{m - 1}{2}} + \cdots + Y_t + \cdots + Y_{t + \frac{m - 1}{2}}}{m}$$
+
+:::
+
+. . . 
+
+Se alterarmos a fórmula para, em lugar de considerar ambos os lados ao redor de $Y_t$, considerar apenas as últimas $m$ observações, temos: 
+
+$$\hat{Y}_t = \dfrac{Y_{t - m + 1} + \cdots + Y_{t - 1} + Y_t}{m}$$
+
+## Médias Móveis Simples
+
+
+<center>
+![**Dado que, MM utiliza a informação até o tempo T, como podemos utilizar MM para fazer previsão?**](imagens/duvida4.png){width=40%}
+</center>
+
+
+## Médias Móveis Simples
+
+
+<center>
+Para fazermos a previsão através do método de MM, utilizamos a média das passadas $m$ _observações_.
+</center>
+
+
+. . . 
+
+$$\hat{Y}_{T+1 | T} = \dfrac{Y_{T - m + 1} + \cdots + Y_{T - 1} + Y_T}{m}$$
+
+. . . 
+
+
+$$\hat{Y}_{T+2 | T} = \dfrac{Y_{T - m + 2} + \cdots + Y_{T} + \hat{Y}_{T+1|T}}{m}$$
+
+
+. . . 
+
+
+<center>
+[Fazer previsão com MM é recomendado quando a série não apresenta componentes de tendência e sazonalidade.]{style="color:red;"}
+</center>
+
+
+## Médias Móveis Ponderadas
+
+Uma extensão do método de MM, com a diferença de que não todas as observações tem o mesmo pesso.
+
+
+$$Y_{T+h|T} = \omega_1 Y_{T + h - m} + \cdots + \omega_nY_{T + h - 1},$$
+Se $T + k > T$, então $Y_{T + k} = \hat{T}_{T + k | T}$.
+
+
+
+
+. . . 
+
+<center>
+MMP permite que as últimas observações recebam pesso maior na previsão. Ademais, MMP permite lidar com padrões sazonais (mas não com tendência).
+</center>
+
+
+
 # Suavização Exponencial Simples
+
 ## Suavização Exponencial Simples
 
-Utilizado quando a série temporal não tem um padrão claro de tendência e/ou sazonalidade. Por exemplo:
+- Conceitualmente semelhante a Médias Móveis.
+- MM utiliza apenas $m$ observações enquanto que SES utiliza todas as observações.
+- Apropriado quando a série não tem tendência nem sazonalidade.
+- Utiliza uma técnica de média ponderada, mas os pessos tem decaimento exponencial (daí o nome de `suavização exponencial`) dando maior pesso às observações mais recentes.
+
+
+## Suavização Exponencial Simples
+
+
 
 ```{r}
+#| echo: true
 library(fpp3)
 algeria_economy <- global_economy %>%
   filter(Country == "Algeria")
@@ -97,6 +179,7 @@ $$\hat{y}_{T+1|T} = \alpha [y_{T} + (1-\alpha) y_{T-1} +  (1-\alpha)^2 y_{T-2} +
 
 
 ```{r}
+#| echo: true
 library(ggplot2)
 p <- 0:100
 alpha <- c(0.05, 0.2, 0.4, 0.6, 0.8, 0.95)
@@ -125,22 +208,33 @@ $$\hat{y}_{T+1|T} = \alpha y_{T} + \alpha (1-\alpha) y_{T-1} + \alpha (1-\alpha)
 
 - Se $\alpha = 1$, o método se reduz ao método NAIVE, $\hat{y}_{T+1|T} = y_T$.
 - A medida que $\alpha \rightarrow 1$, as observações mais recentes recebem um peso maior.
+- Na prática, não podemos utilizar uma soma infinita mas teremos: $$\hat{y}_{T+1|T} = \alpha y_{T} + \alpha (1-\alpha) y_{T-1} + \alpha (1-\alpha)^2 y_{T-2} + \cdots + \alpha (1 - \alpha)^{T-1} \hat{y}_2,$$ em que $\hat{y}_2 = \alpha y_1 + (1 - \alpha)\underbrace{\hat{y_1}}_{l_0}.$
 
+
+
+
+## Suavização Exponencial Simples
+
+
+[$$\hat{y}_{T+1|T} = \alpha y_{T} + \alpha (1-\alpha) y_{T-1} + \alpha (1-\alpha)^2 y_{T-2} + \cdots + \alpha (1 - \alpha)^{T-1} \hat{y}_2.$$]{style="color:red;"}
 
 . . . 
+
 
 Note que,
 
 
-::: {.nonincremental}
 - $\hat{y}_{T+1|T} = \alpha y_T + (1-\alpha) \hat{y}_{T|T-1},$
 - $\hat{y}_{T|T-1} = \alpha y_{T-1} + (1-\alpha) \hat{y}_{T-1|T-2},$
 - $\vdots$
 - $\hat{y}_{3|2} = \alpha y_2 + (1-\alpha) \hat{y}_{2|1},$
 - $\hat{y}_{2|1} = \alpha y_1 + (1-\alpha) l_0,$
-:::
 
-> Assim como nos modelos de regressão, $l_0$ e $\alpha$ precisam ser estimados.
+. . . 
+
+> Embora $l_0$ e $\alpha$ podem ser especificados pelo usuário, a prática comum é estimá-los.
+
+
 
 ## Suavização Exponencial Simples
 
@@ -151,12 +245,99 @@ $$SQE = \displaystyle \sum_{t=1}^T (\underbrace{y_t - \hat{y}_{t|t-1}}_{e_t})^2 
 
 . . . 
 
-> Infelizmente, a solução não tem forma fechada e precisaremos de métodos numéricos para encontrá-la. Na pratica, isto não será problema, utilizaremos a função `ETS()` do **R** para ajustar o modelo.
+> Infelizmente, a solução não tem forma fechada e precisaremos de métodos numéricos para encontrá-la. Na pratica, isto não será problema, utilizaremos a função `ETS()`  ou `ses()` do **R** para ajustar o modelo.
 
 
 . . .
 
 Não é dificil escrever um código para resolver o problema de minimização acima. Explore a função `optim()` do **R** (lhe sera muito útil no futuro) e tente fazer você mesmo.
+
+
+
+## Suavização Exponencial Simples
+
+
+
+::: {.panel-tabset}
+
+
+## Dados
+
+```{r}
+#| echo: true
+library(forecast)
+library(TSstudio)
+head(Coffee_Prices)
+robusta <- Coffee_Prices[, 1]
+robusta
+```
+
+## Plot
+
+
+```{r}
+#| echo: true
+ts_plot(robusta, title = "The Robusta Coffee Monthly Prices", Ytitle = "Price in USD", Xtitle = "Year")
+```
+
+
+## ses()
+
+```{r}
+#| echo: true
+robusta_par <- ts_split(robusta, sample.out = 12)
+train <- robusta_par$train
+test <- robusta_par$test
+fore_ses <- ses(train, h = 12,  alpha = 0.8, initial = "simple")
+fore_ses_opt <- ses(train, h = 12, initial = "optimal")
+```
+
+
+## ses()
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+```{r}
+#| echo: true
+fore_ses$model
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| echo: true
+fore_ses_opt$model
+```
+:::
+
+::::
+
+Qual valor foi utilizado para $l_0$?
+
+```{r}
+head(train)
+```
+
+
+
+
+## ses()
+
+
+```{r}
+#| echo: true
+test_forecast(actual = robusta,
+  forecast.obj = fore_ses_opt,
+  test = test)
+```
+
+:::
+
+
+
+
 
 ## Suavização Exponencial Simples
 
@@ -217,12 +398,13 @@ fore_algeria %>% autoplot(algeria_economy) +
 
 ## Suavização Exponencial Simples
 
-Seja o processo gerados de dados da forma $$y_t = \mu_t + e_t,$$ em que $\mu_t$ é a media (não constante) de $y_t$.
+**Intuição:**
+
+Seja o processo gerador de dados da forma $$y_t = \mu_t + e_t,$$ em que $\mu_t$ é a media (não constante) de $y_t$.
 
 - Seja $\hat{\mu}_{T+1|T}$ a previsão um passo à frente do nível.
 - Como a média muda ao longo do tempo, podemos obter $\hat{\mu}_{T+1|T}$ como a solução de $$\displaystyle \sum_{t = 1}^T (y_t - \mu_{T+1})^2\omega_t.$$ 
 - Derivando, temos que $\hat{\mu}_{T+1|T} = \displaystyle \sum_{t = 1}^T y_t \omega_t.$
-- Vamos impor as restrições de que $\omega_t > 0$, $\sum \omega_t = 1$ e que observações recentes recebem maior peso.
 
 
 ## Suavização Exponencial Simples
@@ -241,7 +423,7 @@ Uma forma de fazer com que as observações recentes recebam peso maior, é faze
 
 ## Suavização Exponencial Simples
 
-veja que o proceso da forma $y_t = \mu_t + e_t$ é um processo em que nem a tendência nem a sazonalidade são claros.
+veja que o proceso da forma $y_t = \mu_t + e_t$ é um processo em que nem a tendência nem a sazonalidade são aparentes.
 
 
 ```{r}
@@ -263,62 +445,68 @@ Suavização Exponencial Simples tem previsão "flat", i.e. $$\hat{y}_{T+h|T} = 
 
 ## Método de Holt
 
-Seja o processo gerador de dados da forma\begin{align} 
-y_t = &  \mu_t + e_t, \\
-\mu_t = &  \mu_{t-1} + \beta_{t-1}.
-\end{align}
+- Também conhecido como suavização exponencial dupla.
+- É uma extensão do SES.
+- Baseia-se na ideia de estimar o nível (a média) e a tendência através de dois parâmetros de suavização.
+
 
 . . . 
 
 
-Note que o processo acima representa uma série com tendência linear.
 
-```{r}
-#| echo: true
-n <- 1000
-beta <- runif(n, 0, 0.1)
-e <- rnorm(n, 0, 10)
-mu <- rep(100, n)
-y <- rep(100, n)
-for (i in 2:n){
-  mu[i] <- mu[i - 1] + beta[i - 1]
-  y[i] <- mu[i] + e[i]
-}
-ts.plot(y)
-```
+$$\hat{Y}_{T+h|T} = L_T + hT_T$$
+
+. . . 
+
+
+- **Nível:** $L_T = \alpha Y_T + (1 - \alpha) (L_{T-1} + T_{T - 1})$
+- **Tendência:** $T_T = \beta(L_T - L_{T - 1}) + (1 - \beta) T_{T-1}$
+- **Número de passos à frente:** $h$
 
 
 ## Método de Holt
 
-- Note que a diferença entre $\mu_t - \mu_{t-1} = \beta_{t-1}$ (pendente no momento $t-1$).
-- $\hat{y}_{t+1|t} = \hat{\mu}_{t+1|t} = \hat{\mu}_{t|t} + \hat{\beta}_{t}$
-- Após observar $y_{t+1}$, podemos calcular o erro de previsão ($y_{t+1}-\hat{\mu}_{t+1|t}$) e corrigir a previsão anterior por uma fração do erro cometido.
-- Assim, para $\theta<1$ \begin{align} 
-\hat{\mu}_{t+1|t+1} = &  \hat{\mu}_{t+1|t} + (1-\theta) (y_{t+1}-\hat{\mu}_{t+1|t}) \\
-    = &  \hat{\mu}_{t|t} + \hat{\beta}_{t}+ (1-\theta) (y_{t+1}-\hat{\mu}_{t|t} - \hat{\beta}_{t})\\
-    = & (1 - \theta) y_{t+1} + \theta (\hat{\mu}_{t|t} + \hat{\beta}_t)
-\end{align}
-- De forma semelhante, para $\gamma <1$,
-$$\hat{\beta}_{t+1} =  \hat{\beta}_t + (1-\gamma) (\hat{\mu}_{t+1|t+1} - \hat{\mu}_{t|t} - \hat{\beta}_t) = \gamma \hat{\beta}_t + (1-\gamma) (\hat{\mu}_{t+1|t+1} - \hat{\mu}_{t|t})$$
+
+Como no caso do SES, a recursão não pode ser infinita. Assim:
+
+- $L_2 = \alpha Y_1 + (1 - \alpha) (L_1 + T_1)$
+- $T_2 = \beta (L_2 - L_1) + (1 - \beta) T_1$
 
 
+. . . 
+
+
+<center>
+[Além do $\alpha$ e $\beta$, $L_1$ e $T_1$ também precisam ser estimados.]{style="color:red;"}
+</center>
+
+. . . 
+
+
+::: {.callout-warning icon=false}
+## No R
+As funções `holt()` do pacote `forecast` e `ETS()` do pacote `fable` implementam o método de Holt e já calcula os valores initicias de $L_1$ e $T_1$, bem como $\alpha$ e $\beta$. 
+:::
 
 
 ## Método de Holt
 
 - Utilizado quando a série apresenta tendência.
 - A previsão envolve duas equações de suavização: uma para o nível e outra para a tendência:
-  * $\text{Previsão: } \quad \hat{y}_{T+h|T} = \hat{\mu}_{T|T} + h \hat{\beta}_T,$
-  * $\text{Equação do Nível: } \hat{\mu}_{T|T} = \theta^{\ast} y_T + (1 - \theta^{\ast}) (\hat{\mu}_{T-1|T-1} + \hat{\beta}_{T-1}),$
-  * $\text{Equação de Tendência: } \quad \hat{\beta}_T= \gamma^{\ast} \hat{\beta}_{T-1} + (1-\gamma^{\ast}) (\hat{\mu}_{T|T} - \hat{\mu}_{T-1|T-1}).$
+  * $\text{Previsão: } \quad \hat{Y}_{T+h|T} = L_T + hT_T,$
+  * $\text{Equação do Nível: } L_T = \alpha Y_T + (1 - \alpha) (L_{T-1} + T_{T - 1})$
+  * $\text{Equação de Tendência: } \quad T_T = \beta(L_T - L_{T - 1}) + (1 - \beta) T_{T-1}$
 
 . . . 
 
-Em que $0 \leq \theta^{\ast} \leq 1$ e $0 \leq \gamma^{\ast} \leq 1$. Note que, no instante $t=1$ precisaremos de $\hat{\mu}_0$ e $\hat{\beta}_0$
+Em que $0 \leq \alpha, \beta \leq 1$. Ademais,  note que no instante $T=2$ precisaremos de $L_1$ e $T_1$
 
 . . . 
 
 >  Para estimar os parâmetros, minimizamos a soma de quadrados dos resíduos.
+
+
+
 
 
 ## Método de Holt
@@ -344,7 +532,7 @@ glimpse(australia_economy)
 australia_economy %>% autoplot(Pop)
 ```
 
-Tendência clara.
+Tendência evidente.
 
 
 ### Modelo
@@ -375,21 +563,42 @@ fore_aus %>% autoplot(australia_economy) +
 ```
 
 
+### holt()
+
+```{r}
+#| echo: true
+australia_economy_ts <- ts(australia_economy$Pop, frequency = 1, start = "1960")
+#info_ts(australia_economy_ts)
+fore_holt <- holt(australia_economy_ts, h = 6, initial = "optimal")
+fore_holt$model
+```
+
+
+### Comparação
+
+```{r}
+#| echo: true
+fore_aus$.mean
+fore_holt$mean
+```
+
+
+
 :::
 
 
 ## Método de Holt com amortização
 
 - O método de Holt (1957) assume que, para fazer a previsão, a tendência é constante nos $h$ passos à frente.
-- Em 1985, é proposto um método que amortece a tendência. Com este método as equações são definidas como:
+- Em 1985, foi proposto um método que amortece a tendência. Com este método as equações são definidas como:
 
 . . . 
 
 
 \begin{align} 
-\hat{y}_{t+h|t} = & \hat{\mu}_{t|t} + (\phi  + \phi^2 + \cdots + \phi^h) \hat{\beta}_t, \\
-\hat{\mu}_{t|t} = & \alpha y_t + (1-\alpha) (\hat{\mu}_{t-1|t-1} + \phi \hat{\beta}_{t-1}), \\
-\hat{\beta}_t = & \gamma (\hat{\mu}_{t|t}  - \hat{\mu}_{t-1|t-1}) + (1 - \gamma) \phi \hat{\beta}_{t-1}.
+\hat{y}_{T+h|T} = & L_T + (\phi  + \phi^2 + \cdots + \phi^h) T_T, \\
+L_T = & \alpha y_T + (1-\alpha) (L_{T-1} + \phi T_{T-1}), \\
+T_T = & \beta (L_T  - L_{T-1}) + (1 - \beta) \phi T_{T-1}.
 \end{align}
 
 
@@ -433,6 +642,22 @@ fore_aus |> autoplot(australia_economy, level = NULL) +
   geom_line(aes(y = .fitted, color = .model),  data = augment(modelo)) 
 ```
 
+### holt()
+
+```{r}
+#| echo: true
+fore_holt <- holt(australia_economy_ts, h = 6, initial = "optimal", damped = TRUE)
+fore_holt$model
+```
+
+### Comparação
+
+
+```{r}
+#| echo: true
+fore_aus$.mean[-c(1:6)]
+fore_holt$mean
+```
 
 :::
 
@@ -443,46 +668,58 @@ fore_aus |> autoplot(australia_economy, level = NULL) +
 Note que, quando $h \rightarrow \infty$, $$y_{T+h|T} =  \hat{\mu}_{T|T} + (\phi  + \phi^2 + \cdots + \phi^h) \hat{\beta}_T \rightarrow l_t + \dfrac{\phi}{1-\phi} \hat{\beta}_T$$
 
 
+. . . 
+
+
+
+::: {.callout-warning icon=false}
+### Observação
+
+Quando a tendência é exponencial, podemos usar o argumento `exponential = TRUE` na função `holt()`.
+
+:::
+
+
 # Método de Holt-Winters
 
 ## Método de Holt-Winters
 
-Muitas vezes, a série temporal além de possuir tendência, possui também sazonalidade. Para lidar com estas características, temos o modelo de Holt-Winters, que é uma extensão do método de Holt. Seja $m$ o período sazonal, então:
+- É uma extensão do método de Holt.
+- Lida com séries temporais que possuem tendência e sazonalidade.
+- Para fazer isto, inclui um terceiro parâmetro de suavização.
+- É necessário conhecer o período sazonal $m$
 
 
-:::: {.columns}
+## Método de Holt-Winters
 
-::: {.column width="50%"}
-#### Holt-Winters Aditivo
 
-$$\hat{y}_{t+h|t} = \hat{\mu}_{t|t} + h\hat{\beta}_t + s_{t+h-m(k+1)},$$
+### Holt-Winters Aditivo
 
-$$l_t = \alpha (y_t - s_{t-m}) + (1-\alpha) (\hat{\mu}_{t-1|t-1}+  \hat{\beta}_{t-1}),$$
+$$\hat{Y}_{T+h|T} = L_T + h T_T + S_{T + h - m (k + 1)},$$
 
-$$b_t = \delta (\hat{\mu}_{t|t} - \hat{\mu}_{t-1|t-1}) + (1-\delta) \hat{\beta}_{t-1},$$
+$$L_T = \alpha (Y_T - S_{T-m}) + (1-\alpha) (L_{T-1}+  T_{T-1}),$$
 
-$$s_t = \gamma (y_t - \hat{\mu}_{t-1|t-1} - \hat{\beta}_{t-1}) + (1-\gamma) s_{t-m}.$$
+$$T_T = \beta (L_T - L_{T-1}) + (1-\beta) T_{T-1},$$
+
+$$S_T = \gamma (Y_T - L_{T-1} - T_{T-1}) + (1-\gamma) S_{T-m}.$$
 Em que $k$ é a parte inteira de $(h-1)/m$.
 
 
-:::
-
-::: {.column width="50%"}
-#### Holt-Winters Multiplicativo
 
 
-$$\hat{y}_{t+h|t} = (\hat{\mu}_{t|t} + h\hat{\beta}_{t})s_{t+h-m(k+1)},$$
+## Método de Holt-Winters
 
-$$l_t = \alpha \dfrac{y_t}{s_{t-m}} + (1-\alpha) (\hat{\mu}_{t-1|t-1} + \hat{\beta}_{t-1}),$$
-
-$$b_t = \delta (l_t - \hat{\mu}_{t-1|t-1}) + (1-\delta) \hat{\beta}_{t-1},$$
-
-$$s_t = \gamma \dfrac{y_t}{\hat{\mu}_{t-1|t-1} + \hat{\beta}_{t-1}} + (1-\gamma) s_{t-m}$$
+### Holt-Winters Multiplicativo
 
 
-:::
+$$\hat{Y}_{T+h|T} = (L_T + h T_T) S_{T+ h - m(k+1)},$$
 
-::::
+$$L_t = \alpha \dfrac{Y_T}{S_{T - m}} + (1-\alpha) (L_{T-1} + T_{T-1}),$$
+
+$$T_T = \beta (L_T - L_{T-1}) + (1-\beta) T_{T-1},$$
+
+$$S_T = \gamma \dfrac{Y_T}{L_{T-1} + T_{T-1}} + (1-\gamma) S_{T-m}$$
+
 
 
 
@@ -492,10 +729,30 @@ Se a variação sazonal é constante utilizamos o modelo aditivo, caso contrári
 
 . . . 
 
+Utilizando a função `ETS()`:
+
 ```{r, eval = FALSE}
 error("A") + trend("A") + season("A")  # Quando Aditivo
 error("M") + trend("A") + season("M")  # Quando Multiplicativo
 ```
+
+
+. . . 
+
+
+::: {.callout-warning icon=false}
+### No R
+Além da função `ETS()`, as funções `HoltWinters()` do pacote `stats` e `hw()` do pacote `forecast` implementam o método de Holt-Winters. A função `hw()` permite lidar com tendências exponenciais ou amortecidas.
+
+:::
+
+. . . 
+
+
+> Note que, além de $\alpha, \beta, \gamma$ e os valores iniciais de $L_1$ e $T_1$, precisamos valores iniciais para $S_1, \cdots, S_{m}$. Assim como nos casos anteriores, estes valores são obtidos minimizando a soma de quadrados dos resíduos.
+
+## Método de Holt-Winters
+
 
 
 ::: {.panel-tabset}
@@ -526,7 +783,8 @@ aus_holidays %>% autoplot(Trips)
 modelo <- aus_holidays |> 
   model(HWA = ETS(Trips ~ error("A") + trend("A") + season("A")),
         HWM = ETS(Trips ~ error("M") + trend("A") + season("M")))
-report(modelo)
+modelo |> select(HWA) |> report()
+modelo |> select(HWM) |> report()
 ```
 
 
@@ -552,7 +810,58 @@ fore_holidays |> autoplot(aus_holidays) +
 
 ## Método de Holt-Winters
 
-Se quisermos incluir o amorcetimento na componente de tendência, basta trocar `trend("A")` por `trend("Ad")` nos códigos do slide anterior.
+
+::: {.panel-tabset}
+
+### HoltWinters()
+
+```{r}
+#| echo: true
+
+aus_holidays_ts <- ts(aus_holidays$Trips, frequency = 4, start = c(1998, 1))
+modelo_HoltWinters <- HoltWinters(aus_holidays_ts)
+fore_HoltWinters <- forecast(modelo_HoltWinters, h = 6)
+modelo_HoltWinters
+```
+
+
+
+### hw()
+
+```{r}
+#| echo: true
+fore_hw <- hw(aus_holidays_ts, h = 6)
+fore_hw$model
+```
+
+
+
+### Comparação
+
+```{r}
+#| echo: true
+fore_holidays$.mean[c(1:6)]
+fore_HoltWinters$mean
+fore_hw$mean
+```
+
+
+:::
+
+
+## Método de Holt-Winters
+
+
+::: {.callout-note icon=false}
+### Observação
+A função `HoltWinter()` utiliza uma fórmula levemente diferente, por isso $\alpha, \beta, \gamma$ estimados e os valores iniciais são diferentes. 
+:::
+
+. . . 
+
+
+- Se quisermos incluir o amorcetimento na componente de tendência quando utilizamos `ETS()`, basta trocar `trend("A")` por `trend("Ad")` nos códigos do slide anterior.
+- Na função `hw()` basta fazer o argumento `damped = TRUE`
 
 
 ## Comentários finais
@@ -575,4 +884,5 @@ Se quisermos incluir o amorcetimento na componente de tendência, basta trocar `
 - [Hyndman, R., Koehler, A. B., Ord, J. K., & Snyder, R. D. (2008). Forecasting with exponential smoothing: the state space approach. Springer Science & Business Media.](https://link.springer.com/book/10.1007/978-3-540-71918-2)
 - [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 8.
 - Peña, D. (2005). Análisis de series temporales. Alianza. Capítulo 2.
+-   Krispin, R. (2019). Hands-On Time Series Analysis with R: Perform time series analysis and forecasting using R. Packt Publishing Ltd. Chapter 10
 
