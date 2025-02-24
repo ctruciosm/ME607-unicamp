@@ -503,3 +503,17 @@ p1 / p2 / p3
 
 -   [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 1.
 -   Bueno, R.D.L.S (2011). Econometria de Séries Temporais, 2ed, CENGAGE. São Paulo, Brasil. Capítulo 2.
+
+
+# Trabalho
+
+## Trabalho
+
+O trabalho do curso consiste em analisar uma série temporal, aplicar os conhecimentos adquiridos ao longo da disciplina é, se for preciso, recorrer a métodos mais avançados para melhorrar o ajuste e previsão.
+
+1. As séries devem ser Brasileiras.
+2. Devem ser séries regulares.
+3. Vocês deverão apresentar no final das aulas, a série escolhida, apresentando uma breve EDA (até receber o OK do professor sobre a série escolhida)
+4. O trabalho é em grupo de até 4 integrantes
+5. Serão 3 apresentações ao longo do semestre, recebendo feedback nas duas primeiras para se prepararem para o trabalho final.
+
