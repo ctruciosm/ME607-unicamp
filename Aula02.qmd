@@ -1,5 +1,5 @@
 ---
-title: "Análise exploratória de dados - EDA"
+title: "Conceitos e EDA"
 subtitle: "ME607 - Séries Temporais"
 author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
 Email: "ctrucios@unicamp.br"
@@ -38,9 +38,103 @@ editor: source
 
 ## Introdução
 
+- Revisitaremos alguns conceitos vistos na aula anterior e exploraremos alguns outros
 - Como em todo projeto de análise de dados, análise exploratória de dados (EDA, em inglês) tem um papel fundamental.
 - EDA permitirá que identifiquemos padrões, dados atípicos, mudanças de comportamento em diferentes períodos, etc. Isto todo nos ajudará a escolher como abordar o problema.
 - Na aula de hoje focaremos em alguns gráficos, estatísticas e conceitos fundamentais relacionados com EDA em séries temporais.
+
+
+# Conceitos
+
+## Conceitos
+
+- Processo estocástico
+- Série temporal
+- Processo estacionário
+- Ruido branco
+
+
+## Conceitos
+
+::: {.callout-note icon=false}
+### Processo Estocástico
+
+Uma coleção de variáveis aleatórias $\{ Y_t \}$ indexada pelo tempo $t$ é chamado de **processo estocástico**. Processos estocásticos são denotados por $\{ Y_t \}$ ou $\{ Y_t, t \in \mathbb{T} \}$, em que $\mathbb{T} \in \mathbb{R}$  (embora, no nosso caso, focaremos em $\mathbb{T} \in \mathbb{Z}$)
+:::
+
+. . . 
+
+
+::: {.callout-note icon=false}
+### Série Temporal
+
+Uma realização ($\{y_t\}$) de um processo estocástico é chamado de **série temporal**.
+:::
+
+. . . 
+
+
+::: {.callout-note icon=false}
+### Ruido branco
+
+Coleção de variáveis aleatórias com médias zero, variância constante e que além disso são não correlacionadas.
+:::
+
+
+## Conceitos
+
+
+::: {.callout-note icon=false}
+### Processo (fracamente) estacionário
+
+Um proceso estocástico $\{Y_t\}_{t = -\infty}^{\infty}$ é dito fracamente estacionário (estacionário de segunda ordem ou simplesmente estacionário) se:
+
+-   $\mathbb{E}(Y_t^2) < \infty, \quad \forall t$
+-   $\mathbb{E}(Y_t) = \mu_t = \mu, \quad \forall t$
+-   $\mathbb{Cov}(Y_t, Y_{t+h})$ depende somente de $h$ e não de $t$.
+
+:::
+
+
+## Conceitos
+
+
+::: {.callout-note icon=false}
+### Série temporal regular
+Quando as observações são igualmente espaçadas (diário, semanal, mensal, etc) dizemos que a série temporal é regular. Caso contrário, é chamada de irregular.
+:::
+
+. . . 
+
+<center>
+Mas...os meses não tem todos a mesma quantidade de dias, e quando temos horário de verão? Nesses casos as séries ainda seriam regulares?
+</center>
+
+. . . 
+
+
+::: {.callout-note icon=false}
+### Série temporal regular
+Quando as observações são (aproximadamente) igualmente espaçadas (diário, semanal, mensal, etc) dizemos que a série temporal é regular. Caso contrário, é chamada de irregular.
+:::
+
+
+## Conceitos
+
+
+<center>
+[**Qual a relação entre um processo estocástico e uma variável aleatória?**]{style="color:red;"}
+</center>
+
+
+. . . 
+
+
+Se $\{Y_t\}$ é um processo estocástico, então $Y_t$ (para cada $t \in \mathbb{T}$) é uma variável aleatória.
+
+
+
+
 
 # Gráficos
 
@@ -428,6 +522,42 @@ dados |> autoplot()
 
 
 # Ergodicidade
+
+
+## Ergodicidade
+
+
+```{r}
+#| echo: false
+# Load necessary library
+library(ggplot2)
+library(tidyr)
+n <- 100
+n_paths <- 50
+y <- matrix(100, ncol = n_paths, nrow = n)
+for (i in 2:n) {
+  y[i, ] <- y[i - 1, ] + matrix(rnorm(n_paths), ncol = n_paths)
+}
+y <- data.frame(y)
+y$Time <- 1:n
+y_longer <- y |> data.frame() |> pivot_longer(cols = X1:X50, names_to = "Paths")
+
+ggplot(y_longer) + geom_line(aes(x = Time, y = value, color = factor(Paths))) + ggtitle("50 realizações de um processo estocástico") + theme(legend.position = "none")
+```
+
+
+## Ergodicidade
+
+
+
+<center>
+![](imagens/duvida2.png)
+</center>
+
+<center>
+**Se a série temporal é apenas uma realização (um caminho) do processo estocástico no qual temos interesse? Como podemos fazer a análise?**
+</center>
+
 ## Ergodicidade
 
 
@@ -436,6 +566,36 @@ dados |> autoplot()
 - Bastariam apenas algumas realizações do processo estocásticos para estimar os parâmetros de interesse.
 - Na prática não observamos multiples realizações mas apenas uma relização.
 - Para séries estacionárias, sob algumas condições, podemos estimar os parâmetros de interesse com a única realização e ainda termos boas propriedades estatísticas.
+
+
+## Ergodicidade
+
+<center>
+Apenas o conceito de estacionariedade visto anteriormente não é suficiente, é preciso que o processo seja também ergódico (isto permite que apenas uma realização do processo seja suficiente para obter todas as estatística do processo).
+</center>
+
+
+
+. . . 
+
+::: {.callout-note icon=false}
+### Ergodicidade
+Seja $s$ uma realização de um processo estocástico. Um processo fracamente estacionário é ergódico para o **primeiro momento** (ergódico em média) se: $$\mathbb{E} (y^s) \equiv \lim_{T \rightarrow \infty}\dfrac{1}{T} \sum_{t = 1}^T y_t^s =  \lim_{S \rightarrow \infty}\dfrac{1}{S} \sum_{s = 1}^S  y_t^s \equiv \mathbb{E}(y_t)$$
+
+:::
+
+. . . 
+
+Isto quer dizer que: (a) o valor esperado para cada $t$ é o mesmo ($\mu$) (condição de estacionaridade) e, ademasis, (b) este valor pode ser estimado através da média temporal das observações (condição de ergodicidade).
+
+
+. . . 
+
+Uma definição análoga pode ser utilizada para o segundo momento.
+
+
+
+
 
 
 
@@ -471,17 +631,20 @@ Note que se $\lim_{n \rightarrow \infty}\displaystyle \sum_{k = -(n-1)}^{n-1} \b
 
 ## Ergodicidade
 
-#### Definição
 
+::: {.callout-note icon=false}
+### Definição
 Um processo estacionário é ergódico para o primeiro momento se $$\bar{Y} \rightarrow_p \mu.$$
+:::
 
 
 . . . 
 
 
-#### Definição
-
+::: {.callout-note icon=false}
+### Definição
 Um processo estacionário é ergódico para o segundo momento se $$\hat{\gamma}(k) = \dfrac{1}{n} \displaystyle \sum_{i = 1}^{n-k}(Y_t - \bar{Y})(Y_{t+k}- \bar{Y})\rightarrow_p \gamma(k)$$
+:::
 
 
 . . . 
@@ -492,16 +655,21 @@ Um processo estacionário é ergódico para o segundo momento se $$\hat{\gamma}(
 
 ## Ruido branco
 
-#### Ruido branco
-
+::: {.callout-note icon=false}
+### Ruido branco
 Coleção de variáveis aleatórias com médias zero, variância constante e que além disso são não correlacionadas.
+:::
 
 
 . . . 
 
-#### Ruido branco
+
+::: {.callout-note icon=false}
+### Ruido branco
 
 Um processo $\{ \epsilon_t \}$ é chamado de ruido branco se é uma sequência de variáveis aleatórias da distribuição fixa com $\mathbb{E}(\epsilon_t) = 0$, $\mathbb{V}(\epsilon_t) = \sigma^2$ e $\gamma(k) = 0 \quad \forall k$.
+:::
+
 
 . . . 
 
