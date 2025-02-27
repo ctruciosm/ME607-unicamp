@@ -233,9 +233,9 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 <li class="fragment">Os tópicos vistos aqui servem também como uma introdução a temas mais avançados de análise de séries temporais.</li>
 <li class="fragment">Na aula de hoje veremos os conceitos de:
 <ul>
-<li class="fragment"><pre><code>Médias Móveis</code></pre></li>
-<li class="fragment">Decomposição clássica</li>
-<li class="fragment">Outros métodos de decomposição</li>
+<li class="fragment"><pre><code>  Médias Móveis</code></pre></li>
+<li class="fragment"><pre><code>  Decomposição clássica</code></pre></li>
+<li class="fragment"><pre><code>  Outros métodos de decomposição</code></pre></li>
 </ul></li>
 </ul>
 </section>
@@ -311,7 +311,7 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 <p><strong>Ajustes populacionais</strong></p>
 </div>
 <div class="callout-content">
-<p>Qualquer série temporal que esteja afetada população pode ser transformada em séries <em>per capita</em> (ou por milhões de habitantes).</p>
+<p>Qualquer série temporal que seja afetada por mudanças na população pode ser transformada em série <em>per capita</em> (ou por milhões de habitantes).</p>
 </div>
 </div>
 </div>
@@ -473,7 +473,7 @@ Aditivo ou Multiplicativo
 </div>
 <div class="callout-content">
 <center>
-Se estivéssemos num contexto de previsão, qual dos dois (unidirecinal ou bidirecional) seria uma abordagem mais apropriada? Por que?
+Se estivéssemos num contexto de previsão, qual dos dois (unidirecinal ou bidirecional) seria, com certeza, uma abordagem inapropriada? Por que?
 </center>
 </div>
 </div>
@@ -489,11 +489,11 @@ Se estivéssemos num contexto de previsão, qual dos dois (unidirecinal ou bidir
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>global_economy <span class="sc">|&gt;</span> </span>
-<span id="cb2-2"><a href=""></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">3-MM</span><span class="st">`</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_dbl</span>(Exports, mean, <span class="at">.before =</span> <span class="dv">1</span>, <span class="at">.after =</span> <span class="dv">1</span>, <span class="at">.complete =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb2-4"><a href=""></a>  <span class="fu">autoplot</span>(Exports) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="st">`</span><span class="at">3-MM</span><span class="st">`</span>), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb2-5"><a href=""></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"% do PIB"</span>, <span class="at">title =</span> <span class="st">"Brasil: exportação"</span>, <span class="at">x =</span> <span class="st">"Ano"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>global_economy <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href=""></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">3-MM</span><span class="st">`</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_dbl</span>(Exports, mean, <span class="at">.before =</span> <span class="dv">1</span>, <span class="at">.after =</span> <span class="dv">1</span>, <span class="at">.complete =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-4"><a href=""></a>  <span class="fu">autoplot</span>(Exports) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="st">`</span><span class="at">3-MM</span><span class="st">`</span>), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb4-5"><a href=""></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"% do PIB"</span>, <span class="at">title =</span> <span class="st">"Brasil: exportação"</span>, <span class="at">x =</span> <span class="st">"Ano"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -508,11 +508,11 @@ Se estivéssemos num contexto de previsão, qual dos dois (unidirecinal ou bidir
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>global_economy <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a href=""></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">5-MM</span><span class="st">`</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_dbl</span>(Exports, mean, <span class="at">.before =</span> <span class="dv">2</span>, <span class="at">.after =</span> <span class="dv">2</span>, <span class="at">.complete =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a href=""></a>  <span class="fu">autoplot</span>(Exports) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="st">`</span><span class="at">5-MM</span><span class="st">`</span>), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb3-5"><a href=""></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"% do PIB"</span>, <span class="at">title =</span> <span class="st">"Brasil: exportação"</span>, <span class="at">x =</span> <span class="st">"Ano"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>global_economy <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a href=""></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">5-MM</span><span class="st">`</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_dbl</span>(Exports, mean, <span class="at">.before =</span> <span class="dv">2</span>, <span class="at">.after =</span> <span class="dv">2</span>, <span class="at">.complete =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb5-4"><a href=""></a>  <span class="fu">autoplot</span>(Exports) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="st">`</span><span class="at">5-MM</span><span class="st">`</span>), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb5-5"><a href=""></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"% do PIB"</span>, <span class="at">title =</span> <span class="st">"Brasil: exportação"</span>, <span class="at">x =</span> <span class="st">"Ano"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -527,11 +527,11 @@ Se estivéssemos num contexto de previsão, qual dos dois (unidirecinal ou bidir
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>global_economy <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a href=""></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">9-MM</span><span class="st">`</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_dbl</span>(Exports, mean, <span class="at">.before =</span> <span class="dv">4</span>, <span class="at">.after =</span> <span class="dv">4</span>, <span class="at">.complete =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb4-4"><a href=""></a>  <span class="fu">autoplot</span>(Exports) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="st">`</span><span class="at">9-MM</span><span class="st">`</span>), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb4-5"><a href=""></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"% do PIB"</span>, <span class="at">title =</span> <span class="st">"Brasil: exportação"</span>, <span class="at">x =</span> <span class="st">"Ano"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>global_economy <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href=""></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">9-MM</span><span class="st">`</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_dbl</span>(Exports, mean, <span class="at">.before =</span> <span class="dv">4</span>, <span class="at">.after =</span> <span class="dv">4</span>, <span class="at">.complete =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb6-4"><a href=""></a>  <span class="fu">autoplot</span>(Exports) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="st">`</span><span class="at">9-MM</span><span class="st">`</span>), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb6-5"><a href=""></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"% do PIB"</span>, <span class="at">title =</span> <span class="st">"Brasil: exportação"</span>, <span class="at">x =</span> <span class="st">"Ano"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -546,11 +546,11 @@ Se estivéssemos num contexto de previsão, qual dos dois (unidirecinal ou bidir
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>global_economy <span class="sc">|&gt;</span> </span>
-<span id="cb5-2"><a href=""></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">15-MM</span><span class="st">`</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_dbl</span>(Exports, mean, <span class="at">.before =</span> <span class="dv">7</span>, <span class="at">.after =</span> <span class="dv">7</span>, <span class="at">.complete =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb5-4"><a href=""></a>  <span class="fu">autoplot</span>(Exports) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="st">`</span><span class="at">15-MM</span><span class="st">`</span>), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb5-5"><a href=""></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"% do PIB"</span>, <span class="at">title =</span> <span class="st">"Brasil: exportação"</span>, <span class="at">x =</span> <span class="st">"Ano"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>global_economy <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a href=""></a>  <span class="fu">filter</span>(Country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="st">`</span><span class="at">15-MM</span><span class="st">`</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_dbl</span>(Exports, mean, <span class="at">.before =</span> <span class="dv">7</span>, <span class="at">.after =</span> <span class="dv">7</span>, <span class="at">.complete =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb7-4"><a href=""></a>  <span class="fu">autoplot</span>(Exports) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="st">`</span><span class="at">15-MM</span><span class="st">`</span>), <span class="at">colour =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb7-5"><a href=""></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"% do PIB"</span>, <span class="at">title =</span> <span class="st">"Brasil: exportação"</span>, <span class="at">x =</span> <span class="st">"Ano"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -567,7 +567,7 @@ Se estivéssemos num contexto de previsão, qual dos dois (unidirecinal ou bidir
 <section id="médias-móveis-1920s-3" class="slide level2">
 <h2>Médias Móveis (1920s)</h2>
 <center>
-<span style="color:violet;">O valor de <span class="math inline">\(m\)</span> determina quão suavizada será a série. Um valor de <span class="math inline">\(m\)</span> pequeno, é geralmente utilizado para dimunuir um pouco o ruido (pequenas oscilações devidas à aleatoriedade). O restante das oscilações é devido, geralmente, a pdrões sazonais ou tendência-ciclo da série.</span>
+<span style="color:violet;">O valor de <span class="math inline">\(m\)</span> determina quão suavizada será a série. Um valor de <span class="math inline">\(m\)</span> pequeno, é geralmente utilizado para dimunuir um pouco o ruido (pequenas oscilações devidas à aleatoriedade). O restante das oscilações é devido, geralmente, a padrões sazonais ou tendência-ciclo da série.</span>
 </center>
 <div class="fragment">
 <ul>
@@ -584,13 +584,13 @@ Se estivéssemos num contexto de previsão, qual dos dois (unidirecinal ou bidir
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>beer <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span> </span>
-<span id="cb6-2"><a href=""></a>  <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&gt;=</span> <span class="dv">1992</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb6-3"><a href=""></a>  <span class="fu">select</span>(Quarter, Beer)</span>
-<span id="cb6-4"><a href=""></a>beer_ma <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span> </span>
-<span id="cb6-5"><a href=""></a>  <span class="fu">mutate</span>( <span class="st">`</span><span class="at">4-MM</span><span class="st">`</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_dbl</span>(Beer, mean,<span class="at">.before =</span> <span class="dv">1</span>, <span class="at">.after =</span> <span class="dv">2</span>, <span class="at">.complete =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb6-6"><a href=""></a>          <span class="st">`</span><span class="at">2x4-MM</span><span class="st">`</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_dbl</span>(<span class="st">`</span><span class="at">4-MM</span><span class="st">`</span>, mean,  <span class="at">.before =</span> <span class="dv">1</span>, <span class="at">.after =</span> <span class="dv">0</span>, <span class="at">.complete =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb6-7"><a href=""></a>beer_ma</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>beer <span class="ot">&lt;-</span> aus_production <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a href=""></a>  <span class="fu">filter</span>(<span class="fu">year</span>(Quarter) <span class="sc">&gt;=</span> <span class="dv">1992</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-3"><a href=""></a>  <span class="fu">select</span>(Quarter, Beer)</span>
+<span id="cb8-4"><a href=""></a>beer_ma <span class="ot">&lt;-</span> beer <span class="sc">|&gt;</span> </span>
+<span id="cb8-5"><a href=""></a>  <span class="fu">mutate</span>( <span class="st">`</span><span class="at">4-MM</span><span class="st">`</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_dbl</span>(Beer, mean,<span class="at">.before =</span> <span class="dv">1</span>, <span class="at">.after =</span> <span class="dv">2</span>, <span class="at">.complete =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-6"><a href=""></a>          <span class="st">`</span><span class="at">2x4-MM</span><span class="st">`</span> <span class="ot">=</span> slider<span class="sc">::</span><span class="fu">slide_dbl</span>(<span class="st">`</span><span class="at">4-MM</span><span class="st">`</span>, mean,  <span class="at">.before =</span> <span class="dv">1</span>, <span class="at">.after =</span> <span class="dv">0</span>, <span class="at">.complete =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb8-7"><a href=""></a>beer_ma</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tsibble: 74 x 4 [1Q]
@@ -659,7 +659,7 @@ Se estivéssemos num contexto de previsão, qual dos dois (unidirecinal ou bidir
 <h4 id="modelo-aditivo">Modelo Aditivo</h4>
 <p><span class="math display">\[y_t = T_t + S_t + R_t\]</span></p>
 <ul>
-<li class="fragment"><strong>Passo 1:</strong> Estimar <span class="math inline">\(T_t\)</span> através e um <span class="math inline">\(m\)</span>-MM ou <span class="math inline">\(2-m-MM\)</span>.</li>
+<li class="fragment"><strong>Passo 1:</strong> Estimar <span class="math inline">\(T_t\)</span> através de um <span class="math inline">\(m\)</span>-MM ou <span class="math inline">\(2-m-MM\)</span>.</li>
 <li class="fragment"><strong>Passo 2:</strong> Remover tendência: <span class="math inline">\(y_t - \hat{T}_t\)</span>.</li>
 <li class="fragment"><strong>Passo 3:</strong> Estimar <span class="math inline">\(S_t\)</span> através da média das <span class="math inline">\(y_t - \hat{T}_t\)</span> para esse ponto sazonal. (Ex: se trabalharmos com dados mensais, calcular a média de todas as observações em Janeiro, depois Fevereiro, ….).</li>
 <li class="fragment"><strong>Passo 4:</strong> Calcular <span class="math inline">\(\hat{R}_t = y_t - \hat{T}_t - \hat{S}_t\)</span>.</li>
@@ -668,7 +668,7 @@ Se estivéssemos num contexto de previsão, qual dos dois (unidirecinal ou bidir
 <h4 id="modelo-multiplicativo">Modelo Multiplicativo</h4>
 <p><span class="math display">\[y_t = T_t \times S_t \times R_t\]</span></p>
 <ul>
-<li class="fragment"><strong>Passo 1:</strong> Estimar <span class="math inline">\(T_t\)</span> através e um <span class="math inline">\(m\)</span>-MM ou <span class="math inline">\(2-m-MM\)</span>.</li>
+<li class="fragment"><strong>Passo 1:</strong> Estimar <span class="math inline">\(T_t\)</span> através de um <span class="math inline">\(m\)</span>-MM ou <span class="math inline">\(2-m-MM\)</span>.</li>
 <li class="fragment"><strong>Passo 2:</strong> Remover tendência: <span class="math inline">\(y_t/\hat{T}_t\)</span>.</li>
 <li class="fragment"><strong>Passo 3:</strong> Estimar <span class="math inline">\(S_t\)</span> através da média das <span class="math inline">\(y_t/\hat{T}_t\)</span> para esse ponto sazonal. (Ex: se trabalharmos com dados mensais, calcular a média de todas as observações em Janeiro, depois Fevereiro, ….).</li>
 <li class="fragment"><strong>Passo 4:</strong> Calcular <span class="math inline">\(\hat{R}_t = y_t/(\hat{T}_t \times \hat{S}_t)\)</span>.</li>
@@ -684,11 +684,11 @@ Se estivéssemos num contexto de previsão, qual dos dois (unidirecinal ou bidir
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">library</span>(tsibble)     </span>
-<span id="cb8-2"><a href=""></a><span class="fu">library</span>(dplyr) </span>
-<span id="cb8-3"><a href=""></a>url <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv"</span></span>
-<span id="cb8-4"><a href=""></a>passageiros <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url) </span>
-<span id="cb8-5"><a href=""></a><span class="fu">glimpse</span>(passageiros) <span class="co"># R ainda não sabe que nossos dados são de séries temporais</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a><span class="fu">library</span>(tsibble)     </span>
+<span id="cb10-2"><a href=""></a><span class="fu">library</span>(dplyr) </span>
+<span id="cb10-3"><a href=""></a>url <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv"</span></span>
+<span id="cb10-4"><a href=""></a>passageiros <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url) </span>
+<span id="cb10-5"><a href=""></a><span class="fu">glimpse</span>(passageiros) <span class="co"># R ainda não sabe que nossos dados são de séries temporais</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 144
@@ -698,8 +698,8 @@ $ Passengers &lt;int&gt; 112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href=""></a>passageiros <span class="ot">&lt;-</span> passageiros <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Month =</span> <span class="fu">yearmonth</span>(Month)) <span class="sc">%&gt;%</span> <span class="fu">as_tsibble</span>(<span class="at">index =</span> Month)</span>
-<span id="cb10-2"><a href=""></a><span class="fu">glimpse</span>(passageiros) <span class="co"># Agora R sabe sim!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>passageiros <span class="ot">&lt;-</span> passageiros <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Month =</span> <span class="fu">yearmonth</span>(Month)) <span class="sc">%&gt;%</span> <span class="fu">as_tsibble</span>(<span class="at">index =</span> Month)</span>
+<span id="cb12-2"><a href=""></a><span class="fu">glimpse</span>(passageiros) <span class="co"># Agora R sabe sim!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 144
@@ -713,7 +713,7 @@ $ Passengers &lt;int&gt; 112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a><span class="fu">ggplot</span>(passageiros) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> Month, <span class="at">y =</span> Passengers))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a><span class="fu">ggplot</span>(passageiros) <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> Month, <span class="at">y =</span> Passengers))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -728,11 +728,10 @@ $ Passengers &lt;int&gt; 112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>dcmp <span class="ot">&lt;-</span> passageiros <span class="sc">%&gt;%</span>   <span class="co"># passageiros é do tipo tsibble</span></span>
-<span id="cb13-2"><a href=""></a>  <span class="fu">model</span>(<span class="at">decomposition =</span> <span class="fu">classical_decomposition</span>(Passengers,</span>
-<span id="cb13-3"><a href=""></a>                                                <span class="at">type =</span> <span class="st">"mult"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb13-4"><a href=""></a>  <span class="fu">components</span>() </span>
-<span id="cb13-5"><a href=""></a>dcmp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>dcmp <span class="ot">&lt;-</span> passageiros <span class="sc">|&gt;</span>    <span class="co"># passageiros é do tipo tsibble</span></span>
+<span id="cb15-2"><a href=""></a>  <span class="fu">model</span>(<span class="at">decomposition =</span> <span class="fu">classical_decomposition</span>(Passengers, <span class="at">type =</span> <span class="st">"mult"</span>)) <span class="sc">|&gt;</span>  </span>
+<span id="cb15-3"><a href=""></a>  <span class="fu">components</span>() </span>
+<span id="cb15-4"><a href=""></a>dcmp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># A dable: 144 x 7 [1M]
@@ -758,10 +757,10 @@ $ Passengers &lt;int&gt; 112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a>passageiros <span class="sc">%&gt;%</span>   <span class="co"># passageiros é do tipo tsibble</span></span>
-<span id="cb15-2"><a href=""></a>  <span class="fu">model</span>(<span class="fu">classical_decomposition</span>(Passengers, <span class="at">type =</span> <span class="st">"multiplicative"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb15-3"><a href=""></a>  <span class="fu">components</span>() <span class="sc">%&gt;%</span>  <span class="co"># extraimos as componentes T_t, S_t e R_t</span></span>
-<span id="cb15-4"><a href=""></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a>passageiros <span class="sc">%&gt;%</span>   <span class="co"># passageiros é do tipo tsibble</span></span>
+<span id="cb17-2"><a href=""></a>  <span class="fu">model</span>(<span class="fu">classical_decomposition</span>(Passengers, <span class="at">type =</span> <span class="st">"multiplicative"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb17-3"><a href=""></a>  <span class="fu">components</span>() <span class="sc">%&gt;%</span>  <span class="co"># extraimos as componentes T_t, S_t e R_t</span></span>
+<span id="cb17-4"><a href=""></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -790,18 +789,18 @@ $ Passengers &lt;int&gt; 112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a>media_movel_par <span class="ot">&lt;-</span> <span class="cf">function</span>(x, m) {</span>
-<span id="cb16-2"><a href=""></a>  k <span class="ot">&lt;-</span> m<span class="sc">/</span><span class="dv">2</span></span>
-<span id="cb16-3"><a href=""></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(x)</span>
-<span id="cb16-4"><a href=""></a>  Tt <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n)</span>
-<span id="cb16-5"><a href=""></a>  pesos <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span>m, m <span class="sc">+</span> <span class="dv">1</span>)</span>
-<span id="cb16-6"><a href=""></a>  pesos[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>m)</span>
-<span id="cb16-7"><a href=""></a>  pesos[m <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>m)</span>
-<span id="cb16-8"><a href=""></a>  <span class="cf">for</span> (i <span class="cf">in</span> (k <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">-</span> k)) {</span>
-<span id="cb16-9"><a href=""></a>    Tt[i] <span class="ot">&lt;-</span> <span class="fu">sum</span>(pesos <span class="sc">*</span> x[(i <span class="sc">-</span> k)<span class="sc">:</span>(i <span class="sc">+</span> k)])</span>
-<span id="cb16-10"><a href=""></a>  }</span>
-<span id="cb16-11"><a href=""></a>  <span class="fu">return</span>(Tt)</span>
-<span id="cb16-12"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href=""></a>media_movel_par <span class="ot">&lt;-</span> <span class="cf">function</span>(x, m) {</span>
+<span id="cb18-2"><a href=""></a>  k <span class="ot">&lt;-</span> m<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb18-3"><a href=""></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(x)</span>
+<span id="cb18-4"><a href=""></a>  Tt <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA</span>, n)</span>
+<span id="cb18-5"><a href=""></a>  pesos <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span>m, m <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb18-6"><a href=""></a>  pesos[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>m)</span>
+<span id="cb18-7"><a href=""></a>  pesos[m <span class="sc">+</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>m)</span>
+<span id="cb18-8"><a href=""></a>  <span class="cf">for</span> (i <span class="cf">in</span> (k <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">-</span> k)) {</span>
+<span id="cb18-9"><a href=""></a>    Tt[i] <span class="ot">&lt;-</span> <span class="fu">sum</span>(pesos <span class="sc">*</span> x[(i <span class="sc">-</span> k)<span class="sc">:</span>(i <span class="sc">+</span> k)])</span>
+<span id="cb18-10"><a href=""></a>  }</span>
+<span id="cb18-11"><a href=""></a>  <span class="fu">return</span>(Tt)</span>
+<span id="cb18-12"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </div>
@@ -809,14 +808,14 @@ $ Passengers &lt;int&gt; 112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a><span class="fu">library</span>(stringi)</span>
-<span id="cb17-2"><a href=""></a><span class="fu">library</span>(stringr)</span>
-<span id="cb17-3"><a href=""></a>url <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv"</span></span>
-<span id="cb17-4"><a href=""></a>passageiros_hand <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url) </span>
-<span id="cb17-5"><a href=""></a>passageiros_hand <span class="ot">&lt;-</span> passageiros_hand <span class="sc">|&gt;</span> </span>
-<span id="cb17-6"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">Tt =</span> <span class="fu">media_movel_par</span>(Passengers, <span class="dv">12</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb17-7"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">At =</span> Passengers<span class="sc">/</span>Tt)  <span class="co"># Removemos a tendência</span></span>
-<span id="cb17-8"><a href=""></a><span class="fu">cbind</span>(passageiros_hand<span class="sc">$</span>Tt, dcmp<span class="sc">$</span>trend)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="fu">library</span>(stringi)</span>
+<span id="cb19-2"><a href=""></a><span class="fu">library</span>(stringr)</span>
+<span id="cb19-3"><a href=""></a>url <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv"</span></span>
+<span id="cb19-4"><a href=""></a>passageiros_hand <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(url) </span>
+<span id="cb19-5"><a href=""></a>passageiros_hand <span class="ot">&lt;-</span> passageiros_hand <span class="sc">|&gt;</span> </span>
+<span id="cb19-6"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">Tt =</span> <span class="fu">media_movel_par</span>(Passengers, <span class="dv">12</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb19-7"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">At =</span> Passengers<span class="sc">/</span>Tt)  <span class="co"># Removemos a tendência</span></span>
+<span id="cb19-8"><a href=""></a><span class="fu">cbind</span>(passageiros_hand<span class="sc">$</span>Tt, dcmp<span class="sc">$</span>trend)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>           [,1]     [,2]
@@ -971,13 +970,13 @@ $ Passengers &lt;int&gt; 112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a><span class="co"># Calculamos a componente Sazonal</span></span>
-<span id="cb19-2"><a href=""></a>passageiros_st <span class="ot">=</span> passageiros_hand <span class="sc">|&gt;</span> </span>
-<span id="cb19-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">Month =</span> <span class="fu">month</span>(<span class="fu">yearmonth</span>(Month))) <span class="sc">|&gt;</span> </span>
-<span id="cb19-4"><a href=""></a>  <span class="fu">group_by</span>(Month) <span class="sc">|&gt;</span> </span>
-<span id="cb19-5"><a href=""></a>  <span class="fu">summarise</span>(<span class="at">St =</span> <span class="fu">mean</span>(At, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb19-6"><a href=""></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb19-7"><a href=""></a><span class="fu">cbind</span>(passageiros_st<span class="sc">$</span>St, dcmp<span class="sc">$</span>seasonal[<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="co"># Calculamos a componente Sazonal</span></span>
+<span id="cb21-2"><a href=""></a>passageiros_st <span class="ot">=</span> passageiros_hand <span class="sc">|&gt;</span> </span>
+<span id="cb21-3"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">Month =</span> <span class="fu">month</span>(<span class="fu">yearmonth</span>(Month))) <span class="sc">|&gt;</span> </span>
+<span id="cb21-4"><a href=""></a>  <span class="fu">group_by</span>(Month) <span class="sc">|&gt;</span> </span>
+<span id="cb21-5"><a href=""></a>  <span class="fu">summarise</span>(<span class="at">St =</span> <span class="fu">mean</span>(At, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb21-6"><a href=""></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb21-7"><a href=""></a><span class="fu">cbind</span>(passageiros_st<span class="sc">$</span>St, dcmp<span class="sc">$</span>seasonal[<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>           [,1]      [,2]
@@ -1000,16 +999,16 @@ $ Passengers &lt;int&gt; 112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a><span class="co"># Calculamos a componente Sazonal</span></span>
-<span id="cb21-2"><a href=""></a>mu <span class="ot">=</span> <span class="fu">mean</span>(passageiros_st<span class="sc">$</span>St)</span>
-<span id="cb21-3"><a href=""></a>mu</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a><span class="co"># Calculamos a componente Sazonal</span></span>
+<span id="cb23-2"><a href=""></a>mu <span class="ot">=</span> <span class="fu">mean</span>(passageiros_st<span class="sc">$</span>St)</span>
+<span id="cb23-3"><a href=""></a>mu</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.9982357</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href=""></a>passageiros_st<span class="sc">$</span>St<span class="sc">/</span>mu</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>passageiros_st<span class="sc">$</span>St<span class="sc">/</span>mu</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] 0.9102304 0.8836253 1.0073663 0.9759060 0.9813780 1.1127758 1.2265555
@@ -1017,7 +1016,7 @@ $ Passengers &lt;int&gt; 112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href=""></a>dcmp<span class="sc">$</span>seasonal[<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a>dcmp<span class="sc">$</span>seasonal[<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] 0.9102304 0.8836253 1.0073663 0.9759060 0.9813780 1.1127758 1.2265555
@@ -1044,7 +1043,7 @@ $ Passengers &lt;int&gt; 112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 
 <h2>Outros métodos de decomposição</h2>
 <p>O <strong>método clássico de decomposição</strong> possui algumas limitações que fazem dele um método pouco recomendado nos dias de hoje:</p>
 <ul>
-<li class="fragment">Como utilizamos médias móveis, a componente de tendência não possui valores nas primeiras nem últimas observações.</li>
+<li class="fragment">Como utilizamos médias móveis bidirecionais, a componente de tendência não possui valores nas primeiras nem últimas observações.</li>
 <li class="fragment">A componente sazonal <span class="math inline">\(S_t\)</span> é obtida assumindo que é constante.</li>
 <li class="fragment">Não é possível obter valores de <span class="math inline">\(\hat{R}_t\)</span> para as primeiras ou últimas observações.</li>
 <li class="fragment">Não é robusto a observações atípicas.</li>
@@ -1075,13 +1074,13 @@ $ Passengers &lt;int&gt; 112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href=""></a><span class="fu">library</span>(seasonal)</span>
-<span id="cb27-2"><a href=""></a><span class="fu">library</span>(tsibble)</span>
-<span id="cb27-3"><a href=""></a><span class="fu">library</span>(fpp3)</span>
-<span id="cb27-4"><a href=""></a>passageiros <span class="sc">%&gt;%</span></span>
-<span id="cb27-5"><a href=""></a>  <span class="fu">model</span>(<span class="fu">X_13ARIMA_SEATS</span>(Passengers <span class="sc">~</span> <span class="fu">x11</span>())) <span class="sc">%&gt;%</span> </span>
-<span id="cb27-6"><a href=""></a>  <span class="fu">components</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb27-7"><a href=""></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a><span class="fu">library</span>(seasonal)</span>
+<span id="cb29-2"><a href=""></a><span class="fu">library</span>(tsibble)</span>
+<span id="cb29-3"><a href=""></a><span class="fu">library</span>(fpp3)</span>
+<span id="cb29-4"><a href=""></a>passageiros <span class="sc">%&gt;%</span></span>
+<span id="cb29-5"><a href=""></a>  <span class="fu">model</span>(<span class="fu">X_13ARIMA_SEATS</span>(Passengers <span class="sc">~</span> <span class="fu">x11</span>())) <span class="sc">%&gt;%</span> </span>
+<span id="cb29-6"><a href=""></a>  <span class="fu">components</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb29-7"><a href=""></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </div>
@@ -1117,10 +1116,10 @@ $ Passengers &lt;int&gt; 112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>passageiros <span class="sc">%&gt;%</span></span>
-<span id="cb28-2"><a href=""></a>  <span class="fu">model</span>(<span class="fu">X_13ARIMA_SEATS</span>(Passengers <span class="sc">~</span> <span class="fu">seats</span>())) <span class="sc">%&gt;%</span> <span class="co">#&lt;&lt;</span></span>
-<span id="cb28-3"><a href=""></a>  <span class="fu">components</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb28-4"><a href=""></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>passageiros <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href=""></a>  <span class="fu">model</span>(<span class="fu">X_13ARIMA_SEATS</span>(Passengers <span class="sc">~</span> <span class="fu">seats</span>())) <span class="sc">%&gt;%</span> <span class="co">#&lt;&lt;</span></span>
+<span id="cb30-3"><a href=""></a>  <span class="fu">components</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb30-4"><a href=""></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </div>
@@ -1159,10 +1158,10 @@ $ Passengers &lt;int&gt; 112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href=""></a>passageiros <span class="sc">%&gt;%</span></span>
-<span id="cb29-2"><a href=""></a>  <span class="fu">model</span>(<span class="fu">STL</span>(<span class="fu">log</span>(Passengers) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb29-3"><a href=""></a>  <span class="fu">components</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb29-4"><a href=""></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href=""></a>passageiros <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href=""></a>  <span class="fu">model</span>(<span class="fu">STL</span>(<span class="fu">log</span>(Passengers) <span class="sc">~</span> <span class="fu">trend</span>() <span class="sc">+</span> <span class="fu">season</span>(<span class="at">window =</span> <span class="st">"periodic"</span>), <span class="at">robust =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-3"><a href=""></a>  <span class="fu">components</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb31-4"><a href=""></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </div>
@@ -1195,6 +1194,11 @@ $ Passengers &lt;int&gt; 112, 118, 132, 129, 121, 135, 148, 148, 136, 119, 104, 
 <li class="fragment">Comumente, um método ingênuo (naive) é utilizado para prever <span class="math inline">\(\hat{S}_t\)</span> (utilizamos os valores de <span class="math inline">\(\hat{S}_t\)</span> no último ano).</li>
 <li class="fragment">Para prever <span class="math inline">\(\hat{A}_t\)</span> utilizamos métodos para dados não sazonais (que veremos nas próximas aulas) como o método de Holt, ARIMA, etc.</li>
 </ul>
+<div class="fragment">
+<blockquote>
+<p>Embora não discutido na sala de aula, o método Prophet também utiliza decomposição. Mais detalhes podem ser vistos em <a href="https://otexts.com/fpp3/prophet.html">aqui</a> e <a href="https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1380080">aqui</a>. Incluir Prophet na V1 do trabalho.</p>
+</blockquote>
+</div>
 </section>
 <section id="referências" class="slide level2">
 <h2>Referências</h2>
