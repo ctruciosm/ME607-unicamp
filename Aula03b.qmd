@@ -393,8 +393,8 @@ ggplot(USgas_df, aes(x = USgas_detrend )) +
 
 - A remoção da tendência da série acentua o efeito sazonal.
 - No caso do exemplo, o padrão sazonal foi bastante claro (mesmo antes de remover a tendência).
-- Porém, em alguns casos, o padrão sazonal pode ser dificil de identificar se não removemos primeiro a tendência.
-- A recomendação é **remover a tendência da série sempre que a tendência for não linear ou quando houver uma distribuição com cauda longa**.
+- Porém, em alguns casos, o padrão sazonal pode ser dificil de identificar se não removermos primeiro a tendência.
+- A recomendação é **remover a tendência da série** antes de tentar identificar o padrão sazonal.
 - Quando a distribuição na maioria das unidades de frequência (cada mes, cada dia, cada hora) é plana com uma cauda longa, pode ser um indicativo de múltiplos padrões sazonais na série. 
 
 
@@ -419,7 +419,7 @@ ggplot(UKgrid_df, aes(x = UKgrid)) +
 
 - Como já tinhamos visto, a distribuição da demanda de energia durante a madrugada é relativamente estável (por isso a densidade não é plana e nem tem caudas pessadas).
 - Contudo, a distribuição da demanda de energia durante o dia tem um comportamento diferente: densidade plana e com caudas longas! O que pode indicar multiplos períodos sazonais.
-- Para visualizar istp, se escolhermos algumas horas do dia e graficarmos a distirbuição da demanda de energia por dia da semana, deveriamos notar que, nas horas referentes à noite/madrugada os gráficos se sobrepoem. Já nas horas referentes ao dia, gráficos distinguiveis devem ser observados entre dias úteis e finais de semana.
+- Para visualizar isto, se escolhermos algumas horas do dia e graficarmos a distirbuição da demanda de energia por dia da semana, deveriamos notar que, nas horas referentes à noite/madrugada os gráficos se sobrepoem. Já nas horas referentes ao dia, gráficos distinguiveis devem ser observados entre dias úteis e finais de semana.
 
 ## Gráfico II
 
@@ -585,7 +585,7 @@ A representação espectral de uma série temporal estacionária  $\{Z_t\}$  con
 ### Função de densidade espectral
 Seja $\{Z_t, t \in  \mathbb{Z} \}$ um processo estocástico estacionário com média zero e função de autocovariância tal que $$\sum_{\tau = -\infty}^{\infty} |\gamma(\tau)| < \infty, \quad \text{(condição de independência assintótica)}.$$
 
-A função de densidade espectral (ou espectro) de $Z_t$ é definido por $$f(\lambda) = \dfrac{1}{2\pi} \sum_{\tau = -\infty}^{\infty} \gamma(\tau) e^{-i\lambda \tau}, -\infty < \lambda < \infty  \quad \text{(transformada de Fourier de $\gamma(\tau)$)},$$
+A função de densidade espectral (ou espectro) de $Z_t$ é definido por $$f(\lambda) = \dfrac{1}{2\pi} \sum_{\tau = -\infty}^{\infty} \gamma(\tau) e^{-i\lambda \tau}, -\infty < \lambda < \infty,$$
 em que $e^{i \lambda} = \cos \lambda + i\sin \lambda \quad$ e $\quad i = \sqrt{-1}$.
 :::
 
@@ -603,8 +603,8 @@ em que $e^{i \lambda} = \cos \lambda + i\sin \lambda \quad$ e $\quad i = \sqrt{-
 
 ::: {.callout-note}
 ### Propriedades:
--   Limitado
 -   Não negativo
+-   Limitado
 -   Uniformemente contínuo
 -   Par
 -   Periódico de período $2 \pi$
@@ -618,41 +618,6 @@ em que $e^{i \lambda} = \cos \lambda + i\sin \lambda \quad$ e $\quad i = \sqrt{-
 <aside>
 **Observação:** Embora tenhamos definido a função de densidade espectral sob a suposição de independência assintótica, mesmo se esta não for verificada pode existir uma densidade espectral correspondente definida da seguinte forma.
 </aside>
-
-## Espectro
-
-
-::: {.callout-important icon = false}
-### Definição
-Uma função $f$ é o espectro de um processo estacionário $\{Z_t, t \in  \mathbb{Z} \}$ com função de autocovariância $\gamma(\cdot)$ se:
-
-i.    $f(\lambda) \geq 0$ para todo $\lambda \in [- \pi, \pi]$
-ii.   $\gamma(\tau) = \displaystyle \int_{-\pi}^{\pi} e^{i\lambda \tau} f(\lambda) d\lambda$ para todo $\tau \in \mathbb{Z}$
-
-:::
-
-. . . 
-
-
-::: {.callout-tip icon = false}
-### Proposição
-Uma função real $f$ definida no intervalo $[- \pi, \pi]$ é o espectro de um processo estacionário se e somente se:
-
-i.    $f(\lambda) = f(- \lambda)$
-ii.    $f(\lambda) \geq 0$
-iii.   $\displaystyle \int_{-\pi}^{\pi} f(\lambda) d\lambda < \infty$
-
-:::
-
-
-## Espectro
-
-
-::: {.callout-warning icon = false}
-### Corolario
-Uma função absolutamente somável $\gamma(\tau)$ é a função de autocovariância de um processo estacionário, se e somente se, ela é par e $$f(\lambda) = \dfrac{1}{2 \pi} \sum_{\tau = - \infty}^{\infty} \gamma(\tau) e^{-i\tau \lambda} \geq 0, \quad \forall \lambda \in [- \pi, \pi],$$ em cujo caso $f(\cdot)$ é o espectro de $\gamma(\cdot)$.
-
-:::
 
 
 ## Espectro
