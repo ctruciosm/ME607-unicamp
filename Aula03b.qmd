@@ -734,7 +734,7 @@ ggplot(dgp1) + geom_line(aes(x, y))
 ## Periodograma
 
 
-Se $\{Z_t, t = 1, \cdots, N\}$ for uma série temporal estacionária com função de covariância autocovariância $\gamma(\cdot)$ e densidade espectral $f(\cdot)$, então:
+Se $\{Z_t, t = 1, \cdots, N\}$ for uma série temporal estacionária com função de autocovariância $\gamma(\cdot)$ e densidade espectral $f(\cdot)$, então:
 
 - assim como a função de covariância amostral $\hat{\gamma}(\cdot)$ é um análogo amostral de $\gamma(\cdot)$, 
 - o periodograma $I^{(N)}(\cdot)$ é um análogo amostral de $2 \pi f(\cdot)$.
@@ -746,7 +746,7 @@ Se $\{Z_t, t = 1, \cdots, N\}$ for uma série temporal estacionária com funçã
 ::: {.callout-warning icon = false}
 ### Transformada Discreta de Fourier (TDF)
 
-Seja $\{Z_t, t = 1, \cdots, N\}$ uma realização de um processo estocástico. Então, a TDF é dada por $$d_j^{(N)} = \dfrac{1}{\sqrt{N}} \sum_{t = 1}^N Z_t e^{-i 2 \pi j t / N}, \quad j = 0, \cdots, N-1$$
+Seja $\{Z_t, t = 1, \cdots, N\}$ uma realização de um processo estocástico com média zero. Então, a TDF é dada por $$d_j^{(N)} = \dfrac{1}{\sqrt{N}} \sum_{t = 1}^N Z_t e^{-i 2 \pi j t / N}, \quad j = 0, \cdots, N-1$$
 
 - $\mathbb{E}[d_j^{(N)}] = 0$
 - $\mathbb{V}[d_j^{(N)}] = \mathbb{E} |d_j^{(N)}|^2 \approx 2 \pi f(\omega_j)$ em que $\omega_j = \dfrac{2 \pi j}{N}.$
@@ -768,7 +768,7 @@ em que $\omega_j = \dfrac{2 \pi j}{N},$ $j = 0, \cdots, N-1$ são chamadas de **
 ::: {.callout-warning icon = false}
 ### Periodograma
 
-Seja $\{Z_t, t = 1, \cdots, N\}$ uma realização de um processo estocástico estacionário. Definimos o **periodograma** como $$I^{(N)}_j = |d_j^{N}|^2, \quad j = 0, \cdots, N - 1$$
+Seja $\{Z_t, t = 1, \cdots, N\}$ uma realização de um processo estocástico estacionário. Definimos o **periodograma** como $$I^{(N)}_j = |d_j^{(N)}|^2, \quad j = 0, \cdots, N - 1$$
 
 
 :::
