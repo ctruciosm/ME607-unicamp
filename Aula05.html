@@ -333,14 +333,17 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 </section>
 <section id="modelo-de-regressão-em-dados-de-séries-temporais-3" class="slide level2">
 <h2>Modelo de regressão em dados de séries temporais</h2>
-<h4 id="hipóteses-no-modelo-de-regressão-com-dados-de-séries-temporais-1">Hipóteses no modelo de regressão com dados de séries temporais</h4>
+<h3>
+Hipóteses no modelo de regressão com dados de séries temporais
+</h3>
 <ul>
 <li class="fragment">Sob HST1–HST3, <span class="math inline">\(E(\hat{\beta}) = \beta\)</span></li>
 <li class="fragment">Sob HST1–HST5, <span class="math inline">\(\hat{\beta}\)</span> é BLUE (melhor estimador linear não viesado)</li>
 <li class="fragment">HST6, nos permite fazer inferência.</li>
 </ul>
-<p>. . .</p>
+<div class="fragment">
 <p><strong>Demostração:</strong></p>
+</div>
 </section>
 <section id="modelo-de-regressão-em-dados-de-séries-temporais-4" class="slide level2">
 <h2>Modelo de regressão em dados de séries temporais</h2>
@@ -467,10 +470,11 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 1 TSLM(Consumption ~ Income + Production + Savings + Unemploy…    17.1  0.000671</code></pre>
 </div>
 </div>
-<p>. . .</p>
+</div>
+</div>
+</div>
+<div class="fragment">
 <p>Por quê 8 e 5?</p>
-</div>
-</div>
 </div>
 </section></section>
 <section>
@@ -482,17 +486,26 @@ F-statistic:   160 on 4 and 193 DF, p-value: &lt; 2.22e-16</code></pre>
 <h2>Regressões espúrias</h2>
 <p>Quando trabalhamos com séries temporais, na maioria das vezes, as séries são não estacionárias, ou seja os valores da série não flutuam ao redor de uma média constante e/ou variância constante.</p>
 <div class="fragment">
-<h4 id="processo-estacionário">Processo estacionário</h4>
-<p>Um proceso estocástico <span class="math inline">\(\{Y_t\}_{t \geq 1}\)</span> com <span class="math inline">\(\mathbb{E}(Y_t^2) &lt; \infty\)</span> é dito <strong>estacionário</strong> (ou estacionário de segunda ordem) se</p>
+<div class="callout callout-note no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Processo estacionário</strong></p>
+</div>
+<div class="callout-content">
+<p>Um proceso estocástico <span class="math inline">\(\{Y_t\}_{t = -\infty}^{\infty}\)</span> é dito (fracamente) estacionário se:</p>
 <div>
 <ul>
-<li><span class="math inline">\(\mathbb{E}(Y_t) = \mu, \quad \forall t\)</span></li>
-<li><span class="math inline">\(\mathbb{V}(Y_t) = \sigma^2, \quad \forall t\)</span></li>
+<li><span class="math inline">\(\mathbb{E}(Y_t^2) &lt; \infty, \quad \forall t\)</span></li>
+<li><span class="math inline">\(\mathbb{E}(Y_t) = \mu_t = \mu, \quad \forall t\)</span></li>
 <li><span class="math inline">\(\mathbb{Cov}(Y_t, Y_{t+h})\)</span> depende somente de <span class="math inline">\(h\)</span> e não de <span class="math inline">\(t\)</span>.</li>
 </ul>
 </div>
-<p>. . .</p>
-<p>Na maioria das vezes, ao ajustar um modelo de regressão em série não estacionárias encontraremos <span class="math inline">\(R^2\)</span> alto e <span class="math inline">\(\beta\)</span>s significativos (parecendo termos encontrado um “bom” modelo). Contudo, esta descoberta é espúria (falsa).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>Na maioria das vezes, ao ajustar um modelo de regressão em séries não estacionárias encontraremos um <span class="math inline">\(R^2\)</span> alto e <span class="math inline">\(\beta\)</span>s significativos (parecendo termos encontrado um “bom” modelo). Contudo, esta descoberta é espúria (falsa).</p>
 </div>
 </section>
 <section id="regressões-espúrias-2" class="slide level2">
@@ -615,7 +628,7 @@ F-statistic: 908.1 on 1 and 40 DF, p-value: &lt; 2.22e-16</code></pre>
 <p><strong>Mas, como sei se a série que estou utilizando é não estacionária?</strong></p>
 <ul>
 <li class="fragment">Lembre-se da definição da estacionariedade!.</li>
-<li class="fragment"><strong>Graficamente,</strong> ee a série tiver tendência e/ou a variabilidade aumentar (ou diminuir) ao longo do tempo, a série é não estacionária.</li>
+<li class="fragment"><strong>Graficamente,</strong> se a série tiver tendência e/ou a variabilidade aumentar (ou diminuir) ao longo do tempo, a série é não estacionária.</li>
 </ul>
 <div class="fragment">
 <div class="cell" data-layout-align="center">
@@ -693,7 +706,7 @@ F-statistic: 908.1 on 1 and 40 DF, p-value: &lt; 2.22e-16</code></pre>
 </div>
 <div class="callout-content">
 <p>A decomposição de séries temporais pode ser definida como</p>
-<p><span class="math display">\[\underbrace{Y_t = T_t + S_t + R_t}_{\text{Modelo aditivo}} \quad ou \quad \underbrace{Y_t = T_t \times S_t \times R_t}_{Modelo multiplicativo}\]</span></p>
+<p><span class="math display">\[\underbrace{Y_t = T_t + S_t + R_t}_{\text{Modelo aditivo}} \quad ou \quad \underbrace{Y_t = T_t \times S_t \times R_t}_{\text{Modelo multiplicativo}}\]</span></p>
 </div>
 </div>
 </div>
