@@ -46,7 +46,7 @@ editor: source
 
 . . . 
 
-> Até agora tudo tem sido calculado e utilizado o modelo teórico (*i.e.* assumindo que conhecemos os verdadeiros valores dos parâmetros). Na prática os parâmetros nunca são observados, precisando ser estimados. **Na aula de hoje aprenderemos como estimar estes parâmetros**.
+> Até agora tudo tem sido calculado utilizando o modelo teórico (*i.e.* assumindo que conhecemos os verdadeiros valores dos parâmetros). Na prática os parâmetros nunca são observados, precisando ser estimados. **Na aula de hoje aprenderemos como estimar estes parâmetros**.
 
 
 
@@ -290,6 +290,15 @@ c(phi_hat[2] - 1.96*sqrt(ACOV[2,2]), phi_hat[2] + 1.96*sqrt(ACOV[2,2]))
 
 :::
 
+
+::: {.callout-important icon=false}
+#### Observação
+Para ganhar os pontos, deverá verificicar que sua implementação está correta. Para isto, faça um estudo de simulação (reporte o vies e rmse). Ademais, deverá verificar também se os intervalos de confiança tem uma cobertura próxima da nominal.
+:::
+
+Trazer um relatório de uma ou duas página contendo: (a)código, (b)tabelas (ou gráficos) com os resultados da simulação e (c) um exemplo de como utilizar.
+
+
 # Máxima verossimilhança (MV)
 
 ## Máxima verossimilhança (MV)
@@ -311,7 +320,7 @@ Note que $\epsilon_i = Y_i - c - \phi_1 Y_{i-1} - \cdots - \phi_p Y_{i-p}$, ent�
 
 $$f(\epsilon_1, \epsilon_2, \cdots, \epsilon_n| \Theta) = \dfrac{\exp \Big(- \dfrac{1}{2\sigma^2_{\epsilon}} \displaystyle \sum_{i = 1}^n (Y_i - c - \phi_1 Y_{i-1} - \cdots - \phi_p Y_{i-p})^2 \Big)}{(2 \pi \sigma^2_{\epsilon})^{n/2}},$$
 
-## Máxima verossimilhança (MV) condicional
+## Máxima verossimilhança (MV)
 
 Para poder estimar os parâmetros por máxima versomilhança, precisamos conhecer $y_1, \cdots, y_n$, mas também (assumir que conhecemos) $y_0, y_{-1}, \cdots, y_{-p}$. Assim, a verosimilhança é dada por:
 
@@ -325,7 +334,7 @@ E a log-verosimilhança é dada por
 
 $$l(c, \sigma^2_{\epsilon}, \phi_1, \cdots, \phi_p | y_{-p}, \cdots, y_n) = - \dfrac{n}{2} \log(2 \pi \sigma^2_{\epsilon}) - \dfrac{1}{2\sigma^2_{\epsilon}} \displaystyle \sum_{i = 1}^n (y_i - c - \phi_1 y_{i-1} - \cdots - \phi_p y_{i-p})^2.$$
 
-## Máxima verossimilhança (MV) condicional
+## Máxima verossimilhança (MV)
 
 Assim, os estimadores de máxima verossimilhança (EMV), $\hat{\Theta} = (\hat{c}, \hat{\sigma}^2_{\epsilon}, \hat{\phi}_1, \cdots, \hat{\phi}_p)$, são aqueles que maximizam $$l(\Theta | y_{-p}, \cdots, y_n),$$ ou , equivalentemente, os valores que minimizam $$-l(\Theta | y_{-p}, \cdots, y_n).$$
 
@@ -348,13 +357,12 @@ Uma vez obtidos $\hat{c}$ e $\hat{\phi}s$, minimizamos $-l(\sigma^2_{\epsilon}| 
 - Na prática, para podermos implementar o método, precisamos os valores $y_0, y_{-1}, \cdots, y_{-p}$ (valores que não temos!).
 - Uma solução é fazer $y_{0} = \cdots = y_{-p} = \bar{y}$
 - Outra alternativa é calcular a verosimilhança a partir de $i \geq p + 1$. 
-- Este método, que condiciona nos valores iniciais, é chamado de máxima verossimilhança condicional. 
 - Quando $\epsilon_t \sim N(0, \sigma^2_{\epsilon})$, os EMV para $c, \phi_1, \cdots, \phi_p$ coincidem com os estimadores obtidos pelo método de mínimo quadrados condicional.
 
 
 
 
-## Máxima verossimilhança (MV) condicional
+## Máxima verossimilhança (MV)
 
 Implementação 1:
 
@@ -402,7 +410,7 @@ mv_ar_opt2 <- function(x, p) {
 ```
 
 
-## Máxima verossimilhança (MV) condicional
+## Máxima verossimilhança (MV)
 
 
 Dados simulados:
@@ -417,7 +425,7 @@ ts.plot(x)
 ```
 
 
-## Máxima verossimilhança (MV) condicional
+## Máxima verossimilhança (MV)
 
 Implementação 1:
 
@@ -437,7 +445,7 @@ mv_ar_opt2(x, 1)
 
 
 
-## Máxima verossimilhança (MV) condicional
+## Máxima verossimilhança (MV)
 
 
 ```{r}
@@ -450,7 +458,7 @@ report(fit)
 ```
 
 
-## Máxima verossimilhança (MV) condicional
+## Máxima verossimilhança (MV)
 
 
 ```{r}
@@ -462,10 +470,8 @@ summary(fit_ar)
 
 
 
-## Máxima verossimilhança (MV) condicional
+## Máxima verossimilhança (MV)
 
-
-O método de MV condicional, tem as mesmas propriedades assintóticas do que o método de MV exata (ainda não visto). 
 
 
 #### Teorema
