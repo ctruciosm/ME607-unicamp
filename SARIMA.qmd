@@ -1,0 +1,575 @@
+---
+title: "SARIMA"
+land: "PT"
+subtitle: "ME607 - Séries Temporais"
+author: "Prof. Carlos Trucíos </br> ctrucios@unicamp.br"
+Email: "ctrucios@unicamp.br"
+institute: "Instituto de Matemática, Estatística e Computação Científica (IMECC), </br> Universidade Estadual de Campinas (UNICAMP)."
+knitr:
+    opts_chunk: 
+      fig.align: 'center'
+execute:
+    message: false
+    warning: false
+format:
+    revealjs:
+        slide-number: true
+        toc: true
+        toc-depth: 1
+        toc-title: Agenda
+        self-contained: false
+        chalkboard: true
+        width: 1600
+        height: 900
+        theme: [default, styles.scss]
+        incremental: true
+        code-fold: true
+        logo: "imagens/imecc.png"
+        footer: "Carlos Trucíos (IMECC/UNICAMP)  |  ME607 - Séries Temporais  |  [ctruciosm.github.io](https://ctruciosm.github.io/)"
+        highlight-style: "a11y"
+        title-slide-attributes:
+            data-background-image: "imagens/unicamp.png"
+            data-background-size: 20%
+            data-background-position: 99% 5%
+            data-background-opacity: "1"
+editor: source
+---
+
+
+
+# SARIMA
+
+## SARIMA
+
+
+::: {.panel-tabset}
+
+## Data
+
+```{r}
+#| echo: true
+library(dplyr)
+ts_data <- read.csv("datasets/data_ts_17.csv")
+glimpse(ts_data)
+```
+
+
+## Plot
+
+```{r}
+#| echo: true
+op <- par(mfrow = c(1, 2))
+ts.plot(ts_data)
+acf(ts_data, 100)
+par(op)
+```
+
+
+## R-S
+
+```{r}
+#| echo: true
+ts_data_diff_s <- diff(ts_data$V1, 12)
+op <- par(mfrow = c(1, 2))
+ts.plot(ts_data_diff_s)
+acf(ts_data_diff_s, 100)
+par(op)
+```
+
+
+## R-T
+
+```{r}
+#| echo: true
+ts_data_diff_s_t <- diff(ts_data_diff_s, 1)
+op <- par(mfrow = c(1, 3))
+ts.plot(ts_data_diff_s_t)
+acf(ts_data_diff_s_t, 100)
+pacf(ts_data_diff_s_t, 100)
+par(op)
+```
+
+
+:::
+
+
+## SARIMA
+
+É possivel que, após diferenciação para remover a sazonalidade e a tendência, ainda existe correlação significativa em:
+
+
+- _lags_ de ordem baixa: indicando que os resíduos ainda são correlacionados e um modelo ARMA poderia ajudar a capturar a dinâmica dos dados.
+- _lags_ sazonais: indicando a necessidade de considerar sazonalidade estocástica, em cujo caso, modelo SARIMA podem ajudar a capturar a dinâmica dos dados.
+
+
+
+
+
+## SARIMA
+
+
+::: {.callout-note icon=false}
+### Definição:
+
+Sejam $d$ e $D$ números inteiros não negativos ($\mathbb{Z}_0^{+}$), então $\{y_t\}$ é um processo SARIMA $(p, d, q) \times (P, D, Q)_s$ (SARIMA com período sazonal $s$), se o processo $$z_t = (1 - B)^d (1 - B^s)^Dy_t$$ é um processo ARMA definido por $$\phi(B) \Phi(B^s) z_t = \theta(B) \Theta(B^s) \epsilon_t, \quad \epsilon_t \sim RB(0, \sigma^2),$$ em que
+
+
+::: {.nonincremental}
+- $\phi(B) = 1 - \phi_1B - \phi_2 B^2 - \cdots - \phi_p B^p$
+- $\Phi(B^s) = 1 - \Phi_1B^s - \Phi_2 B^{2s} - \cdots - \Phi_P B^{Ps}$
+- $\theta(B) = 1 + \theta_1B + \theta_2 B^2 + \cdots + \theta_q B^q$
+- $\Theta(B) = 1 + \Theta_1B^s + \Theta_2 B^{2s} + \cdots + \Theta_Q B^{Qs}$
+
+:::
+
+:::
+
+
+. . . 
+
+
+<center>
+
+[**Observação:** na prática $D \leq 1$ e $P, Q < 3$.]{style="color:red;"}
+
+</center>
+
+
+## SARIMA
+
+
+Note que o modelo SARIMA definido anteriormente pode ser reescrito como $$\phi^{\ast}(B) z_t = \theta^{\ast}(B) \epsilon_t,$$
+
+em que:
+
+- $\phi^{\ast}(B)$ é um polinômio de grau p + Ps.
+- $\theta^{\ast}(B)$ é um polinômio de grau q + Qs.
+
+
+. . . 
+
+### Exemplos
+
+
+- SARIMA $(1, 0, 1) \times (1, 0, 1)_12$
+- SARIMA $(1, 0, 2) \times (2, 0, 1)_7$\
+- Etc.
+
+
+
+## SARIMA
+
+Suponha que temos $r$ anos de dados mensais:
+
+
+| Ano \ Mês | Jan | Fev | Mar | ... | Dez |
+|:---------:|:---:|:---:|:---:|:---:|:---:|
+| 1         |$y_1$|$y_2$|$y_3$|.... |$y_{12}$|
+| 2         |$y_{13}$|$y_{14}$|$y_{15}$|.... |$y_{24}$|
+| $\vdots$  |$\vdots$|$\vdots$|$\vdots$|.... |$\vdots$|
+| r         |$y_{1 + 12(r-1)}$|$y_{2 + 12(r-1)}$|$y_{3 + 12(r-1)}$|.... |$y_{12 + 12(r-1)}$|
+
+
+## SARIMA
+
+- Cada coluna pode ser vista como a realização de uma série temporal.
+- Assumamos que cada coluna é gerada pelo mesmo processo ARMA(P, Q). 
+- Ou seja, para cada coluna $j = 1, \cdots, 12$ temos \begin{align}
+y_{j + 12t} &= \Phi_1 y_{j + 12(t - 1)} + \cdots + \Phi_P y_{j + 12(t-P)} \notag \\
+&\quad + U_{j + 12t} + \Theta_1 U_{j + 12(t - 1)} + \cdots + \Theta_Q U_{j + 12(t - Q)},
+\end{align} em que $U_{j + 12t} \sim RB(0, \sigma^2_U)$.
+- Note que $\mathbb{E}(U_t U_{t+h})$ não necessariamente é zero (exceto de $h$ for múltiplo do período sazonal).
+
+## SARIMA
+
+
+$$\Phi(B^{12})y_t = \Theta(B^{12})U_t$$
+
+. . . 
+
+- Se $Q = 1$, $P = 0$ e $\Theta_1 = -0.4$, então para as séries de cada mês em particular temos um $MA(1)$.
+- Se ademais $\mathbb{E}(U_t U_{t+h}) = 0$, $\forall h$ (ou seja, se as sequências para diferentes meses são não correlacionados entre si), então as colunas são não correlacionadas e a ACF seria da forma:
+
+
+## SARIMA
+
+
+$$\Phi(B^{12})y_t = \Theta(B^{12})U_t$$
+
+. . . 
+
+- Se $Q = 1$, $P = 0$ e $\Theta_1 = -0.4$, então para as séries de cada mês em particular temos um $MA(1)$.
+- Se ademais $\mathbb{E}(U_t U_{t+h}) = 0$, $\forall h$ (ou seja, se as sequências para diferentes meses são não correlacionados entre si), então as colunas são não correlacionadas e a ACF seria da forma:
+  
+. . . 
+
+
+```{r, fig.width=5, fig.height=4}
+u <- rnorm(10000)
+y <- rep(0, 10000)
+for (t in 13:10000) {
+  y[t] <- u[t] - 0.4 * u[t - 12]
+}
+acf(y)
+```
+
+    
+    
+## SARIMA
+
+$$\Phi(B^{12})y_t = \Theta(B^{12})U_t$$
+
+. . . 
+
+- Se $Q = 0$, $P = 1$ e $\Phi_1 = 0.7$, então para as séries de cada mês em particular temos um $AR(1)$.
+- Se ademais $\mathbb{E}(U_t U_{t+h}) = 0$, $\forall h$ (ou seja, se as sequências para diferentes meses são não correlacionados entre si), então as colunas são não correlacionadas e a ACF seria da forma:
+  
+. . . 
+
+
+```{r, fig.width=5, fig.height=4}
+u <- rnorm(10000)
+y <- rep(0, 10000)
+for (t in 13:10000) {
+  y[t] <- u[t] + 0.7 * y[t - 12]
+}
+acf(y)
+```
+
+
+## SARIMA
+
+
+- Nos modelos dos exemplos anteriores (assumindo $\mathbb{E}(U_t U_{t+h}) = 0$ $\forall h$), as 12 séries (correspondentes a cada mês) são não correlacionados.
+- Para incorporar dependência entre as séries  permitimos que $\{U_t\} \sim ARMA(p, q)$, $$\phi(B)U_t = \theta(B)\epsilon_t, \quad \epsilon_t \sim RB(0, \sigma^2_{\epsilon})$$
+    * Isto implica possíveis correlações não apenas entre $U_t$ consecutivos, mas também nas sequências sazonais
+    * Ou seja, a suposição $U_{j + 12t} \sim RB(0, \sigma^2_U)$ não esta mais valendo (embora na prática $\mathbb{E}(U_tU_{t + 12j})$ é pequeno).
+- Misturando ambos os modelos, temos exatamente o modelo definido na definição do modelo SARIMA! `r emo::ji("surfing")`
+
+## SARIMA
+
+
+$$\Phi(B^{12})y_t = \Theta(B^{12})U_t$$
+
+$$\phi(B)U_t = \theta(B)\epsilon_t$$
+
+
+. . . 
+
+
+Substituindo $U_t$ temos
+
+$$\Phi(B^{12})y_t = \Theta(B^{12}) \dfrac{\theta(B)}{\phi(B)}\epsilon_t$$
+
+. . . 
+
+O que implica em
+
+$$\phi(B) \Phi(B^{12})y_t = \Theta(B^{12}) \theta(B) \epsilon_t$$
+
+
+# Identificação
+
+## Identificação
+
+1. Eencontrar $d$ e $D$ para diferenciar a série original para que seja _aparentemente estacionária_, $$Y_t = (1 - B)^d (1 - B^s)^D X_t.$$
+2. Calcular ACF e PACF de $\{Y_t\}$ e identificar $p$, $q$, $P$ e $Q$ (de forma análoga ao feito em processos ARMA).
+    * Se $\hat{\rho}(\cdot)$ são as autocorrelações de $\{Y_t\}$, $P$ e $Q$ devem ser escolhidos de forma que $\hat{\rho}(ks)$ ($k = 1, 2, 3, ...$) sejam compativeis com um ARMA(P, Q).
+    * $p$ e $q$ são escolhidos de forma que $\hat{\rho}(1), \cdots, \hat{\rho}(s - 1)$ sejam compatíveis com um ARMA(p, q).
+    * Se tiver vários candidatos para a ordem do modelo, pode utilizar um critério (como AICc, BIC, etc).
+3. Ajustar o modelo por ML. Note que $Y_t = (1 - B)^d (1 - B^s)^D X_t$ é um ARMA(p + sP, q + sQ) em que alguns coeficientes são zeros (além de outras restrições no modelo).
+
+
+# Exemplos
+
+## Mortes (mensais) acidentais US entre 1973 e 1978.
+
+::: {.panel-tabset}
+
+
+## Data
+
+```{r}
+#| echo: true
+library(MASS)
+ts_data <- accdeaths
+ts_data
+```
+
+
+## Plot
+
+```{r}
+#| echo: true
+ts.plot(ts_data)
+```
+
+## (P)ACF
+
+```{r}
+#| echo: true
+op <- par(mfrow = c(1, 2))
+acf(ts_data, 36)
+pacf(ts_data, 36)
+par(op)
+```
+
+
+## Diff
+
+```{r}
+#| echo: true
+ts_data_diff <- diff(diff(ts_data, 12), 1)
+op <- par(mfrow = c(1, 2))
+acf(ts_data_diff, 36)
+pacf(ts_data_diff, 36)
+par(op)
+```
+
+
+## (P)ACF II
+
+```{r}
+#| echo: true
+rhos <- acf(ts_data_diff, 36)$acf[-1]
+```
+
+
+## Fit
+
+SARIMA $(0, 1, 1) \times (0, 1, 1)_{12}$
+
+```{r}
+#| echo: true
+model_01 <- arima(ts_data, order = c(0, 1, 1), seasonal = c(0, 1, 1))
+model_01
+```
+
+## Diagnóstico
+
+```{r}
+#| echo: true
+residuals_01 <- resid(model_01)
+op <- par(mfrow=c(2,2))
+plot(residuals_01)
+qqnorm(residuals_01)
+qqline(residuals_01)
+acf(residuals_01, 36)
+pacf(residuals_01, 36)
+par(op)
+```
+
+:::
+
+
+  
+## Mortes (mensais) acidentais US entre 1973 e 1978.
+
+
+::: {.panel-tabset}
+
+## Ordens
+
+- E se eu não tiver certeza que $p = 0$, $q = 1$, $P = 1$ e $Q = 1$?
+- Um SARIMA $(0, 1, 1) \times (0, 1, 1)_{12}$ é um $MA(q + sQ) = MA(13)$ com restrição, né? Então, porque não ajustar um $MA(13)$?
+-  **Observação:** como temos poucos dados, utilizaremos apenas métricas dentro da amostra. Se tivéssemos muitos dados, poderiamos fazer um _rolling window_ e ver qual faz melhor previsão.
+
+
+## SARIMAs
+```{r}
+#| echo: true
+modelos <- list()
+i = 0
+params <- expand.grid(p = 0:1, q = 0:1, P = 0:1, Q = 0:1)
+for (j in 1:nrow(params)) {
+  i <- i + 1
+  p <- params$p[j]
+  q <- params$q[j]
+  P <- params$P[j]
+  Q <- params$Q[j]
+  modelos[[i]] <- arima(ts_data, order = c(p, 1, q), seasonal = list(order = c(P, 1, Q)))
+}
+```
+
+
+## SARIMAs
+
+```{r}
+#| echo: true
+aiccs <- sapply(modelos, function(m) {
+  n <- length(ts_data)
+  k <- length(coef(m)) + 1  # número de parâmetros + variância
+  aicc <- AIC(m) + (2 * k^2 + 2 * k) / (n - k - 1)
+})
+aiccs
+which.min(aiccs)
+params
+```
+
+## MA(13)
+
+```{r}
+#| echo: true
+model_02 <- arima(ts_data, order = c(0, 1, 13), seasonal = c(0, 1, 0))
+model_02
+```
+
+
+. . . 
+
+
+```{r}
+#| echo: true
+model_03 <- arima(ts_data, order = c(0, 1, 13), seasonal = c(0, 1, 0), fixed = c(NA, 0, 0, 0, NA, NA, 0, 0, 0, 0, 0, NA, NA))
+model_03
+```
+
+## MA(13)
+
+
+```{r}
+#| echo: true
+model_04 <- arima(ts_data, order = c(0, 1, 13), seasonal = c(0, 1, 0), fixed = c(NA, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NA, NA))
+model_04
+```
+
+
+
+## AICs
+
+```{r}
+n <- length(ts_data)
+
+k_1 <- length(coef(model_01)) + 1 
+k_2 <- length(coef(model_02)) + 1 
+k_3 <- length(coef(model_03)) + 1 
+k_4 <- length(coef(model_04)) + 1 
+
+AICs <- c(AIC(model_01) + (2 * k_1^2 + 2 * k_1) / (n - k_1 - 1), 
+  AIC(model_02) + (2 * k_2^2 + 2 * k_2) / (n - k_2 - 1),
+  AIC(model_03) + (2 * k_3^2 + 2 * k_3) / (n - k_3 - 1),
+  AIC(model_04) + (2 * k_4^2 + 2 * k_4) / (n - k_4 - 1))
+
+
+AICs
+```
+
+
+## Diag
+
+```{r}
+#| echo: true
+residuals_02 <- resid(model_02)
+op <- par(mfrow=c(2,2))
+plot(residuals_02)
+qqnorm(residuals_02)
+qqline(residuals_02)
+acf(residuals_02, 36)
+pacf(residuals_02, 36)
+par(op)
+```
+
+
+## Diag
+
+```{r}
+#| echo: true
+residuals_04 <- resid(model_04)
+op <- par(mfrow=c(2,2))
+plot(residuals_04)
+qqnorm(residuals_04)
+qqline(residuals_04)
+acf(residuals_04, 36)
+pacf(residuals_04, 36)
+par(op)
+```
+:::
+
+
+# Seleção de Modelos
+
+## Seleção de Modelos
+
+
+- Como visto anteriormente, algumas vezes vários modelos podem capturar razoavelmente bem a dinâmica dos dados e precisamos escolher o melhor modelo (o modelo que irá para produção).
+- Esta escolha não sempre é fácil.
+- Alguns métodos que nos ajudam neste escolha são:
+    * Validação cruzada para séries temporais
+    * Estatísticas dos resíduos (in-sample)
+    * Critérios de informação.
+
+    
+## Seleção de Modelos
+
+Seja $k$ o número de parâmetros estimados e $n$ o tamanho da série:
+
+$$AIC = -2 \log(\underbrace{\text{máxima verossimilhança}}_{L}) + 2k$$
+
+. . . 
+
+
+$$\log L = -\frac{n}{2} \log (2 \pi \sigma^2_{\epsilon}) - \dfrac{1}{2\sigma^2_{\epsilon}} S(\boldsymbol{\Theta}, y)$$
+
+. . . 
+
+
+Maximizando, obtemos $\hat{\boldsymbol{\Theta}}$ e então $\log \hat{L}$, 
+
+
+$$\log \hat{L} = \underbrace{-\frac{n}{2} \log (2 \pi \hat{\sigma}^2_{\epsilon})}_{-\dfrac{n}{2} \log(2\pi) - \dfrac{n}{2} \log (\hat{\sigma}^2_{\epsilon})} - \underbrace{\dfrac{1}{2\hat{\sigma}^2_{\epsilon}} n \hat{\sigma}^2_{\epsilon}}_{\dfrac{n}{2}}$$\
+
+
+
+## Seleção de Modelos
+
+
+
+$$AIC = n \log(\hat{\sigma}^2_{\epsilon}) + 2k$$
+<center>
+[A ordem do modelo é escolhida de forma que AIC seja o mínimo.]{style="color:red;"}
+</center>
+
+
+. . . 
+
+
+
+- AIC superestima a ordem do modelo
+- Outros critérios foram desenvolvidos: 
+    * BIC
+    * AICc
+    * Shibata (SBC)*
+    * Hannan-Quinn
+    * Etc.
+- A regra geral é, **quanto menor, melhor**!
+
+
+
+## Seleção de Modelos
+
+
+| Critério            | Fórmula                                                   | Penalização       | Objetivo / Comentário                                         |
+|---------------------|------------------------------------------------------------|-------------------|---------------------------------------------------------------|
+| **AIC**             | \( \text{AIC} = -2 \log L + 2k \)                          | Linear            | Equilíbrio entre ajuste e complexidade                        |
+| **AICc**            | \( \text{AICc} = \text{AIC} + \frac{2k(k+1)}{n-k-1} \)     | Corrige o AIC     | Corrige o AIC para amostras pequenas                          |
+| **BIC (Schwarz)**   | \( \text{BIC} = -2 \log L + k \log n \)                   | Logarítmica       | Favorece modelos mais simples                                 |
+| **HQ (Hannan-Quinn)** | \( \text{HQ} = -2 \log L + 2k \log(\log n) \)           | Intermediária     | Penalização entre AIC e BIC                                   |
+| **Shibata (SBC)**   | Semelhante ao AIC, recomendado para previsão              | Similar ao AIC    | Melhor desempenho preditivo em alguns contextos               |
+
+
+## Seleção de Modelos
+
+
+
+[Shibata (1976)](https://doi.org/10.1093/biomet/63.1.117) mostrou que o uso da mesma fórmula do AIC, com foco em previsão out-of-sample, é assintoticamente eficiente: ou seja, mesmo quando o modelo verdadeiro não pertence à classe considerada (por exemplo, um ARMA aproximando uma série mais complexa), essa fórmula ainda tende a selecionar o modelo com melhor desempenho preditivo à medida que $n \rightarrow \infty$.
+
+
+
+
+
+## Referências
+
+- [Brockwell, P. J., & Davis, R. A. (Third Edition). (2016). Introduction to Time Series and Forecasting. New York, NY: Springer New York.](https://link.springer.com/book/10.1007/978-3-319-29854-2). Chapter 8
+- [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 8.
+- Shibata, R. (1976). Selection of the order of an autoregressive model by Akaike’s Information Criterion. Biometrika, 63(1), 117–126.
+

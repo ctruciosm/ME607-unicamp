@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="SARIMA_files/libs/clipboard/clipboard.min.js"></script>
+<script src="SARIMA_files/libs/quarto-html/tabby.min.js"></script>
+<script src="SARIMA_files/libs/quarto-html/popper.min.js"></script>
+<script src="SARIMA_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="SARIMA_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="SARIMA_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="SARIMA_files/libs/quarto-html/quarto-syntax-highlighting-3e476e15ae565c222d94875412ae43a1.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.6.39">
+
+  <meta name="author" content="Prof.&nbsp;Carlos Trucíos  ctrucios@unicamp.br">
+  <title>SARIMA</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="SARIMA_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="SARIMA_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #767676;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #767676;  padding-left: 4px; }
+    div.sourceCode
+      { color: #545454; background-color: #fefefe; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #545454; } /* Normal */
+    code span.al { color: #7928a1; } /* Alert */
+    code span.an { color: #696969; } /* Annotation */
+    code span.at { color: #a55a00; } /* Attribute */
+    code span.bn { color: #7928a1; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #d91e18; } /* ControlFlow */
+    code span.ch { color: #008000; } /* Char */
+    code span.cn { color: #d91e18; } /* Constant */
+    code span.co { color: #696969; } /* Comment */
+    code span.cv { color: #696969; font-style: italic; } /* CommentVar */
+    code span.do { color: #696969; font-style: italic; } /* Documentation */
+    code span.dt { color: #7928a1; } /* DataType */
+    code span.dv { color: #7928a1; } /* DecVal */
+    code span.er { color: #7928a1; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #a55a00; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #696969; } /* Information */
+    code span.kw { color: #d91e18; } /* Keyword */
+    code span.op { color: #00769e; } /* Operator */
+    code span.ot { color: #d91e18; } /* Other */
+    code span.pp { color: #7928a1; } /* Preprocessor */
+    code span.sc { color: #00769e; } /* SpecialChar */
+    code span.ss { color: #008000; } /* SpecialString */
+    code span.st { color: #008000; } /* String */
+    code span.va { color: #a55a00; } /* Variable */
+    code span.vs { color: #008000; } /* VerbatimString */
+    code span.wa { color: #696969; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="SARIMA_files/libs/revealjs/dist/theme/quarto-312e06f9632ef9de479b377823fa59dd.css">
+  <link href="SARIMA_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="SARIMA_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="SARIMA_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="SARIMA_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="SARIMA_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="SARIMA_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-image="imagens/unicamp.png" data-background-opacity="1" data-background-position="99% 5%" data-background-size="20%" class="quarto-title-block center">
+  <h1 class="title">SARIMA</h1>
+  <p class="subtitle">ME607 - Séries Temporais</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br 
+</div>
+        <p class="quarto-title-affiliation">
+            Instituto de Matemática, Estatística e Computação Científica (IMECC), <br> Universidade Estadual de Campinas (UNICAMP).
+          </p>
+    </div>
+</div>
+
+</section><section id="TOC">
+<nav role="doc-toc"> 
+<h2 id="toc-title">Agenda</h2>
+<ul>
+<li class="fragment"><a href="#/sarima" id="/toc-sarima">SARIMA</a></li>
+<li class="fragment"><a href="#/identificação" id="/toc-identificação">Identificação</a></li>
+<li class="fragment"><a href="#/exemplos-1" id="/toc-exemplos-1">Exemplos</a></li>
+<li class="fragment"><a href="#/seleção-de-modelos" id="/toc-seleção-de-modelos">Seleção de Modelos</a></li>
+</ul>
+</nav>
+</section>
+<section>
+<section id="sarima" class="title-slide slide level1 center">
+<h1>SARIMA</h1>
+
+</section>
+<section id="sarima-1" class="slide level2">
+<h2>SARIMA</h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Data</a></li><li><a href="#tabset-1-2">Plot</a></li><li><a href="#tabset-1-3">R-S</a></li><li><a href="#tabset-1-4">R-T</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-2"><a href=""></a>ts_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"datasets/data_ts_17.csv"</span>)</span>
+<span id="cb1-3"><a href=""></a><span class="fu">glimpse</span>(ts_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 950
+Columns: 1
+$ V1 &lt;dbl&gt; 4.587898, 4.165729, 2.003551, 1.347498, 3.484531, 3.766763, 4.62935…</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-2">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb3-2"><a href=""></a><span class="fu">ts.plot</span>(ts_data)</span>
+<span id="cb3-3"><a href=""></a><span class="fu">acf</span>(ts_data, <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="SARIMA_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">par</span>(op)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+<div id="tabset-1-3">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>ts_data_diff_s <span class="ot">&lt;-</span> <span class="fu">diff</span>(ts_data<span class="sc">$</span>V1, <span class="dv">12</span>)</span>
+<span id="cb5-2"><a href=""></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb5-3"><a href=""></a><span class="fu">ts.plot</span>(ts_data_diff_s)</span>
+<span id="cb5-4"><a href=""></a><span class="fu">acf</span>(ts_data_diff_s, <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="SARIMA_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a><span class="fu">par</span>(op)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+<div id="tabset-1-4">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a>ts_data_diff_s_t <span class="ot">&lt;-</span> <span class="fu">diff</span>(ts_data_diff_s, <span class="dv">1</span>)</span>
+<span id="cb7-2"><a href=""></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>))</span>
+<span id="cb7-3"><a href=""></a><span class="fu">ts.plot</span>(ts_data_diff_s_t)</span>
+<span id="cb7-4"><a href=""></a><span class="fu">acf</span>(ts_data_diff_s_t, <span class="dv">100</span>)</span>
+<span id="cb7-5"><a href=""></a><span class="fu">pacf</span>(ts_data_diff_s_t, <span class="dv">100</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="SARIMA_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a><span class="fu">par</span>(op)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sarima-2" class="slide level2">
+<h2>SARIMA</h2>
+<p>É possivel que, após diferenciação para remover a sazonalidade e a tendência, ainda existe correlação significativa em:</p>
+<ul>
+<li class="fragment"><em>lags</em> de ordem baixa: indicando que os resíduos ainda são correlacionados e um modelo ARMA poderia ajudar a capturar a dinâmica dos dados.</li>
+<li class="fragment"><em>lags</em> sazonais: indicando a necessidade de considerar sazonalidade estocástica, em cujo caso, modelo SARIMA podem ajudar a capturar a dinâmica dos dados.</li>
+</ul>
+</section>
+<section id="sarima-3" class="slide level2">
+<h2>SARIMA</h2>
+<div class="callout callout-note no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Definição:</strong></p>
+</div>
+<div class="callout-content">
+<p>Sejam <span class="math inline">\(d\)</span> e <span class="math inline">\(D\)</span> números inteiros não negativos (<span class="math inline">\(\mathbb{Z}_0^{+}\)</span>), então <span class="math inline">\(\{y_t\}\)</span> é um processo SARIMA <span class="math inline">\((p, d, q) \times (P, D, Q)_s\)</span> (SARIMA com período sazonal <span class="math inline">\(s\)</span>), se o processo <span class="math display">\[z_t = (1 - B)^d (1 - B^s)^Dy_t\]</span> é um processo ARMA definido por <span class="math display">\[\phi(B) \Phi(B^s) z_t = \theta(B) \Theta(B^s) \epsilon_t, \quad \epsilon_t \sim RB(0, \sigma^2),\]</span> em que</p>
+<div>
+<ul>
+<li><span class="math inline">\(\phi(B) = 1 - \phi_1B - \phi_2 B^2 - \cdots - \phi_p B^p\)</span></li>
+<li><span class="math inline">\(\Phi(B^s) = 1 - \Phi_1B^s - \Phi_2 B^{2s} - \cdots - \Phi_P B^{Ps}\)</span></li>
+<li><span class="math inline">\(\theta(B) = 1 + \theta_1B + \theta_2 B^2 + \cdots + \theta_q B^q\)</span></li>
+<li><span class="math inline">\(\Theta(B) = 1 + \Theta_1B^s + \Theta_2 B^{2s} + \cdots + \Theta_Q B^{Qs}\)</span></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<center>
+<p><span style="color:red;"><strong>Observação:</strong> na prática <span class="math inline">\(D \leq 1\)</span> e <span class="math inline">\(P, Q &lt; 3\)</span>.</span></p>
+</center>
+</div>
+</section>
+<section id="sarima-4" class="slide level2">
+<h2>SARIMA</h2>
+<p>Note que o modelo SARIMA definido anteriormente pode ser reescrito como <span class="math display">\[\phi^{\ast}(B) z_t = \theta^{\ast}(B) \epsilon_t,\]</span></p>
+<p>em que:</p>
+<ul>
+<li class="fragment"><span class="math inline">\(\phi^{\ast}(B)\)</span> é um polinômio de grau p + Ps.</li>
+<li class="fragment"><span class="math inline">\(\theta^{\ast}(B)\)</span> é um polinômio de grau q + Qs.</li>
+</ul>
+<div class="fragment">
+<h3 id="exemplos">Exemplos</h3>
+<ul>
+<li class="fragment">SARIMA <span class="math inline">\((1, 0, 1) \times (1, 0, 1)_12\)</span></li>
+<li class="fragment">SARIMA <span class="math inline">\((1, 0, 2) \times (2, 0, 1)_7\)</span><br>
+</li>
+<li class="fragment">Etc.</li>
+</ul>
+</div>
+</section>
+<section id="sarima-5" class="slide level2">
+<h2>SARIMA</h2>
+<p>Suponha que temos <span class="math inline">\(r\)</span> anos de dados mensais:</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Ano &nbsp;Mês</th>
+<th style="text-align: center;">Jan</th>
+<th style="text-align: center;">Fev</th>
+<th style="text-align: center;">Mar</th>
+<th style="text-align: center;">…</th>
+<th style="text-align: center;">Dez</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(y_1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(y_2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(y_3\)</span></td>
+<td style="text-align: center;">….</td>
+<td style="text-align: center;"><span class="math inline">\(y_{12}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"><span class="math inline">\(y_{13}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(y_{14}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(y_{15}\)</span></td>
+<td style="text-align: center;">….</td>
+<td style="text-align: center;"><span class="math inline">\(y_{24}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(\vdots\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\vdots\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\vdots\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\vdots\)</span></td>
+<td style="text-align: center;">….</td>
+<td style="text-align: center;"><span class="math inline">\(\vdots\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">r</td>
+<td style="text-align: center;"><span class="math inline">\(y_{1 + 12(r-1)}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(y_{2 + 12(r-1)}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(y_{3 + 12(r-1)}\)</span></td>
+<td style="text-align: center;">….</td>
+<td style="text-align: center;"><span class="math inline">\(y_{12 + 12(r-1)}\)</span></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sarima-6" class="slide level2">
+<h2>SARIMA</h2>
+<ul>
+<li class="fragment">Cada coluna pode ser vista como a realização de uma série temporal.</li>
+<li class="fragment">Assumamos que cada coluna é gerada pelo mesmo processo ARMA(P, Q).</li>
+<li class="fragment">Ou seja, para cada coluna <span class="math inline">\(j = 1, \cdots, 12\)</span> temos <span class="math display">\[\begin{align}
+y_{j + 12t} &amp;= \Phi_1 y_{j + 12(t - 1)} + \cdots + \Phi_P y_{j + 12(t-P)} \notag \\
+&amp;\quad + U_{j + 12t} + \Theta_1 U_{j + 12(t - 1)} + \cdots + \Theta_Q U_{j + 12(t - Q)},
+\end{align}\]</span> em que <span class="math inline">\(U_{j + 12t} \sim RB(0, \sigma^2_U)\)</span>.</li>
+<li class="fragment">Note que <span class="math inline">\(\mathbb{E}(U_t U_{t+h})\)</span> não necessariamente é zero (exceto de <span class="math inline">\(h\)</span> for múltiplo do período sazonal).</li>
+</ul>
+</section>
+<section id="sarima-7" class="slide level2">
+<h2>SARIMA</h2>
+<p><span class="math display">\[\Phi(B^{12})y_t = \Theta(B^{12})U_t\]</span></p>
+<div class="fragment">
+<ul>
+<li class="fragment">Se <span class="math inline">\(Q = 1\)</span>, <span class="math inline">\(P = 0\)</span> e <span class="math inline">\(\Theta_1 = -0.4\)</span>, então para as séries de cada mês em particular temos um <span class="math inline">\(MA(1)\)</span>.</li>
+<li class="fragment">Se ademais <span class="math inline">\(\mathbb{E}(U_t U_{t+h}) = 0\)</span>, <span class="math inline">\(\forall h\)</span> (ou seja, se as sequências para diferentes meses são não correlacionados entre si), então as colunas são não correlacionadas e a ACF seria da forma:</li>
+</ul>
+</div>
+</section>
+<section id="sarima-8" class="slide level2">
+<h2>SARIMA</h2>
+<p><span class="math display">\[\Phi(B^{12})y_t = \Theta(B^{12})U_t\]</span></p>
+<div class="fragment">
+<ul>
+<li class="fragment">Se <span class="math inline">\(Q = 1\)</span>, <span class="math inline">\(P = 0\)</span> e <span class="math inline">\(\Theta_1 = -0.4\)</span>, então para as séries de cada mês em particular temos um <span class="math inline">\(MA(1)\)</span>.</li>
+<li class="fragment">Se ademais <span class="math inline">\(\mathbb{E}(U_t U_{t+h}) = 0\)</span>, <span class="math inline">\(\forall h\)</span> (ou seja, se as sequências para diferentes meses são não correlacionados entre si), então as colunas são não correlacionadas e a ACF seria da forma:</li>
+</ul>
+</div>
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="SARIMA_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sarima-9" class="slide level2">
+<h2>SARIMA</h2>
+<p><span class="math display">\[\Phi(B^{12})y_t = \Theta(B^{12})U_t\]</span></p>
+<div class="fragment">
+<ul>
+<li class="fragment">Se <span class="math inline">\(Q = 0\)</span>, <span class="math inline">\(P = 1\)</span> e <span class="math inline">\(\Phi_1 = 0.7\)</span>, então para as séries de cada mês em particular temos um <span class="math inline">\(AR(1)\)</span>.</li>
+<li class="fragment">Se ademais <span class="math inline">\(\mathbb{E}(U_t U_{t+h}) = 0\)</span>, <span class="math inline">\(\forall h\)</span> (ou seja, se as sequências para diferentes meses são não correlacionados entre si), então as colunas são não correlacionadas e a ACF seria da forma:</li>
+</ul>
+</div>
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="SARIMA_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sarima-10" class="slide level2">
+<h2>SARIMA</h2>
+<ul>
+<li class="fragment">Nos modelos dos exemplos anteriores (assumindo <span class="math inline">\(\mathbb{E}(U_t U_{t+h}) = 0\)</span> <span class="math inline">\(\forall h\)</span>), as 12 séries (correspondentes a cada mês) são não correlacionados.</li>
+<li class="fragment">Para incorporar dependência entre as séries permitimos que <span class="math inline">\(\{U_t\} \sim ARMA(p, q)\)</span>, <span class="math display">\[\phi(B)U_t = \theta(B)\epsilon_t, \quad \epsilon_t \sim RB(0, \sigma^2_{\epsilon})\]</span>
+<ul>
+<li class="fragment">Isto implica possíveis correlações não apenas entre <span class="math inline">\(U_t\)</span> consecutivos, mas também nas sequências sazonais</li>
+<li class="fragment">Ou seja, a suposição <span class="math inline">\(U_{j + 12t} \sim RB(0, \sigma^2_U)\)</span> não esta mais valendo (embora na prática <span class="math inline">\(\mathbb{E}(U_tU_{t + 12j})\)</span> é pequeno).</li>
+</ul></li>
+<li class="fragment">Misturando ambos os modelos, temos exatamente o modelo definido na definição do modelo SARIMA! 🏄‍♀️</li>
+</ul>
+</section>
+<section id="sarima-11" class="slide level2">
+<h2>SARIMA</h2>
+<p><span class="math display">\[\Phi(B^{12})y_t = \Theta(B^{12})U_t\]</span></p>
+<p><span class="math display">\[\phi(B)U_t = \theta(B)\epsilon_t\]</span></p>
+<div class="fragment">
+<p>Substituindo <span class="math inline">\(U_t\)</span> temos</p>
+<p><span class="math display">\[\Phi(B^{12})y_t = \Theta(B^{12}) \dfrac{\theta(B)}{\phi(B)}\epsilon_t\]</span></p>
+</div>
+<div class="fragment">
+<p>O que implica em</p>
+<p><span class="math display">\[\phi(B) \Phi(B^{12})y_t = \Theta(B^{12}) \theta(B) \epsilon_t\]</span></p>
+</div>
+</section></section>
+<section>
+<section id="identificação" class="title-slide slide level1 center">
+<h1>Identificação</h1>
+
+</section>
+<section id="identificação-1" class="slide level2">
+<h2>Identificação</h2>
+<ol type="1">
+<li class="fragment">Eencontrar <span class="math inline">\(d\)</span> e <span class="math inline">\(D\)</span> para diferenciar a série original para que seja <em>aparentemente estacionária</em>, <span class="math display">\[Y_t = (1 - B)^d (1 - B^s)^D X_t.\]</span></li>
+<li class="fragment">Calcular ACF e PACF de <span class="math inline">\(\{Y_t\}\)</span> e identificar <span class="math inline">\(p\)</span>, <span class="math inline">\(q\)</span>, <span class="math inline">\(P\)</span> e <span class="math inline">\(Q\)</span> (de forma análoga ao feito em processos ARMA).
+<ul>
+<li class="fragment">Se <span class="math inline">\(\hat{\rho}(\cdot)\)</span> são as autocorrelações de <span class="math inline">\(\{Y_t\}\)</span>, <span class="math inline">\(P\)</span> e <span class="math inline">\(Q\)</span> devem ser escolhidos de forma que <span class="math inline">\(\hat{\rho}(ks)\)</span> (<span class="math inline">\(k = 1, 2, 3, ...\)</span>) sejam compativeis com um ARMA(P, Q).</li>
+<li class="fragment"><span class="math inline">\(p\)</span> e <span class="math inline">\(q\)</span> são escolhidos de forma que <span class="math inline">\(\hat{\rho}(1), \cdots, \hat{\rho}(s - 1)\)</span> sejam compatíveis com um ARMA(p, q).</li>
+<li class="fragment">Se tiver vários candidatos para a ordem do modelo, pode utilizar um critério (como AICc, BIC, etc).</li>
+</ul></li>
+<li class="fragment">Ajustar o modelo por ML. Note que <span class="math inline">\(Y_t = (1 - B)^d (1 - B^s)^D X_t\)</span> é um ARMA(p + sP, q + sQ) em que alguns coeficientes são zeros (além de outras restrições no modelo).</li>
+</ol>
+</section></section>
+<section>
+<section id="exemplos-1" class="title-slide slide level1 center">
+<h1>Exemplos</h1>
+
+</section>
+<section id="mortes-mensais-acidentais-us-entre-1973-e-1978." class="slide level2">
+<h2>Mortes (mensais) acidentais US entre 1973 e 1978.</h2>
+<div class="panel-tabset">
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Data</a></li><li><a href="#tabset-2-2">Plot</a></li><li><a href="#tabset-2-3">(P)ACF</a></li><li><a href="#tabset-2-4">Diff</a></li><li><a href="#tabset-2-5">(P)ACF II</a></li><li><a href="#tabset-2-6">Fit</a></li><li><a href="#tabset-2-7">Diagnóstico</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a><span class="fu">library</span>(MASS)</span>
+<span id="cb9-2"><a href=""></a>ts_data <span class="ot">&lt;-</span> accdeaths</span>
+<span id="cb9-3"><a href=""></a>ts_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>       Jan   Feb   Mar   Apr   May   Jun   Jul   Aug   Sep   Oct   Nov   Dec
+1973  9007  8106  8928  9137 10017 10826 11317 10744  9713  9938  9161  8927
+1974  7750  6981  8038  8422  8714  9512 10120  9823  8743  9129  8710  8680
+1975  8162  7306  8124  7870  9387  9556 10093  9620  8285  8466  8160  8034
+1976  7717  7461  7767  7925  8623  8945 10078  9179  8037  8488  7874  8647
+1977  7792  6957  7726  8106  8890  9299 10625  9302  8314  8850  8265  8796
+1978  7836  6892  7791  8192  9115  9434 10484  9827  9110  9070  8633  9240</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-2">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a><span class="fu">ts.plot</span>(ts_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="SARIMA_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-3">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb12-2"><a href=""></a><span class="fu">acf</span>(ts_data, <span class="dv">36</span>)</span>
+<span id="cb12-3"><a href=""></a><span class="fu">pacf</span>(ts_data, <span class="dv">36</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="SARIMA_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a><span class="fu">par</span>(op)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+<div id="tabset-2-4">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href=""></a>ts_data_diff <span class="ot">&lt;-</span> <span class="fu">diff</span>(<span class="fu">diff</span>(ts_data, <span class="dv">12</span>), <span class="dv">1</span>)</span>
+<span id="cb14-2"><a href=""></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb14-3"><a href=""></a><span class="fu">acf</span>(ts_data_diff, <span class="dv">36</span>)</span>
+<span id="cb14-4"><a href=""></a><span class="fu">pacf</span>(ts_data_diff, <span class="dv">36</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="SARIMA_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href=""></a><span class="fu">par</span>(op)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+<div id="tabset-2-5">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href=""></a>rhos <span class="ot">&lt;-</span> <span class="fu">acf</span>(ts_data_diff, <span class="dv">36</span>)<span class="sc">$</span>acf[<span class="sc">-</span><span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="SARIMA_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-6">
+<p>SARIMA <span class="math inline">\((0, 1, 1) \times (0, 1, 1)_{12}\)</span></p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href=""></a>model_01 <span class="ot">&lt;-</span> <span class="fu">arima</span>(ts_data, <span class="at">order =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">seasonal =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb17-2"><a href=""></a>model_01</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+arima(x = ts_data, order = c(0, 1, 1), seasonal = c(0, 1, 1))
+
+Coefficients:
+          ma1     sma1
+      -0.4303  -0.5528
+s.e.   0.1228   0.1784
+
+sigma^2 estimated as 99347:  log likelihood = -425.44,  aic = 856.88</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-7">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href=""></a>residuals_01 <span class="ot">&lt;-</span> <span class="fu">resid</span>(model_01)</span>
+<span id="cb19-2"><a href=""></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb19-3"><a href=""></a><span class="fu">plot</span>(residuals_01)</span>
+<span id="cb19-4"><a href=""></a><span class="fu">qqnorm</span>(residuals_01)</span>
+<span id="cb19-5"><a href=""></a><span class="fu">qqline</span>(residuals_01)</span>
+<span id="cb19-6"><a href=""></a><span class="fu">acf</span>(residuals_01, <span class="dv">36</span>)</span>
+<span id="cb19-7"><a href=""></a><span class="fu">pacf</span>(residuals_01, <span class="dv">36</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="SARIMA_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href=""></a><span class="fu">par</span>(op)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="mortes-mensais-acidentais-us-entre-1973-e-1978.-1" class="slide level2">
+<h2>Mortes (mensais) acidentais US entre 1973 e 1978.</h2>
+<div class="panel-tabset">
+<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Ordens</a></li><li><a href="#tabset-3-2">SARIMAs</a></li><li><a href="#tabset-3-3">SARIMAs</a></li><li><a href="#tabset-3-4">MA(13)</a></li><li><a href="#tabset-3-5">MA(13)</a></li><li><a href="#tabset-3-6">AICs</a></li><li><a href="#tabset-3-7">Diag</a></li><li><a href="#tabset-3-8">Diag</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1">
+<ul>
+<li class="fragment">E se eu não tiver certeza que <span class="math inline">\(p = 0\)</span>, <span class="math inline">\(q = 1\)</span>, <span class="math inline">\(P = 1\)</span> e <span class="math inline">\(Q = 1\)</span>?</li>
+<li class="fragment">Um SARIMA <span class="math inline">\((0, 1, 1) \times (0, 1, 1)_{12}\)</span> é um <span class="math inline">\(MA(q + sQ) = MA(13)\)</span> com restrição, né? Então, porque não ajustar um <span class="math inline">\(MA(13)\)</span>?</li>
+<li class="fragment"><strong>Observação:</strong> como temos poucos dados, utilizaremos apenas métricas dentro da amostra. Se tivéssemos muitos dados, poderiamos fazer um <em>rolling window</em> e ver qual faz melhor previsão.</li>
+</ul>
+</div>
+<div id="tabset-3-2">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href=""></a>modelos <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb21-2"><a href=""></a>i <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb21-3"><a href=""></a>params <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">p =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">q =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">P =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">Q =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>)</span>
+<span id="cb21-4"><a href=""></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(params)) {</span>
+<span id="cb21-5"><a href=""></a>  i <span class="ot">&lt;-</span> i <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb21-6"><a href=""></a>  p <span class="ot">&lt;-</span> params<span class="sc">$</span>p[j]</span>
+<span id="cb21-7"><a href=""></a>  q <span class="ot">&lt;-</span> params<span class="sc">$</span>q[j]</span>
+<span id="cb21-8"><a href=""></a>  P <span class="ot">&lt;-</span> params<span class="sc">$</span>P[j]</span>
+<span id="cb21-9"><a href=""></a>  Q <span class="ot">&lt;-</span> params<span class="sc">$</span>Q[j]</span>
+<span id="cb21-10"><a href=""></a>  modelos[[i]] <span class="ot">&lt;-</span> <span class="fu">arima</span>(ts_data, <span class="at">order =</span> <span class="fu">c</span>(p, <span class="dv">1</span>, q), <span class="at">seasonal =</span> <span class="fu">list</span>(<span class="at">order =</span> <span class="fu">c</span>(P, <span class="dv">1</span>, Q)))</span>
+<span id="cb21-11"><a href=""></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+<div id="tabset-3-3">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href=""></a>aiccs <span class="ot">&lt;-</span> <span class="fu">sapply</span>(modelos, <span class="cf">function</span>(m) {</span>
+<span id="cb22-2"><a href=""></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(ts_data)</span>
+<span id="cb22-3"><a href=""></a>  k <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">coef</span>(m)) <span class="sc">+</span> <span class="dv">1</span>  <span class="co"># número de parâmetros + variância</span></span>
+<span id="cb22-4"><a href=""></a>  aicc <span class="ot">&lt;-</span> <span class="fu">AIC</span>(m) <span class="sc">+</span> (<span class="dv">2</span> <span class="sc">*</span> k<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> k) <span class="sc">/</span> (n <span class="sc">-</span> k <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb22-5"><a href=""></a>})</span>
+<span id="cb22-6"><a href=""></a>aiccs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 873.7457 868.4179 864.6874 866.6413 868.4728 863.6197 860.2355 862.2132
+ [9] 864.3034 859.6358 857.2329 859.3756 865.4692 860.9361 858.6464 860.8906</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href=""></a><span class="fu">which.min</span>(aiccs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 11</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href=""></a>params</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>   p q P Q
+1  0 0 0 0
+2  1 0 0 0
+3  0 1 0 0
+4  1 1 0 0
+5  0 0 1 0
+6  1 0 1 0
+7  0 1 1 0
+8  1 1 1 0
+9  0 0 0 1
+10 1 0 0 1
+11 0 1 0 1
+12 1 1 0 1
+13 0 0 1 1
+14 1 0 1 1
+15 0 1 1 1
+16 1 1 1 1</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-3-4">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href=""></a>model_02 <span class="ot">&lt;-</span> <span class="fu">arima</span>(ts_data, <span class="at">order =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">13</span>), <span class="at">seasonal =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb28-2"><a href=""></a>model_02</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+arima(x = ts_data, order = c(0, 1, 13), seasonal = c(0, 1, 0))
+
+Coefficients:
+          ma1     ma2      ma3      ma4     ma5      ma6      ma7      ma8
+      -0.4166  0.0947  -0.0592  -0.0707  0.2439  -0.2881  -0.0624  -0.0233
+s.e.   0.1582  0.2072   0.2264   0.2523  0.2284   0.2367   0.1660   0.2157
+         ma9    ma10    ma11     ma12    ma13
+      0.0514  0.1455  0.0458  -0.6686  0.3867
+s.e.  0.2193  0.2428  0.2182   0.2289  0.2123
+
+sigma^2 estimated as 79206:  log likelihood = -421.76,  aic = 871.52</code></pre>
+</div>
+</div>
+<p>. . .</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href=""></a>model_03 <span class="ot">&lt;-</span> <span class="fu">arima</span>(ts_data, <span class="at">order =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">13</span>), <span class="at">seasonal =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="at">fixed =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="cn">NA</span>, <span class="cn">NA</span>))</span>
+<span id="cb30-2"><a href=""></a>model_03</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+arima(x = ts_data, order = c(0, 1, 13), seasonal = c(0, 1, 0), fixed = c(NA, 
+    0, 0, 0, NA, NA, 0, 0, 0, 0, 0, NA, NA))
+
+Coefficients:
+          ma1  ma2  ma3  ma4     ma5      ma6  ma7  ma8  ma9  ma10  ma11
+      -0.5018    0    0    0  0.2604  -0.2209    0    0    0     0     0
+s.e.   0.2074    0    0    0  0.1703   0.1890    0    0    0     0     0
+         ma12    ma13
+      -0.9289  0.2032
+s.e.   0.2492  0.1830
+
+sigma^2 estimated as 66822:  log likelihood = -422.64,  aic = 857.27</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-3-5">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href=""></a>model_04 <span class="ot">&lt;-</span> <span class="fu">arima</span>(ts_data, <span class="at">order =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">13</span>), <span class="at">seasonal =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="at">fixed =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="cn">NA</span>, <span class="cn">NA</span>))</span>
+<span id="cb32-2"><a href=""></a>model_04</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+arima(x = ts_data, order = c(0, 1, 13), seasonal = c(0, 1, 0), fixed = c(NA, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NA, NA))
+
+Coefficients:
+          ma1  ma2  ma3  ma4  ma5  ma6  ma7  ma8  ma9  ma10  ma11     ma12
+      -0.5180    0    0    0    0    0    0    0    0     0     0  -0.8833
+s.e.   0.2235    0    0    0    0    0    0    0    0     0     0   0.3295
+        ma13
+      0.1323
+s.e.  0.2018
+
+sigma^2 estimated as 75607:  log likelihood = -424.92,  aic = 857.83</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-3-6">
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 857.2329 878.8892 864.6387 865.2017</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-3-7">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href=""></a>residuals_02 <span class="ot">&lt;-</span> <span class="fu">resid</span>(model_02)</span>
+<span id="cb35-2"><a href=""></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb35-3"><a href=""></a><span class="fu">plot</span>(residuals_02)</span>
+<span id="cb35-4"><a href=""></a><span class="fu">qqnorm</span>(residuals_02)</span>
+<span id="cb35-5"><a href=""></a><span class="fu">qqline</span>(residuals_02)</span>
+<span id="cb35-6"><a href=""></a><span class="fu">acf</span>(residuals_02, <span class="dv">36</span>)</span>
+<span id="cb35-7"><a href=""></a><span class="fu">pacf</span>(residuals_02, <span class="dv">36</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="SARIMA_files/figure-revealjs/unnamed-chunk-20-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href=""></a><span class="fu">par</span>(op)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+<div id="tabset-3-8">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href=""></a>residuals_04 <span class="ot">&lt;-</span> <span class="fu">resid</span>(model_04)</span>
+<span id="cb37-2"><a href=""></a>op <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb37-3"><a href=""></a><span class="fu">plot</span>(residuals_04)</span>
+<span id="cb37-4"><a href=""></a><span class="fu">qqnorm</span>(residuals_04)</span>
+<span id="cb37-5"><a href=""></a><span class="fu">qqline</span>(residuals_04)</span>
+<span id="cb37-6"><a href=""></a><span class="fu">acf</span>(residuals_04, <span class="dv">36</span>)</span>
+<span id="cb37-7"><a href=""></a><span class="fu">pacf</span>(residuals_04, <span class="dv">36</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="SARIMA_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href=""></a><span class="fu">par</span>(op)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="seleção-de-modelos" class="title-slide slide level1 center">
+<h1>Seleção de Modelos</h1>
+
+</section>
+<section id="seleção-de-modelos-1" class="slide level2">
+<h2>Seleção de Modelos</h2>
+<ul>
+<li class="fragment">Como visto anteriormente, algumas vezes vários modelos podem capturar razoavelmente bem a dinâmica dos dados e precisamos escolher o melhor modelo (o modelo que irá para produção).</li>
+<li class="fragment">Esta escolha não sempre é fácil.</li>
+<li class="fragment">Alguns métodos que nos ajudam neste escolha são:
+<ul>
+<li class="fragment">Validação cruzada para séries temporais</li>
+<li class="fragment">Estatísticas dos resíduos (in-sample)</li>
+<li class="fragment">Critérios de informação.</li>
+</ul></li>
+</ul>
+</section>
+<section id="seleção-de-modelos-2" class="slide level2">
+<h2>Seleção de Modelos</h2>
+<p>Seja <span class="math inline">\(k\)</span> o número de parâmetros estimados e <span class="math inline">\(n\)</span> o tamanho da série:</p>
+<p><span class="math display">\[AIC = -2 \log(\underbrace{\text{máxima verossimilhança}}_{L}) + 2k\]</span></p>
+<div class="fragment">
+<p><span class="math display">\[\log L = -\frac{n}{2} \log (2 \pi \sigma^2_{\epsilon}) - \dfrac{1}{2\sigma^2_{\epsilon}} S(\boldsymbol{\Theta}, y)\]</span></p>
+</div>
+<div class="fragment">
+<p>Maximizando, obtemos <span class="math inline">\(\hat{\boldsymbol{\Theta}}\)</span> e então <span class="math inline">\(\log \hat{L}\)</span>,</p>
+<p><span class="math display">\[\log \hat{L} = \underbrace{-\frac{n}{2} \log (2 \pi \hat{\sigma}^2_{\epsilon})}_{-\dfrac{n}{2} \log(2\pi) - \dfrac{n}{2} \log (\hat{\sigma}^2_{\epsilon})} - \underbrace{\dfrac{1}{2\hat{\sigma}^2_{\epsilon}} n \hat{\sigma}^2_{\epsilon}}_{\dfrac{n}{2}}\]</span><br>
+</p>
+</div>
+</section>
+<section id="seleção-de-modelos-3" class="slide level2">
+<h2>Seleção de Modelos</h2>
+<span class="math display">\[AIC = n \log(\hat{\sigma}^2_{\epsilon}) + 2k\]</span>
+<center>
+<span style="color:red;">A ordem do modelo é escolhida de forma que AIC seja o mínimo.</span>
+</center>
+<div class="fragment">
+<ul>
+<li class="fragment">AIC superestima a ordem do modelo</li>
+<li class="fragment">Outros critérios foram desenvolvidos:
+<ul>
+<li class="fragment">BIC</li>
+<li class="fragment">AICc</li>
+<li class="fragment">Shibata (SBC)*</li>
+<li class="fragment">Hannan-Quinn</li>
+<li class="fragment">Etc.</li>
+</ul></li>
+<li class="fragment">A regra geral é, <strong>quanto menor, melhor</strong>!</li>
+</ul>
+</div>
+</section>
+<section id="seleção-de-modelos-4" class="slide level2">
+<h2>Seleção de Modelos</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 36%">
+<col style="width: 11%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Critério</th>
+<th>Fórmula</th>
+<th>Penalização</th>
+<th>Objetivo / Comentário</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>AIC</strong></td>
+<td>( = -2 L + 2k )</td>
+<td>Linear</td>
+<td>Equilíbrio entre ajuste e complexidade</td>
+</tr>
+<tr class="even">
+<td><strong>AICc</strong></td>
+<td>( = + )</td>
+<td>Corrige o AIC</td>
+<td>Corrige o AIC para amostras pequenas</td>
+</tr>
+<tr class="odd">
+<td><strong>BIC (Schwarz)</strong></td>
+<td>( = -2 L + k n )</td>
+<td>Logarítmica</td>
+<td>Favorece modelos mais simples</td>
+</tr>
+<tr class="even">
+<td><strong>HQ (Hannan-Quinn)</strong></td>
+<td>( = -2 L + 2k (n) )</td>
+<td>Intermediária</td>
+<td>Penalização entre AIC e BIC</td>
+</tr>
+<tr class="odd">
+<td><strong>Shibata (SBC)</strong></td>
+<td>Semelhante ao AIC, recomendado para previsão</td>
+<td>Similar ao AIC</td>
+<td>Melhor desempenho preditivo em alguns contextos</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="seleção-de-modelos-5" class="slide level2">
+<h2>Seleção de Modelos</h2>
+<p><a href="https://doi.org/10.1093/biomet/63.1.117">Shibata (1976)</a> mostrou que o uso da mesma fórmula do AIC, com foco em previsão out-of-sample, é assintoticamente eficiente: ou seja, mesmo quando o modelo verdadeiro não pertence à classe considerada (por exemplo, um ARMA aproximando uma série mais complexa), essa fórmula ainda tende a selecionar o modelo com melhor desempenho preditivo à medida que <span class="math inline">\(n \rightarrow \infty\)</span>.</p>
+</section>
+<section id="referências" class="slide level2">
+<h2>Referências</h2>
+<ul>
+<li class="fragment"><a href="https://link.springer.com/book/10.1007/978-3-319-29854-2">Brockwell, P. J., &amp; Davis, R. A. (Third Edition). (2016). Introduction to Time Series and Forecasting. New York, NY: Springer New York.</a>. Chapter 8</li>
+<li class="fragment"><a href="https://otexts.com/fpp3/">Hyndman, R.J., &amp; Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.</a>. Chapter 8.</li>
+<li class="fragment">Shibata, R. (1976). Selection of the order of an autoregressive model by Akaike’s Information Criterion. Biometrika, 63(1), 117–126.</li>
+</ul>
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="imagens/imecc.png" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>Carlos Trucíos (IMECC/UNICAMP) | ME607 - Séries Temporais | <a href="https://ctruciosm.github.io/">ctruciosm.github.io</a></p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="SARIMA_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="SARIMA_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="SARIMA_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="SARIMA_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="SARIMA_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="SARIMA_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="SARIMA_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="SARIMA_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="SARIMA_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="SARIMA_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="SARIMA_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const onCopySuccess = function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
+      });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp('/' + window.location.host + '/');
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+        const config = {
+          allowHTML: true,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start',
+        };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>
