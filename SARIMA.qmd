@@ -36,8 +36,58 @@ editor: source
 ---
 
 
+# Introdução
+## Introdução
+
+- Muitas séries temporais apresentam fenômenos sazonais que se repetem periodicamente.
+- Esta sazonalidade é um tipo de falta de estacionariedade na média e é bastante frequente (Por exemplo, $\mathbb{E}(Y_t) = \mathbb{E}(Y_{t+s})$).
+- Fenômenos sazonais pode ser produto de fatores climáticos, culturais, religiosos, etc. Exemplo:
+    *   Formatura
+    *   Mês das noivas
+    *   Carnaval
+    *   Natal
+    *   Etc
+- Como lidar com este tipo de dados?
+
+## Introdução 
+
+<center>
+[**Como lidar com este tipo de dados?**]{style="color:blue"}
+</center>
+
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+### Métodos Tradicionais
+
+$$Y_t = T_t + S_t + \epsilon_t$$
+- Métodos de decomposição
+- Modelos de regressão (tendência determinística + Dummy | Fourier)
+:::
+
+::: {.column width="50%"}
+### SARIMA
+
+ARIMA Sazonal
+:::
+
+::::
 
 # SARIMA
+
+## SARIMA
+
+- Métodos tradicionais assumem que a componente sazonal é deterministica e independente das componentes não sazonais. Contudo, esta suposição não é tão realista assim.
+- Muitas vezes $S_t$ pode ser estocástica e correlacionada com as outras componentes. Nestes casos, extendemos ARIMA para também capturar a componente sazonal.
+- Ou seja, $\{Y_t\}$ terá uma relação dentro do período sazonal ($\{Y_{t-1}, ..., Y_{t - s + 1}\}$) e outra entre períodos ($\{Y_{t-s}, Y_{t-2s}, ...\}$).
+- Assim como tentamos remover a tendência deterministica com diferebciação $d$, tentamos remover a sazonalidade determinística com diferenciação sazinal $D$ ($Y_t - Y_{t - s}$).
+- Contudo, é possivel que mesmo após remover o comportamento sazonal determinístico, ainda exista correlação significativa em:
+    *   **Lags** de ordem baixa: indicando que os resíduos ainda são correlacionados e um modelo ARMA poderia ajudar.
+    *   **Lags** sazonais: indicando a necessidade de considerar sazonalidade estocástica (com modelos SARMA)
+
+
 
 ## SARIMA
 
@@ -99,8 +149,7 @@ par(op)
 
 
 - _lags_ de ordem baixa: indicando que os resíduos ainda são correlacionados e um modelo ARMA poderia ajudar a capturar a dinâmica dos dados.
-- _lags_ sazonais: indicando a necessidade de considerar sazonalidade estocástica, em cujo caso, modelo SARIMA podem ajudar a capturar a dinâmica dos dados.
-
+- _lags_ sazonais: indicando a necessidade de considerar sazonalidade estocástica, em cujo caso, modelo SARMA podem ajudar a capturar a dinâmica dos dados.
 
 
 
@@ -561,7 +610,9 @@ $$AIC = n \log(\hat{\sigma}^2_{\epsilon}) + 2k$$
 
 
 
-[Shibata (1976)](https://doi.org/10.1093/biomet/63.1.117) mostrou que o uso da mesma fórmula do AIC, com foco em previsão out-of-sample, é assintoticamente eficiente: ou seja, mesmo quando o modelo verdadeiro não pertence à classe considerada (por exemplo, um ARMA aproximando uma série mais complexa), essa fórmula ainda tende a selecionar o modelo com melhor desempenho preditivo à medida que $n \rightarrow \infty$.
+- [Shibata (1976)](https://doi.org/10.1093/biomet/63.1.117) mostrou que o uso da mesma fórmula do AIC, com foco em previsão out-of-sample, é assintoticamente eficiente: ou seja, mesmo quando o modelo verdadeiro não pertence à classe considerada (por exemplo, um ARMA aproximando uma série mais complexa), essa fórmula ainda tende a selecionar o modelo com melhor desempenho preditivo à medida que $n \rightarrow \infty$.
+- A AICc é útil para selecionar entre modelos dentro da mesma classe. Por exemplo, podemos usá-la para escolher um modelo ARIMA entre modelos ARIMA candidatos. O mesmo aplica para outros critérios de informação.
+- Critérios de informação apenas são úties para compara modelos com **as mesmas ordens de diferenciação**.
 
 
 
@@ -570,6 +621,7 @@ $$AIC = n \log(\hat{\sigma}^2_{\epsilon}) + 2k$$
 ## Referências
 
 - [Brockwell, P. J., & Davis, R. A. (Third Edition). (2016). Introduction to Time Series and Forecasting. New York, NY: Springer New York.](https://link.springer.com/book/10.1007/978-3-319-29854-2). Chapter 8
-- [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 8.
+- [Hyndman, R.J., & Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.](https://otexts.com/fpp3/). Chapter 9.
 - Shibata, R. (1976). Selection of the order of an autoregressive model by Akaike’s Information Criterion. Biometrika, 63(1), 117–126.
+- Peña, D. (2010). Análisis de Series Temporales. Cap 7.
 

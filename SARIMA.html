@@ -212,7 +212,8 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 <nav role="doc-toc"> 
 <h2 id="toc-title">Agenda</h2>
 <ul>
-<li class="fragment"><a href="#/sarima" id="/toc-sarima">SARIMA</a></li>
+<li class="fragment"><a href="#/introdução" id="/toc-introdução">Introdução</a></li>
+<li class="fragment"><a href="#/sarima-1" id="/toc-sarima-1">SARIMA</a></li>
 <li class="fragment"><a href="#/identificação" id="/toc-identificação">Identificação</a></li>
 <li class="fragment"><a href="#/exemplos-1" id="/toc-exemplos-1">Exemplos</a></li>
 <li class="fragment"><a href="#/seleção-de-modelos" id="/toc-seleção-de-modelos">Seleção de Modelos</a></li>
@@ -220,11 +221,60 @@ Prof.&nbsp;Carlos Trucíos <br> ctrucios@unicamp.br
 </nav>
 </section>
 <section>
-<section id="sarima" class="title-slide slide level1 center">
+<section id="introdução" class="title-slide slide level1 center">
+<h1>Introdução</h1>
+
+</section>
+<section id="introdução-1" class="slide level2">
+<h2>Introdução</h2>
+<ul>
+<li class="fragment">Muitas séries temporais apresentam fenômenos sazonais que se repetem periodicamente.</li>
+<li class="fragment">Esta sazonalidade é um tipo de falta de estacionariedade na média e é bastante frequente (Por exemplo, <span class="math inline">\(\mathbb{E}(Y_t) = \mathbb{E}(Y_{t+s})\)</span>).</li>
+<li class="fragment">Fenômenos sazonais pode ser produto de fatores climáticos, culturais, religiosos, etc. Exemplo:
+<ul>
+<li class="fragment">Formatura</li>
+<li class="fragment">Mês das noivas</li>
+<li class="fragment">Carnaval</li>
+<li class="fragment">Natal</li>
+<li class="fragment">Etc</li>
+</ul></li>
+<li class="fragment">Como lidar com este tipo de dados?</li>
+</ul>
+</section>
+<section id="introdução-2" class="slide level2">
+<h2>Introdução</h2>
+<center>
+<span style="color:blue"><strong>Como lidar com este tipo de dados?</strong></span>
+</center>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="métodos-tradicionais">Métodos Tradicionais</h3>
+<p><span class="math display">\[Y_t = T_t + S_t + \epsilon_t\]</span> - Métodos de decomposição - Modelos de regressão (tendência determinística + Dummy | Fourier)</p>
+</div><div class="column" style="width:50%;">
+<h3 id="sarima">SARIMA</h3>
+<p>ARIMA Sazonal</p>
+</div></div>
+</section></section>
+<section>
+<section id="sarima-1" class="title-slide slide level1 center">
 <h1>SARIMA</h1>
 
 </section>
-<section id="sarima-1" class="slide level2">
+<section id="sarima-2" class="slide level2">
+<h2>SARIMA</h2>
+<ul>
+<li class="fragment">Métodos tradicionais assumem que a componente sazonal é deterministica e independente das componentes não sazonais. Contudo, esta suposição não é tão realista assim.</li>
+<li class="fragment">Muitas vezes <span class="math inline">\(S_t\)</span> pode ser estocástica e correlacionada com as outras componentes. Nestes casos, extendemos ARIMA para também capturar a componente sazonal.</li>
+<li class="fragment">Ou seja, <span class="math inline">\(\{Y_t\}\)</span> terá uma relação dentro do período sazonal (<span class="math inline">\(\{Y_{t-1}, ..., Y_{t - s + 1}\}\)</span>) e outra entre períodos (<span class="math inline">\(\{Y_{t-s}, Y_{t-2s}, ...\}\)</span>).</li>
+<li class="fragment">Assim como tentamos remover a tendência deterministica com diferebciação <span class="math inline">\(d\)</span>, tentamos remover a sazonalidade determinística com diferenciação sazinal <span class="math inline">\(D\)</span> (<span class="math inline">\(Y_t - Y_{t - s}\)</span>).</li>
+<li class="fragment">Contudo, é possivel que mesmo após remover o comportamento sazonal determinístico, ainda exista correlação significativa em:
+<ul>
+<li class="fragment"><strong>Lags</strong> de ordem baixa: indicando que os resíduos ainda são correlacionados e um modelo ARMA poderia ajudar.</li>
+<li class="fragment"><strong>Lags</strong> sazonais: indicando a necessidade de considerar sazonalidade estocástica (com modelos SARMA)</li>
+</ul></li>
+</ul>
+</section>
+<section id="sarima-3" class="slide level2">
 <h2>SARIMA</h2>
 <div class="panel-tabset">
 <ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Data</a></li><li><a href="#tabset-1-2">Plot</a></li><li><a href="#tabset-1-3">R-S</a></li><li><a href="#tabset-1-4">R-T</a></li></ul>
@@ -313,15 +363,15 @@ $ V1 &lt;dbl&gt; 4.587898, 4.165729, 2.003551, 1.347498, 3.484531, 3.766763, 4.6
 </div>
 </div>
 </section>
-<section id="sarima-2" class="slide level2">
+<section id="sarima-4" class="slide level2">
 <h2>SARIMA</h2>
 <p>É possivel que, após diferenciação para remover a sazonalidade e a tendência, ainda existe correlação significativa em:</p>
 <ul>
 <li class="fragment"><em>lags</em> de ordem baixa: indicando que os resíduos ainda são correlacionados e um modelo ARMA poderia ajudar a capturar a dinâmica dos dados.</li>
-<li class="fragment"><em>lags</em> sazonais: indicando a necessidade de considerar sazonalidade estocástica, em cujo caso, modelo SARIMA podem ajudar a capturar a dinâmica dos dados.</li>
+<li class="fragment"><em>lags</em> sazonais: indicando a necessidade de considerar sazonalidade estocástica, em cujo caso, modelo SARMA podem ajudar a capturar a dinâmica dos dados.</li>
 </ul>
 </section>
-<section id="sarima-3" class="slide level2">
+<section id="sarima-5" class="slide level2">
 <h2>SARIMA</h2>
 <div class="callout callout-note no-icon callout-titled callout-style-default">
 <div class="callout-body">
@@ -347,7 +397,7 @@ $ V1 &lt;dbl&gt; 4.587898, 4.165729, 2.003551, 1.347498, 3.484531, 3.766763, 4.6
 </center>
 </div>
 </section>
-<section id="sarima-4" class="slide level2">
+<section id="sarima-6" class="slide level2">
 <h2>SARIMA</h2>
 <p>Note que o modelo SARIMA definido anteriormente pode ser reescrito como <span class="math display">\[\phi^{\ast}(B) z_t = \theta^{\ast}(B) \epsilon_t,\]</span></p>
 <p>em que:</p>
@@ -365,7 +415,7 @@ $ V1 &lt;dbl&gt; 4.587898, 4.165729, 2.003551, 1.347498, 3.484531, 3.766763, 4.6
 </ul>
 </div>
 </section>
-<section id="sarima-5" class="slide level2">
+<section id="sarima-7" class="slide level2">
 <h2>SARIMA</h2>
 <p>Suponha que temos <span class="math inline">\(r\)</span> anos de dados mensais:</p>
 <table class="caption-top">
@@ -423,7 +473,7 @@ $ V1 &lt;dbl&gt; 4.587898, 4.165729, 2.003551, 1.347498, 3.484531, 3.766763, 4.6
 </tbody>
 </table>
 </section>
-<section id="sarima-6" class="slide level2">
+<section id="sarima-8" class="slide level2">
 <h2>SARIMA</h2>
 <ul>
 <li class="fragment">Cada coluna pode ser vista como a realização de uma série temporal.</li>
@@ -435,7 +485,7 @@ y_{j + 12t} &amp;= \Phi_1 y_{j + 12(t - 1)} + \cdots + \Phi_P y_{j + 12(t-P)} \n
 <li class="fragment">Note que <span class="math inline">\(\mathbb{E}(U_t U_{t+h})\)</span> não necessariamente é zero (exceto de <span class="math inline">\(h\)</span> for múltiplo do período sazonal).</li>
 </ul>
 </section>
-<section id="sarima-7" class="slide level2">
+<section id="sarima-9" class="slide level2">
 <h2>SARIMA</h2>
 <p><span class="math display">\[\Phi(B^{12})y_t = \Theta(B^{12})U_t\]</span></p>
 <div class="fragment">
@@ -445,7 +495,7 @@ y_{j + 12t} &amp;= \Phi_1 y_{j + 12(t - 1)} + \cdots + \Phi_P y_{j + 12(t-P)} \n
 </ul>
 </div>
 </section>
-<section id="sarima-8" class="slide level2">
+<section id="sarima-10" class="slide level2">
 <h2>SARIMA</h2>
 <p><span class="math display">\[\Phi(B^{12})y_t = \Theta(B^{12})U_t\]</span></p>
 <div class="fragment">
@@ -466,7 +516,7 @@ y_{j + 12t} &amp;= \Phi_1 y_{j + 12(t - 1)} + \cdots + \Phi_P y_{j + 12(t-P)} \n
 </div>
 </div>
 </section>
-<section id="sarima-9" class="slide level2">
+<section id="sarima-11" class="slide level2">
 <h2>SARIMA</h2>
 <p><span class="math display">\[\Phi(B^{12})y_t = \Theta(B^{12})U_t\]</span></p>
 <div class="fragment">
@@ -487,7 +537,7 @@ y_{j + 12t} &amp;= \Phi_1 y_{j + 12(t - 1)} + \cdots + \Phi_P y_{j + 12(t-P)} \n
 </div>
 </div>
 </section>
-<section id="sarima-10" class="slide level2">
+<section id="sarima-12" class="slide level2">
 <h2>SARIMA</h2>
 <ul>
 <li class="fragment">Nos modelos dos exemplos anteriores (assumindo <span class="math inline">\(\mathbb{E}(U_t U_{t+h}) = 0\)</span> <span class="math inline">\(\forall h\)</span>), as 12 séries (correspondentes a cada mês) são não correlacionados.</li>
@@ -499,7 +549,7 @@ y_{j + 12t} &amp;= \Phi_1 y_{j + 12(t - 1)} + \cdots + \Phi_P y_{j + 12(t-P)} \n
 <li class="fragment">Misturando ambos os modelos, temos exatamente o modelo definido na definição do modelo SARIMA! 🏄‍♀️</li>
 </ul>
 </section>
-<section id="sarima-11" class="slide level2">
+<section id="sarima-13" class="slide level2">
 <h2>SARIMA</h2>
 <p><span class="math display">\[\Phi(B^{12})y_t = \Theta(B^{12})U_t\]</span></p>
 <p><span class="math display">\[\phi(B)U_t = \theta(B)\epsilon_t\]</span></p>
@@ -997,14 +1047,19 @@ sigma^2 estimated as 75607:  log likelihood = -424.92,  aic = 857.83</code></pre
 </section>
 <section id="seleção-de-modelos-5" class="slide level2">
 <h2>Seleção de Modelos</h2>
-<p><a href="https://doi.org/10.1093/biomet/63.1.117">Shibata (1976)</a> mostrou que o uso da mesma fórmula do AIC, com foco em previsão out-of-sample, é assintoticamente eficiente: ou seja, mesmo quando o modelo verdadeiro não pertence à classe considerada (por exemplo, um ARMA aproximando uma série mais complexa), essa fórmula ainda tende a selecionar o modelo com melhor desempenho preditivo à medida que <span class="math inline">\(n \rightarrow \infty\)</span>.</p>
+<ul>
+<li class="fragment"><a href="https://doi.org/10.1093/biomet/63.1.117">Shibata (1976)</a> mostrou que o uso da mesma fórmula do AIC, com foco em previsão out-of-sample, é assintoticamente eficiente: ou seja, mesmo quando o modelo verdadeiro não pertence à classe considerada (por exemplo, um ARMA aproximando uma série mais complexa), essa fórmula ainda tende a selecionar o modelo com melhor desempenho preditivo à medida que <span class="math inline">\(n \rightarrow \infty\)</span>.</li>
+<li class="fragment">A AICc é útil para selecionar entre modelos dentro da mesma classe. Por exemplo, podemos usá-la para escolher um modelo ARIMA entre modelos ARIMA candidatos. O mesmo aplica para outros critérios de informação.</li>
+<li class="fragment">Critérios de informação apenas são úties para compara modelos com <strong>as mesmas ordens de diferenciação</strong>.</li>
+</ul>
 </section>
 <section id="referências" class="slide level2">
 <h2>Referências</h2>
 <ul>
 <li class="fragment"><a href="https://link.springer.com/book/10.1007/978-3-319-29854-2">Brockwell, P. J., &amp; Davis, R. A. (Third Edition). (2016). Introduction to Time Series and Forecasting. New York, NY: Springer New York.</a>. Chapter 8</li>
-<li class="fragment"><a href="https://otexts.com/fpp3/">Hyndman, R.J., &amp; Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.</a>. Chapter 8.</li>
+<li class="fragment"><a href="https://otexts.com/fpp3/">Hyndman, R.J., &amp; Athanasopoulos, G. (2021). Forecasting: principles and practice, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.</a>. Chapter 9.</li>
 <li class="fragment">Shibata, R. (1976). Selection of the order of an autoregressive model by Akaike’s Information Criterion. Biometrika, 63(1), 117–126.</li>
+<li class="fragment">Peña, D. (2010). Análisis de Series Temporales. Cap 7.</li>
 </ul>
 
 </section></section>
